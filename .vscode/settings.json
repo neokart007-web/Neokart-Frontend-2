@@ -1,5 +1,5 @@
 {
   "tailwindCSS.experimental.configFile": {
-    "app/globals.css": "**"
+    "src/app/globals.css": "**"
   }
 }
