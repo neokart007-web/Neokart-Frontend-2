@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -26,10 +27,34 @@ export default function SignInPage() {
     resolver: zodResolver(signInSchema),
   });
 
+  const router = useRouter();
+  const [apiError, setApiError] = useState<string | null>(null);
+
   const onSubmit = async (data: SignInValues) => {
-    // Mock authentication delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Sign in data:", data);
+    try {
+      setApiError(null);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/auth/customer-login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        setApiError(json.message || "Invalid email or password");
+        return;
+      }
+
+      // Success! Redirect to home page
+      router.push("/");
+    } catch (err) {
+      console.error("Sign in error:", err);
+      setApiError("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -69,6 +94,12 @@ export default function SignInPage() {
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
+            {apiError && (
+              <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium border border-red-100">
+                {apiError}
+              </div>
+            )}
+            
             {/* Email Field */}
             <div>
               <label 

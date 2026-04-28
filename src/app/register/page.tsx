@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -41,10 +42,43 @@ export default function RegisterPage() {
     resolver: zodResolver(registerSchema),
   });
 
+  const router = useRouter();
+  const [apiError, setApiError] = useState<string | null>(null);
+
   const onSubmit = async (data: RegisterValues) => {
-    // Mock authentication delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Registration data:", data);
+    try {
+      setApiError(null);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.fullName,
+          email: data.email,
+          password: data.password,
+          phone: data.phone,
+          address: {
+            street: data.street,
+            city: data.city,
+            state: data.state,
+            zipCode: data.zipCode,
+            country: data.country
+          }
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        setApiError(json.message || "Registration failed");
+        return;
+      }
+
+      // Success! Redirect to login page
+      router.push("/sign-in");
+    } catch (err) {
+      console.error("Registration error:", err);
+      setApiError("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -82,6 +116,12 @@ export default function RegisterPage() {
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
+            {apiError && (
+              <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium border border-red-100">
+                {apiError}
+              </div>
+            )}
+            
             {/* Full Name */}
             <div>
               <label htmlFor="fullName" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
