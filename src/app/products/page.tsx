@@ -298,28 +298,35 @@ function ProductsContent() {
         ]);
 
         if (catJson.success && catJson.data) {
-          const mappedCats = catJson.data.map((c: any) => ({
+          const activeCats = catJson.data.filter((c: any) => c.status === 'ACTIVE');
+          const mappedCats = activeCats.map((c: any) => ({
             id: c.name,
             label: c.name,
           }));
           setCategories([{ id: "all", label: "All Categories" }, ...mappedCats]);
-        }
 
-        if (prodJson.success && prodJson.data) {
-          const mappedProds = prodJson.data.map((p: any) => ({
-            id: p._id,
-            name: p.name,
-            images: p.images && p.images.length > 0 ? p.images : ["/products/suncream-1.jpg"],
-            rating: p.starRating || 0,
-            reviewCount: p.reviewsCount || 0,
-            currentPrice: p.variants?.[0]?.price || 0,
-            originalPrice: p.variants?.[0]?.oldPrice || p.variants?.[0]?.price || 0,
-            currency: "₹",
-            dealBadge: p.offerText || "",
-            benefit: p.keyFeatures || "",
-            category: p.category || "all",
-          }));
-          setProducts(mappedProds);
+          if (prodJson.success && prodJson.data) {
+            const activeCatNames = activeCats.map((c: any) => c.name.toLowerCase());
+            
+            const activeProducts = prodJson.data.filter((p: any) => 
+              activeCatNames.includes((p.category || "").toLowerCase())
+            );
+
+            const mappedProds = activeProducts.map((p: any) => ({
+              id: p._id,
+              name: p.name,
+              images: p.images && p.images.length > 0 ? p.images : ["/products/suncream-1.jpg"],
+              rating: p.starRating || 0,
+              reviewCount: p.reviewsCount || 0,
+              currentPrice: p.variants?.[0]?.price || 0,
+              originalPrice: p.variants?.[0]?.oldPrice || p.variants?.[0]?.price || 0,
+              currency: "₹",
+              dealBadge: p.offerText || "",
+              benefit: p.keyFeatures || "",
+              category: p.category || "all",
+            }));
+            setProducts(mappedProds);
+          }
         }
       } catch (error) {
         console.error("Failed to fetch products:", error);

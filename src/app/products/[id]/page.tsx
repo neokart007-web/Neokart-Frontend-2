@@ -69,10 +69,29 @@ export default function ProductDetailPage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/products`);
-        const json = await res.json();
-        if (json.success && json.data) {
-          const mapped = json.data.map((p: any) => ({
+        const [prodRes, catRes] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/products`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/categories`)
+        ]);
+        
+        const [prodJson, catJson] = await Promise.all([
+          prodRes.json(),
+          catRes.json()
+        ]);
+        
+        let activeCatNames: string[] = [];
+        if (catJson.success && catJson.data) {
+          activeCatNames = catJson.data
+            .filter((c: any) => c.status === 'ACTIVE')
+            .map((c: any) => c.name.toLowerCase());
+        }
+
+        if (prodJson.success && prodJson.data) {
+          const activeProducts = prodJson.data.filter((p: any) => 
+            activeCatNames.includes((p.category || "").toLowerCase())
+          );
+
+          const mapped = activeProducts.map((p: any) => ({
             id: p._id,
             name: p.name,
             tagline: p.description?.substring(0, 100) + "..." || "",
