@@ -110,7 +110,7 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
       }`}
       style={{ transitionDelay: `${index * 100}ms` }}
     >
-      <Link href={`/products/${product.id}`} className="flex flex-col h-full outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-2xl overflow-hidden">
+      <Link href={`/products/${product.id}`} className="flex flex-col flex-grow outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-2xl overflow-hidden">
         {/* Image Area */}
         <div className="relative overflow-hidden aspect-[3/4] bg-slate-50 flex-shrink-0">
           {product.images.map((img, i) => (
@@ -142,7 +142,7 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
         </div>
 
         {/* Content Area */}
-        <div className="px-4 pt-4 pb-6 flex flex-col flex-grow">
+        <div className="px-4 pt-4 pb-3 flex flex-col flex-grow">
           <div className="flex items-center justify-center gap-0.5 mb-2" aria-label={`${product.rating} out of 5 stars`}>
             {renderStars(product.rating)}
             <span className="text-sm font-medium text-slate-400 ml-1">({product.reviewCount})</span>
@@ -165,18 +165,18 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
             {product.dealBadge}
           </div>
 
-          <p className="font-sans font-normal text-xs text-slate-500 text-center line-clamp-1 mb-4">
+          <p className="font-sans font-normal text-xs text-slate-500 text-center line-clamp-1">
             {product.benefit}
           </p>
-
-          <button 
-            onClick={(e) => e.preventDefault()}
-            className="w-full mt-auto bg-slate-900 text-white font-sans font-bold text-[10px] md:text-xs uppercase tracking-widest py-3 rounded-full hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            ADD TO CART
-          </button>
         </div>
       </Link>
+      <div className="px-4 pb-6">
+        <button 
+          className="w-full bg-slate-900 text-white font-sans font-bold text-[10px] md:text-xs uppercase tracking-widest py-3 rounded-full hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          ADD TO CART
+        </button>
+      </div>
     </article>
   );
 }
@@ -204,7 +204,7 @@ export default function ProductSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-white py-16 md:py-24 w-full">
+    <section ref={sectionRef} className="bg-white pt-10 md:pt-16 pb-16 md:pb-24 w-full">
       {/* Section Header */}
       <div className="text-center px-6">
         <h2 

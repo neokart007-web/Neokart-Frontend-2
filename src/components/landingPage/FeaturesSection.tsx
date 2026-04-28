@@ -42,7 +42,6 @@ const features: Feature[] = [
 ];
 
 export default function FeaturesSection() {
-  const [activeId, setActiveId] = useState<string>("hydration-lock");
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -103,26 +102,17 @@ export default function FeaturesSection() {
         {/* Features Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {features.map((feature, index) => {
-            const isActive = activeId === feature.id;
             return (
               <article
                 key={feature.id}
-                onClick={() => setActiveId(feature.id)}
-                aria-current={isActive}
-                className={`relative p-6 md:p-8 rounded-2xl cursor-pointer transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:transform-none ${
+                className={`group relative p-6 md:p-8 rounded-2xl cursor-default transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:transform-none ${
                   isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                } ${
-                  isActive 
-                    ? "border border-slate-200 bg-white shadow-sm" 
-                    : "border border-transparent bg-transparent hover:border-slate-300 hover:bg-slate-50"
-                }`}
+                } border border-transparent bg-transparent hover:border-slate-200 hover:bg-white hover:shadow-sm`}
                 style={{ transitionDelay: `${300 + index * 100}ms` }}
               >
                 {/* Step Number */}
                 <div 
-                  className={`font-serif font-normal text-6xl md:text-7xl lg:text-8xl mb-4 md:mb-6 select-none transition-colors duration-300 ${
-                    isActive ? "text-blue-100/60" : "text-slate-200"
-                  }`}
+                  className="font-serif font-normal text-6xl md:text-7xl lg:text-8xl mb-4 md:mb-6 select-none transition-colors duration-300 text-slate-200 group-hover:text-blue-100/60"
                   aria-hidden="true"
                 >
                   {feature.step}
@@ -131,9 +121,7 @@ export default function FeaturesSection() {
                 {/* Category Tag */}
                 <div className="mb-4">
                   <span 
-                    className={`inline-block px-3 py-1.5 rounded-full font-sans font-semibold text-[10px] md:text-xs tracking-[0.15em] uppercase transition-colors duration-200 ${
-                      isActive ? "bg-blue-100 text-blue-800" : "bg-slate-100 text-slate-600"
-                    }`}
+                    className="inline-block px-3 py-1.5 rounded-full font-sans font-semibold text-[10px] md:text-xs tracking-[0.15em] uppercase transition-colors duration-200 bg-slate-100 text-slate-600 group-hover:bg-blue-100 group-hover:text-blue-800"
                     aria-label={`Feature category: ${feature.category}`}
                   >
                     {feature.category}
@@ -150,10 +138,8 @@ export default function FeaturesSection() {
                   {feature.description}
                 </p>
 
-                {/* Active Bottom Accent */}
-                {isActive && (
-                  <div className="absolute bottom-0 left-6 right-6 h-0.5 bg-blue-500 rounded-t-md" />
-                )}
+                {/* Hover Bottom Accent */}
+                <div className="absolute bottom-0 left-6 right-6 h-0.5 bg-blue-500 rounded-t-md opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
               </article>
             );
           })}

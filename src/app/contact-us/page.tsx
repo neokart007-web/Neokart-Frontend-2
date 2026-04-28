@@ -1,3 +1,700 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import * as RadixAccordion from "@radix-ui/react-accordion";
+import {
+  MessageCircle,
+  Phone,
+  Mail,
+  Clock,
+  Send,
+  CheckCircle2,
+  ChevronRight,
+} from "lucide-react";
+
+// ─── Validation Schema ────────────────────────────────────────────────────────
+
+const contactSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  phone: z.string().optional(),
+  subject: z.string().optional(),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+type ContactFormData = z.infer<typeof contactSchema>;
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface ContactCardData {
+  id: string;
+  Icon: React.ComponentType<{ size?: number; className?: string }>;
+  title: string;
+  primary: string;
+  secondary?: string;
+  additional?: string[];
+  href?: string;
+  ariaLabel: string;
+}
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const CONTACT_CARDS: ContactCardData[] = [
+  {
+    id: "call",
+    Icon: Phone,
+    title: "Call Us",
+    primary: "+91 907 4881 551",
+    secondary: "Mon – Sat: 9AM – 7PM",
+    href: "tel:+919074881551",
+    ariaLabel: "Call us at +91 907 4881 551",
+  },
+  {
+    id: "email",
+    Icon: Mail,
+    title: "Email Us",
+    primary: "infoheedy@gmail.com",
+    href: "mailto:infoheedy@gmail.com",
+    ariaLabel: "Email us at infoheedy@gmail.com",
+  },
+  {
+    id: "hours",
+    Icon: Clock,
+    title: "Working Hours",
+    primary: "Monday – Friday: 9AM – 8PM",
+    additional: ["Saturday: 10AM – 6PM", "Sunday: Closed"],
+    ariaLabel: "Working hours: Monday to Friday 9AM to 8PM",
+  },
+];
+
+// ─── Animated visibility hook ─────────────────────────────────────────────────
+
+function useInView(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+
+  return { ref, visible };
+}
+
+// ─── Contact Card ─────────────────────────────────────────────────────────────
+
+function ContactCard({
+  card,
+  delay,
+}: {
+  card: ContactCardData;
+  delay: number;
+}) {
+  const { ref, visible } = useInView();
+
+  return (
+    <div
+      ref={ref}
+      className="bg-white rounded-2xl border border-slate-100 p-8 md:p-10 text-center shadow-sm
+                 hover:shadow-md hover:[&_.icon-box]:bg-blue-700 transition-all duration-300 h-full"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(2rem)",
+        transition: `opacity 0.5s ease ${delay}ms, transform 0.5s ease ${delay}ms`,
+      }}
+      aria-label={`${card.title} contact information`}
+    >
+      <div
+        className="icon-box w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center mx-auto mb-6 transition-colors duration-300"
+        style={{
+          transform: visible ? "scale(1)" : "scale(0.95)",
+          transition: `transform 0.4s ease ${delay + 100}ms`,
+        }}
+      >
+        <card.Icon size={28} className="text-white" />
+      </div>
+
+      <h3 className="font-sans font-bold text-xl md:text-2xl text-slate-900 mb-3">
+        {card.title}
+      </h3>
+
+      {card.href ? (
+        <a
+          href={card.href}
+          aria-label={card.ariaLabel}
+          className="font-semibold text-base md:text-lg text-blue-800 hover:text-blue-600 transition-colors mb-2 block break-all"
+        >
+          {card.primary}
+        </a>
+      ) : (
+        <p className="font-semibold text-base md:text-lg text-blue-800 mb-2">
+          {card.primary}
+        </p>
+      )}
+
+      {card.secondary && (
+        <p className="text-slate-500 text-sm md:text-base">{card.secondary}</p>
+      )}
+
+      {card.additional?.map((line) => (
+        <p key={line} className="text-slate-500 text-sm md:text-base">
+          {line}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+// ─── Field wrapper ────────────────────────────────────────────────────────────
+
+const inputCls =
+  "w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-slate-900 placeholder:text-slate-400 text-sm font-sans focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all duration-200 autofill:bg-slate-50";
+
+function FieldWrapper({
+  label,
+  required,
+  error,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col">
+      <label className="font-sans font-semibold text-sm text-slate-900 mb-2">
+        {label}
+        {required && (
+          <span className="text-red-500 ml-0.5" aria-hidden="true">
+            {" "}*
+          </span>
+        )}
+      </label>
+      {children}
+      {error && (
+        <p role="alert" className="text-red-500 text-xs mt-1.5 font-medium">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─── Contact Form ─────────────────────────────────────────────────────────────
+
+function ContactForm() {
+  const { ref, visible } = useInView(0.1);
+  const [submitted, setSubmitted] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactSchema),
+    mode: "onBlur",
+  });
+
+  const onSubmit = async (_data: ContactFormData) => {
+    // Simulate network delay
+    await new Promise((r) => setTimeout(r, 1400));
+    setSubmitted(true);
+  };
+
+  const handleReset = () => {
+    setSubmitted(false);
+    reset();
+  };
+
+  return (
+    <section
+      className="w-full bg-slate-100 py-12 md:py-16 lg:py-20"
+      aria-label="Contact form section"
+    >
+      <div className="max-w-3xl mx-auto px-6 md:px-12">
+        <div
+          ref={ref}
+          className="bg-white rounded-3xl shadow-sm overflow-hidden"
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(1.5rem)",
+            transition: "opacity 0.6s ease 100ms, transform 0.6s ease 100ms",
+          }}
+        >
+          {/* Blue top accent */}
+          <div
+            className="h-1 bg-blue-500 w-full"
+            style={{
+              transform: visible ? "scaleX(1)" : "scaleX(0)",
+              transformOrigin: "center",
+              transition: "transform 0.5s ease 300ms",
+            }}
+          />
+
+          <div className="p-8 md:p-12">
+            {/* Header */}
+            <div className="text-center mb-8 md:mb-10">
+              <h2 className="font-sans font-bold text-3xl md:text-4xl text-slate-900 mb-4">
+                Send us a Message
+              </h2>
+              <p className="font-sans text-slate-500 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+                Fill out the form below and we&apos;ll get back to you within 24 hours.
+              </p>
+            </div>
+
+            {submitted ? (
+              /* ── Success state ── */
+              <div className="flex flex-col items-center justify-center py-14 gap-5 text-center">
+                <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center">
+                  <CheckCircle2 size={42} className="text-blue-600" />
+                </div>
+                <h3 className="font-bold text-2xl text-slate-900">
+                  Message Sent!
+                </h3>
+                <p className="text-slate-500 max-w-sm leading-relaxed">
+                  Thank you for reaching out. Our team will get back to you
+                  within 24 hours.
+                </p>
+                <button
+                  onClick={handleReset}
+                  className="mt-2 px-8 py-3 bg-blue-600 text-white font-bold text-sm uppercase tracking-[0.15em] rounded-full hover:bg-blue-700 transition-colors duration-300 shadow-lg shadow-blue-500/30 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  Send Another
+                </button>
+              </div>
+            ) : (
+              /* ── Form ── */
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                noValidate
+                aria-label="Contact form"
+                className="space-y-6 md:space-y-8"
+              >
+                {/* Row 1: Name + Email */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                  <FieldWrapper
+                    label="Your Name"
+                    required
+                    error={errors.name?.message}
+                  >
+                    <input
+                      id="contact-name"
+                      type="text"
+                      placeholder="Enter your full name"
+                      autoComplete="name"
+                      aria-required="true"
+                      aria-describedby={
+                        errors.name ? "name-error" : undefined
+                      }
+                      {...register("name")}
+                      className={`${inputCls} ${
+                        errors.name ? "border-red-400 focus:border-red-500 focus:ring-red-500/20" : ""
+                      }`}
+                    />
+                  </FieldWrapper>
+
+                  <FieldWrapper
+                    label="Email Address"
+                    required
+                    error={errors.email?.message}
+                  >
+                    <input
+                      id="contact-email"
+                      type="email"
+                      placeholder="your@email.com"
+                      autoComplete="email"
+                      aria-required="true"
+                      aria-describedby={
+                        errors.email ? "email-error" : undefined
+                      }
+                      {...register("email")}
+                      className={`${inputCls} ${
+                        errors.email ? "border-red-400 focus:border-red-500 focus:ring-red-500/20" : ""
+                      }`}
+                    />
+                  </FieldWrapper>
+                </div>
+
+                {/* Row 2: Phone + Subject */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                  <FieldWrapper label="Phone Number" error={errors.phone?.message}>
+                    <input
+                      id="contact-phone"
+                      type="tel"
+                      placeholder="+91 98765 43210"
+                      autoComplete="tel"
+                      {...register("phone")}
+                      className={inputCls}
+                    />
+                  </FieldWrapper>
+
+                  <FieldWrapper label="Subject" error={errors.subject?.message}>
+                    <input
+                      id="contact-subject"
+                      type="text"
+                      placeholder="How can we help?"
+                      {...register("subject")}
+                      className={inputCls}
+                    />
+                  </FieldWrapper>
+                </div>
+
+                {/* Row 3: Message (full width) */}
+                <FieldWrapper
+                  label="Your Message"
+                  required
+                  error={errors.message?.message}
+                >
+                  <textarea
+                    id="contact-message"
+                    placeholder="Tell us more about your inquiry..."
+                    rows={6}
+                    aria-required="true"
+                    aria-describedby={
+                      errors.message ? "message-error" : undefined
+                    }
+                    {...register("message")}
+                    className={`${inputCls} resize-y min-h-[160px] ${
+                      errors.message ? "border-red-400 focus:border-red-500 focus:ring-red-500/20" : ""
+                    }`}
+                  />
+                </FieldWrapper>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  aria-label="Send message"
+                  className="w-full mt-6 md:mt-8 flex items-center justify-center gap-3
+                             bg-blue-600 text-white py-4 md:py-5 rounded-full
+                             font-bold text-sm tracking-[0.15em] uppercase
+                             hover:bg-blue-700 active:scale-[0.98]
+                             transition-all duration-300
+                             shadow-lg shadow-blue-500/30
+                             disabled:opacity-60 disabled:cursor-not-allowed
+                             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                             motion-reduce:transition-none"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Sending…
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      Send Message
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default function ContactUsPage() {
-  return null;
+  const [heroVisible, setHeroVisible] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroVisible(true), 80);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <>
+      <title>Contact Us – HEEDY | We&apos;d Love to Hear From You</title>
+      <meta
+        name="description"
+        content="Get in touch with the HEEDY team. Call, email, or send us a message — we're here to help with all your skincare needs."
+      />
+
+      <main className="min-h-screen bg-slate-50">
+
+        {/* ── Hero ─────────────────────────────────────────────────── */}
+        <section
+          className="relative w-full pt-32 md:pt-40 pb-36 md:pb-48"
+          style={{
+            background:
+              "linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #1E40AF 100%)",
+          }}
+        >
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            {/* Pill */}
+            <div
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-blue-300/30
+                         text-blue-300 mb-7 hover:border-blue-300/60 hover:bg-blue-400/10 transition-all duration-300"
+              aria-label="Get in touch with our team"
+              style={{
+                opacity: heroVisible ? 1 : 0,
+                transform: heroVisible ? "translateY(0)" : "translateY(1rem)",
+                transition: "opacity 0.5s ease 100ms, transform 0.5s ease 100ms",
+              }}
+            >
+              <MessageCircle size={16} />
+              <span className="font-semibold text-xs tracking-[0.15em] uppercase">
+                GET IN TOUCH
+              </span>
+            </div>
+
+            {/* Headline */}
+            <h1
+              className="font-sans font-bold text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-6"
+              style={{
+                opacity: heroVisible ? 1 : 0,
+                transform: heroVisible ? "translateY(0)" : "translateY(1rem)",
+                transition: "opacity 0.6s ease 200ms, transform 0.6s ease 200ms",
+              }}
+            >
+              We&apos;d Love to Hear From You
+            </h1>
+
+            {/* Subheadline */}
+            <p
+              className="text-slate-400 text-base md:text-lg leading-relaxed max-w-2xl mx-auto"
+              style={{
+                opacity: heroVisible ? 1 : 0,
+                transform: heroVisible ? "translateY(0)" : "translateY(1rem)",
+                transition: "opacity 0.6s ease 300ms, transform 0.6s ease 300ms",
+              }}
+            >
+              Have questions about our products or your order? Our team is here
+              to help you with everything skincare.
+            </p>
+          </div>
+        </section>
+
+        {/* ── Info Cards (overlapping) ──────────────────────────────── */}
+        <section
+          className="relative z-10 px-6 md:px-12 lg:px-20 max-w-6xl mx-auto -mt-20 md:-mt-24 mb-0"
+          aria-label="Contact information cards"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {CONTACT_CARDS.map((card, i) => (
+              <ContactCard key={card.id} card={card} delay={400 + i * 100} />
+            ))}
+          </div>
+        </section>
+
+        {/* ── Contact Form ──────────────────────────────────────────── */}
+        <ContactForm />
+
+        {/* ── FAQ ──────────────────────────────────────────────────── */}
+        <FAQSection />
+
+      </main>
+    </>
+  );
+}
+
+// ─── FAQ Data ─────────────────────────────────────────────────────────────────
+
+interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+const FAQ_ITEMS: FAQItem[] = [
+  {
+    id: "shipping-time",
+    question: "How long does shipping take?",
+    answer:
+      "Standard shipping typically takes 3–5 business days within India. Express shipping options are available at checkout for 1–2 business day delivery. International orders may take 7–14 business days depending on the destination.",
+  },
+  {
+    id: "return-policy",
+    question: "Can I return opened products?",
+    answer:
+      "For hygiene and safety reasons, we cannot accept returns on opened or used skincare products. However, if you receive a damaged or defective item, please contact our customer care team within 48 hours of delivery for a replacement or refund.",
+  },
+  {
+    id: "cruelty-free",
+    question: "Are your products cruelty-free?",
+    answer:
+      "Yes, all HEEDY products are 100% cruelty-free. We never test on animals and are certified by Leaping Bunny. Our ingredients are ethically sourced and our formulations are developed using advanced in-vitro testing methods.",
+  },
+  {
+    id: "track-order",
+    question: "How do I track my order?",
+    answer:
+      "Once your order ships, you will receive an email with a tracking number and link. You can also log into your account and visit the 'Orders' section to view real-time tracking updates.",
+  },
+  {
+    id: "consultations",
+    question: "Do you offer personalized skin consultations?",
+    answer:
+      "Yes! We offer complimentary virtual skin consultations with our certified dermatologists. Book a 15-minute session through our website and receive a personalized skincare routine tailored to your skin type and concerns.",
+  },
+];
+
+// ─── FAQ Section ──────────────────────────────────────────────────────────────
+
+function FAQSection() {
+  const { ref: headerRef, visible: headerVisible } = useInView(0.2);
+  const { ref: listRef, visible: listVisible } = useInView(0.1);
+
+  return (
+    <section className="w-full bg-white py-16 md:py-20 lg:py-24" aria-label="Frequently asked questions">
+      <div className="max-w-3xl mx-auto px-6 md:px-8">
+
+        {/* ── Header ── */}
+        <div
+          ref={headerRef}
+          className="text-center mb-12 md:mb-16"
+        >
+          {/* Eyebrow */}
+          <p
+            className="font-sans font-semibold text-xs tracking-[0.2em] uppercase text-blue-500 mb-4"
+            style={{
+              opacity: headerVisible ? 1 : 0,
+              transition: "opacity 0.4s ease 0ms",
+            }}
+          >
+            SUPPORT CENTER
+          </p>
+
+          {/* Headline */}
+          <h2
+            className="font-sans font-bold text-3xl md:text-4xl lg:text-5xl text-slate-900 leading-tight mb-6"
+            style={{
+              opacity: headerVisible ? 1 : 0,
+              transform: headerVisible ? "translateY(0)" : "translateY(1rem)",
+              transition: "opacity 0.6s ease 100ms, transform 0.6s ease 100ms",
+            }}
+          >
+            Frequently Asked Questions
+          </h2>
+
+          {/* Subheadline */}
+          <p
+            className="font-sans text-slate-500 text-base md:text-lg leading-relaxed max-w-2xl mx-auto"
+            style={{
+              opacity: headerVisible ? 1 : 0,
+              transform: headerVisible ? "translateY(0)" : "translateY(1rem)",
+              transition: "opacity 0.6s ease 200ms, transform 0.6s ease 200ms",
+            }}
+          >
+            Find quick answers to common questions about our premium skincare experience.
+          </p>
+        </div>
+
+        {/* ── Accordion ── */}
+        <div ref={listRef}>
+          <RadixAccordion.Root
+            type="single"
+            collapsible
+            className="w-full space-y-4"
+          >
+            {FAQ_ITEMS.map((item, i) => (
+              <RadixAccordion.Item
+                key={item.id}
+                value={item.id}
+                className="border border-slate-200 rounded-2xl bg-white overflow-hidden
+                           hover:border-slate-300 transition-colors duration-200
+                           data-[state=open]:border-slate-300
+                           focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2"
+                style={{
+                  opacity: listVisible ? 1 : 0,
+                  transform: listVisible ? "translateY(0)" : "translateY(1rem)",
+                  transition: `opacity 0.4s ease ${300 + i * 80}ms, transform 0.4s ease ${300 + i * 80}ms`,
+                }}
+              >
+                {/* Trigger */}
+                <RadixAccordion.Header>
+                  <RadixAccordion.Trigger
+                    className="group w-full flex items-center justify-between
+                               px-6 md:px-8 py-5 md:py-6 text-left
+                               focus:outline-none"
+                    aria-label={item.question}
+                  >
+                    <span className="font-sans font-bold text-base md:text-lg text-slate-900 pr-4">
+                      {item.question}
+                    </span>
+                    <ChevronRight
+                      size={20}
+                      aria-hidden="true"
+                      className="flex-shrink-0 text-slate-400
+                                 group-data-[state=open]:text-blue-500
+                                 group-data-[state=open]:rotate-90
+                                 transition-all duration-300 motion-reduce:transition-none"
+                    />
+                  </RadixAccordion.Trigger>
+                </RadixAccordion.Header>
+
+                {/* Content — smooth height via CSS grid trick */}
+                <RadixAccordion.Content
+                  className="overflow-hidden
+                             data-[state=open]:animate-accordion-open
+                             data-[state=closed]:animate-accordion-close"
+                  style={{
+                    // CSS grid row trick for smooth height animation
+                    display: "grid",
+                  } as React.CSSProperties}
+                >
+                  <div className="px-6 md:px-8 pb-6">
+                    <p className="font-sans text-slate-600 text-base leading-relaxed">
+                      {item.answer}
+                    </p>
+                  </div>
+                </RadixAccordion.Content>
+              </RadixAccordion.Item>
+            ))}
+          </RadixAccordion.Root>
+        </div>
+
+        {/* ── CTA ── */}
+        <div
+          className="mt-12 text-center"
+          style={{
+            opacity: listVisible ? 1 : 0,
+            transition: `opacity 0.5s ease ${300 + FAQ_ITEMS.length * 80 + 100}ms`,
+          }}
+        >
+          <p className="font-sans text-slate-500 text-base mb-4">
+            Still have questions?
+          </p>
+          <a
+            href="#contact-form"
+            onClick={(e) => {
+              e.preventDefault();
+              document.querySelector("form[aria-label='Contact form']")?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }}
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full
+                       bg-blue-600 text-white font-bold text-sm tracking-[0.12em] uppercase
+                       hover:bg-blue-700 transition-colors duration-300
+                       shadow-lg shadow-blue-500/30
+                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                       motion-reduce:transition-none"
+            aria-label="Send us a message via the contact form"
+          >
+            <Send size={16} />
+            Send Us a Message
+          </a>
+        </div>
+
+      </div>
+    </section>
+  );
 }

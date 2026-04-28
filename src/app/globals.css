@@ -12,13 +12,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
@@ -34,4 +27,36 @@ body {
 .hide-scrollbar {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+/* ── Radix Accordion smooth height animation ─────────────────────────────── */
+
+@keyframes accordion-open {
+  from { grid-template-rows: 0fr; opacity: 0; }
+  to   { grid-template-rows: 1fr; opacity: 1; }
+}
+
+@keyframes accordion-close {
+  from { grid-template-rows: 1fr; opacity: 1; }
+  to   { grid-template-rows: 0fr; opacity: 0; }
+}
+
+[data-state="open"].animate-accordion-open {
+  animation: accordion-open 0.3s ease-out forwards;
+}
+
+[data-state="closed"].animate-accordion-close {
+  animation: accordion-close 0.25s ease-in forwards;
+}
+
+/* Inner content wrapper must collapse properly */
+[data-radix-accordion-content] > div {
+  overflow: hidden;
+}
+
+/* ── Fade-in-up entrance animation ──────────────────────────────────────── */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(1.5rem); }
+  to   { opacity: 1; transform: translateY(0); }
 }

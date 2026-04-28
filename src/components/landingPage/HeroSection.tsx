@@ -1,102 +1,186 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const slides = [
-  { id: 1, image: "/hero-bg.png" },
-  { id: 2, image: "/hero-bg.png" },
-  { id: 3, image: "/hero-bg.png" },
+  {
+    id: 1,
+    image: "/hero-bg.png",
+    alt: "Premium skincare dynamic hydration",
+    headline: "DYNAMIC HYDRATION",
+    subheadline: "Sweat-resistant, feather-light, invisible finish.",
+  },
+  {
+    id: 2,
+    image: "/images/collection-banner.jpg",
+    alt: "Premium skincare collection",
+    headline: "OCEANIC PURITY",
+    subheadline: "Deep cleansing with natural marine extracts.",
+  },
+  {
+    id: 3,
+    image: "/images/skin-care.jpg",
+    alt: "Premium skin care products",
+    headline: "RADIANT GLOW",
+    subheadline: "Nourish your skin for an all-day luminous finish.",
+  },
 ];
 
 export default function HeroSection() {
-  // Started at 2 (3rd slide) per the image description
-  const [currentSlide, setCurrentSlide] = useState(2);
-  const [isHovered, setIsHovered] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Preloader timer
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
-    if (isHovered) return;
+    if (isLoading) return;
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+      setCurrentSlide((prev) => (prev + 1) % 3);
     }, 6000);
     return () => clearInterval(timer);
-  }, [isHovered]);
+  }, [isLoading]);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    setCurrentSlide((prev) => (prev + 1) % 3);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+    setCurrentSlide((prev) => (prev === 0 ? 2 : prev - 1));
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
   };
 
   return (
     <section 
-      className="relative w-full h-screen overflow-hidden animate-fade-in motion-reduce:animate-none"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="relative w-full h-screen overflow-hidden bg-black"
+      aria-label="Hero section"
     >
-      {/* Background Image */}
-      {slides.map((slide, index) => (
-        <div 
-          key={slide.id}
-          className={`absolute inset-0 transition-opacity duration-500 ease-out motion-reduce:transition-none ${
-            currentSlide === index ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <Image
-            src={slide.image}
-            alt="Beach background with Aura skincare product"
-            fill
-            priority={index === 2} // priority for initial slide since we start on 3rd
-            className="object-cover"
-          />
-        </div>
-      ))}
+      {/* Preloader */}
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            key="preloader"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white"
+          >
+            <h1 className="text-black font-sans font-black text-6xl md:text-8xl tracking-[0.2em] uppercase mb-8">
+              HEEDY
+            </h1>
+            <div className="w-64 md:w-80 h-[2px] bg-slate-100 overflow-hidden relative">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 2, ease: "easeInOut" }}
+                className="h-full bg-blue-400"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/15" />
+      {/* Background & Content Layer */}
+      <AnimatePresence mode="sync">
+        {slides.map((slide, index) => (
+          index === currentSlide && (
+            <motion.div
+              key={slide.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="absolute inset-0 overflow-hidden"
+              style={{ willChange: "opacity" }}
+            >
+              <motion.div
+                initial={{ scale: 1 }}
+                animate={{ scale: 1.15 }}
+                transition={{ duration: 10, ease: "easeOut" }}
+                className="absolute inset-0 origin-center"
+              >
+                <Image
+                  src={slide.image}
+                  alt={slide.alt}
+                  fill
+                  priority={index === 0 || index === 1}
+                  loading={index === 0 || index === 1 ? undefined : "lazy"}
+                  className="object-cover"
+                />
+              </motion.div>
+              <div className="absolute inset-0 bg-black/20" /> {/* overlay */}
+              
+              {/* Content specific to this slide */}
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 pointer-events-none">
+                {/* Optional Eyebrow */}
+                <p className="mb-4 text-blue-300 font-sans font-semibold text-xs tracking-[0.2em] uppercase pointer-events-auto">
+                  PREMIUM SKINCARE
+                </p>
 
-      {/* Content Container */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-        <h1 className="mb-6 text-white drop-shadow-sm font-sans font-thin text-4xl md:text-6xl lg:text-8xl tracking-[0.2em] md:tracking-[0.2em] uppercase">
-          DYNAMIC HYDRATION
-        </h1>
-        <p className="mb-10 text-white/90 max-w-xl font-sans font-normal text-lg md:text-xl tracking-wide">
-          Sweat-resistant, feather-light, invisible finish.
-        </p>
-        <button className="bg-white text-gray-900 px-10 py-4 rounded-full font-sans font-semibold text-sm tracking-widest uppercase hover:bg-gray-100 hover:scale-105 transition-all duration-300 motion-reduce:transition-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-          SHOP NOW
-        </button>
-      </div>
+                {/* Headline */}
+                <h1 className="mb-6 text-white drop-shadow-sm font-sans font-normal text-4xl md:text-6xl lg:text-8xl tracking-[0.2em] md:tracking-[0.2em] uppercase pointer-events-auto">
+                  {slide.headline}
+                </h1>
+                
+                {/* Subheadline */}
+                <p className="mb-10 text-white/90 max-w-xl font-sans font-normal text-base md:text-lg lg:text-xl tracking-wide pointer-events-auto">
+                  {slide.subheadline}
+                </p>
+                
+                {/* CTA */}
+                <Link 
+                  href="/products" 
+                  className="bg-white text-gray-900 px-8 py-3 md:px-10 md:py-4 lg:px-12 lg:py-5 rounded-full font-sans font-semibold text-sm tracking-widest uppercase border-2 border-transparent hover:bg-gradient-to-r hover:from-blue-300 hover:to-blue-500 hover:text-black hover:border-white hover:scale-105 transition-all duration-200 motion-reduce:transition-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 pointer-events-auto inline-block"
+                >
+                  SHOP NOW
+                </Link>
+              </div>
+            </motion.div>
+          )
+        ))}
+      </AnimatePresence>
 
-      {/* Carousel Controls */}
+      {/* Navigation Layer */}
       <button 
         onClick={prevSlide}
         aria-label="Previous slide"
-        className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm items-center justify-center text-white hover:bg-white/30 transition motion-reduce:transition-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm items-center justify-center text-white hover:bg-white/30 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
       >
         <ChevronLeft size={24} />
       </button>
+      
       <button 
         onClick={nextSlide}
         aria-label="Next slide"
-        className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm items-center justify-center text-white hover:bg-white/30 transition motion-reduce:transition-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm items-center justify-center text-white hover:bg-white/30 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
       >
         <ChevronRight size={24} />
       </button>
 
-      {/* Dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+      {/* Dots Indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2" role="tablist">
         {slides.map((slide, index) => (
           <button
             key={slide.id}
-            onClick={() => setCurrentSlide(index)}
+            role="tab"
+            aria-selected={currentSlide === index}
             aria-label={`Go to slide ${index + 1}`}
-            className={`transition-colors duration-300 motion-reduce:transition-none ${
+            onClick={() => goToSlide(index)}
+            className={`transition-colors duration-300 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${
               currentSlide === index
-                ? "w-2.5 h-2.5 rounded-full bg-blue-600"
+                ? "w-2.5 h-2.5 rounded-full bg-blue-500"
                 : "w-2.5 h-2.5 rounded-full bg-white/50"
             }`}
           />

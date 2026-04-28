@@ -71,7 +71,7 @@ export default function Footer() {
           {/* Column 1 — Brand */}
           <div>
             <Link href="/" className="inline-flex items-center mb-6" aria-label="HEEDY brand logo">
-              <div className="relative w-32 h-10">
+              <div className="relative w-64 h-16">
                 <Image
                   src="/logo.png"
                   alt="HEEDY Logo"

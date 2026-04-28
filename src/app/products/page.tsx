@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { Star, StarHalf, SlidersHorizontal, X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -133,7 +134,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       className="bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-lg transition-shadow duration-300 group flex flex-col motion-reduce:transition-none"
       style={{ animationDelay: `${index * 60}ms` }}
     >
-      <Link href={`/products/${product.id}`} className="flex flex-col h-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <Link href={`/products/${product.id}`} className="flex flex-col flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500">
         {/* Image */}
         <div className="relative aspect-[3/4] overflow-hidden bg-slate-50">
           {product.images.map((src, i) => (
@@ -155,7 +156,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         </div>
 
         {/* Content */}
-        <div className="px-4 pt-4 pb-6 flex flex-col flex-grow text-center">
+        <div className="px-4 pt-4 pb-3 flex flex-col flex-grow text-center">
           <div className="flex justify-center gap-0.5 mb-2" aria-label={`${product.rating} out of 5 stars`}>
             {renderStars(product.rating)}
             <span className="text-sm text-slate-400 ml-1">({product.reviewCount})</span>
@@ -168,16 +169,17 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             <span className="text-sm line-through text-slate-400">{product.currency}{product.originalPrice}</span>
           </div>
           <p className="font-bold text-[10px] uppercase tracking-wider text-red-600 mb-1">{product.dealBadge}</p>
-          <p className="text-xs text-slate-500 line-clamp-1 mb-4">{product.benefit}</p>
-          <button
-            onClick={(e) => e.preventDefault()}
-            aria-label={`Add ${product.name} to cart`}
-            className="mt-auto w-full bg-slate-900 text-white font-bold text-xs uppercase tracking-widest py-3 rounded-full hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none"
-          >
-            ADD TO CART
-          </button>
+          <p className="text-xs text-slate-500 line-clamp-1 mb-2">{product.benefit}</p>
         </div>
       </Link>
+      <div className="px-4 pb-6">
+        <button
+          aria-label={`Add ${product.name} to cart`}
+          className="w-full bg-slate-900 text-white font-bold text-xs uppercase tracking-widest py-3 rounded-full hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none"
+        >
+          ADD TO CART
+        </button>
+      </div>
     </article>
   );
 }
@@ -335,15 +337,25 @@ function FilterSidebar({
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// ─── Main Page Content ─────────────────────────────────────────────────────────
 
-export default function ProductsPage() {
-  const [activeCategory, setActiveCategory] = useState("all");
+function ProductsContent() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get("category") || "all";
+
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(PRICE_MAX);
   const [pendingMin, setPendingMin] = useState(0);
   const [pendingMax, setPendingMax] = useState(PRICE_MAX);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    const category = searchParams.get("category");
+    if (category && CATEGORIES.some(c => c.id === category)) {
+      setActiveCategory(category);
+    }
+  }, [searchParams]);
 
   const handleApply = () => {
     setMinPrice(pendingMin);
@@ -492,5 +504,19 @@ export default function ProductsPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+// ─── Main Page Wrapper ───────────────────────────────────────────────────────
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white pt-20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-slate-900"></div>
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 }
