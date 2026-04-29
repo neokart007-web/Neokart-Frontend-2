@@ -33,26 +33,21 @@ body {
 /* ── Radix Accordion smooth height animation ─────────────────────────────── */
 
 @keyframes accordion-open {
-  from { grid-template-rows: 0fr; opacity: 0; }
-  to   { grid-template-rows: 1fr; opacity: 1; }
+  from { height: 0; opacity: 0; }
+  to   { height: var(--radix-accordion-content-height); opacity: 1; }
 }
 
 @keyframes accordion-close {
-  from { grid-template-rows: 1fr; opacity: 1; }
-  to   { grid-template-rows: 0fr; opacity: 0; }
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to   { height: 0; opacity: 0; }
 }
 
-[data-state="open"].animate-accordion-open {
-  animation: accordion-open 0.3s ease-out forwards;
+.accordion-content[data-state="open"] {
+  animation: accordion-open 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-[data-state="closed"].animate-accordion-close {
-  animation: accordion-close 0.25s ease-in forwards;
-}
-
-/* Inner content wrapper must collapse properly */
-[data-radix-accordion-content] > div {
-  overflow: hidden;
+.accordion-content[data-state="closed"] {
+  animation: accordion-close 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* ── Fade-in-up entrance animation ──────────────────────────────────────── */

@@ -157,9 +157,9 @@ export default function CartPage() {
                 <span className="font-sans font-bold text-3xl text-slate-900">₹{total}</span>
               </div>
 
-              <button className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white font-bold text-sm uppercase tracking-widest py-4 rounded-full hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+              <Link href="/checkout" className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white font-bold text-sm uppercase tracking-widest py-4 rounded-full hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                 Proceed to Checkout
-              </button>
+              </Link>
               
               <p className="text-center text-xs text-slate-400 mt-4">
                 Secure checkout. 100% genuine products.

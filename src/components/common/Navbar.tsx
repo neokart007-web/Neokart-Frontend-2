@@ -88,12 +88,12 @@ export default function Navbar() {
       {/* ── Logo (Center on Mobile, Left on Desktop) ── */}
       <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 flex items-center">
         <Link href="/" className="flex-shrink-0" aria-label="HEEDY home">
-          <div className="relative w-64 sm:w-80 md:w-96 lg:w-[30rem] h-24 sm:h-24 md:h-24 lg:h-28">
+          <div className="relative w-56 sm:w-64 md:w-80 lg:w-96 h-20 lg:h-24">
             <Image
-              src="/logo.png"
+              src="/logo.jpg"
               alt="HEEDY Logo"
               fill
-              sizes="(max-width: 640px) 256px, (max-width: 768px) 320px, (max-width: 1024px) 384px, 480px"
+              sizes="(max-width: 640px) 224px, (max-width: 768px) 256px, (max-width: 1024px) 320px, 384px"
               className="object-contain md:object-left object-center"
               priority
             />
@@ -105,13 +105,13 @@ export default function Navbar() {
       <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 lg:gap-12">
         <Link
           href="/products"
-          className="font-sans font-bold text-sm tracking-[0.15em] uppercase text-slate-900 hover:text-blue-500 transition-colors duration-200"
+          className="font-sans font-black text-base tracking-[0.15em] uppercase text-slate-900 hover:text-blue-500 transition-colors duration-200"
         >
           SHOP
         </Link>
         <Link
           href="/contact-us"
-          className="font-sans font-bold text-sm tracking-[0.15em] uppercase text-slate-900 hover:text-blue-500 transition-colors duration-200"
+          className="font-sans font-black text-base tracking-[0.15em] uppercase text-slate-900 hover:text-blue-500 transition-colors duration-200"
         >
           CONTACT
         </Link>
@@ -144,25 +144,6 @@ export default function Navbar() {
             )}
           </Link>
 
-          {/* Profile Icon */}
-          <Link
-            href="/profile"
-            className="p-2 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
-            aria-label="Account"
-          >
-            <User size={22} strokeWidth={2} />
-          </Link>
-          
-          {/* Logout Icon (Mobile) */}
-          {isLoggedIn && (
-            <button
-              onClick={handleLogout}
-              className="p-2 flex items-center justify-center text-slate-900 hover:text-red-500 transition-colors duration-200"
-              aria-label="Log out"
-            >
-              <LogOut size={22} strokeWidth={2} />
-            </button>
-          )}
         </div>
 
         {/* --- Desktop Interactive Area --- */}
@@ -183,8 +164,8 @@ export default function Navbar() {
                   className="flex items-center text-slate-900 hover:text-blue-500 transition-colors duration-200 group"
                   aria-label="Open search"
                 >
-                  <Search size={20} strokeWidth={2} className="w-5 h-5" />
-                  <span className="hidden lg:inline-block ml-2 font-sans font-bold text-sm tracking-[0.15em] uppercase">
+                  <Search size={24} strokeWidth={2} className="w-6 h-6" />
+                  <span className="hidden lg:inline-block ml-2 font-sans font-black text-base tracking-[0.15em] uppercase">
                     SEARCH
                   </span>
                 </button>
@@ -195,7 +176,7 @@ export default function Navbar() {
                   className="relative w-10 h-10 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
                   aria-label="Cart"
                 >
-                  <ShoppingBag size={20} strokeWidth={2} className="w-5 h-5" />
+                  <ShoppingBag size={24} strokeWidth={2} className="w-6 h-6" />
                   {cartCount > 0 && (
                     <span className="absolute top-1 right-1 w-5 h-5 bg-blue-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-white">
                       {cartCount}
@@ -209,7 +190,7 @@ export default function Navbar() {
                   className="w-10 h-10 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
                   aria-label="Account"
                 >
-                  <User size={20} strokeWidth={2} className="w-5 h-5" />
+                  <User size={24} strokeWidth={2} className="w-6 h-6" />
                 </Link>
 
                 {/* Logout Icon (Desktop) */}
@@ -230,14 +211,14 @@ export default function Navbar() {
                 initial={{ opacity: 0, width: 0 }}
                 animate={{ opacity: 1, width: "auto" }}
                 exit={{ opacity: 0, width: 0 }}
-                className="flex items-center gap-4"
+                className="flex items-center gap-2 lg:gap-4"
               >
                 {/* Search Input Container */}
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "16rem" }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="relative lg:w-80"
+                  className="relative lg:w-[22rem]"
                 >
                   <input
                     ref={searchInputRef}
@@ -245,7 +226,7 @@ export default function Navbar() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search products..."
-                    className="w-full bg-white border-2 border-blue-500 rounded-full px-5 py-2 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 text-base"
+                    className="w-full bg-white border border-blue-500 rounded-full px-5 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 text-[15px]"
                   />
                 </motion.div>
 
@@ -255,10 +236,10 @@ export default function Navbar() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.1 }}
                   onClick={() => setIsSearchOpen(false)}
-                  className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-all duration-200 hover:rotate-90"
+                  className="w-8 h-8 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
                   aria-label="Close search"
                 >
-                  <X size={20} strokeWidth={2.5} />
+                  <X size={24} strokeWidth={2} />
                 </motion.button>
 
                 {/* Submit Search Button */}
@@ -266,11 +247,26 @@ export default function Navbar() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.15 }}
-                  className="font-sans font-bold text-sm tracking-[0.15em] uppercase text-slate-900 hover:text-blue-500 transition-colors duration-200"
+                  className="font-sans font-black text-base tracking-wide uppercase text-slate-900 hover:text-blue-500 transition-colors duration-200 mr-2 lg:mr-4"
                   aria-label="Submit search"
                 >
                   SEARCH
                 </motion.button>
+
+                {/* Profile Icon */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <Link
+                    href="/sign-in"
+                    className="flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
+                    aria-label="Account"
+                  >
+                    <User size={24} strokeWidth={2} />
+                  </Link>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>

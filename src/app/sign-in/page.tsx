@@ -63,7 +63,7 @@ export default function SignInPage() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row pt-24">
       {/* ── Left Panel: Brand Context ── */}
-      <div className="bg-[#F5F0EB] md:w-1/2 flex flex-col justify-center px-8 py-16 md:p-16 lg:p-24 relative overflow-hidden">
+      <div className="bg-[#F5F0EB] md:w-1/2 flex flex-col justify-center px-8 pt-28 pb-16 md:p-16 lg:p-24 relative overflow-hidden">
         {/* Subtle decorative elements can go here if needed */}
         
         <div className="max-w-lg mx-auto relative z-10 w-full">

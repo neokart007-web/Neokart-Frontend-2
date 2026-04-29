@@ -117,7 +117,7 @@ export default function ValueSection() {
             <Link
               href="/process"
               aria-label="Discover our scientific process and product development"
-              className={`mt-10 self-start bg-white text-[#0A1E3D] px-8 md:px-10 py-4 md:py-5 rounded-full font-sans font-bold text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-slate-100 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-[#0A1E3D] motion-reduce:transition-none motion-reduce:transform-none ${
+              className={`mt-10 self-center md:self-start bg-white text-[#0A1E3D] px-8 md:px-10 py-4 md:py-5 rounded-full font-sans font-bold text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-slate-100 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-[#0A1E3D] motion-reduce:transition-none motion-reduce:transform-none ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}
               style={{ transitionDelay: "800ms" }}

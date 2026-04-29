@@ -145,8 +145,39 @@ export default function TestimonialsSection() {
           </h2>
         </div>
 
-        {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {/* Testimonials Marquee (Mobile) */}
+        <div className="md:hidden marquee-container flex overflow-hidden relative w-full [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] pb-4">
+           <style dangerouslySetInnerHTML={{ __html: `
+             @keyframes marquee {
+               0% { transform: translateX(0); }
+               100% { transform: translateX(-100%); }
+             }
+             .animate-marquee {
+               animation: marquee 20s linear infinite;
+             }
+             .marquee-container:hover .animate-marquee {
+               animation-play-state: paused;
+             }
+           `}} />
+           
+           <div className="flex shrink-0 gap-6 animate-marquee pr-6">
+             {testimonials.map((testimonial, index) => (
+               <div key={`m1-${testimonial.id}`} className="w-[85vw] sm:w-[60vw] flex-shrink-0">
+                 <TestimonialCard testimonial={testimonial} isVisible={isVisible} index={index} />
+               </div>
+             ))}
+           </div>
+           <div className="flex shrink-0 gap-6 animate-marquee pr-6" aria-hidden="true">
+             {testimonials.map((testimonial, index) => (
+               <div key={`m2-${testimonial.id}`} className="w-[85vw] sm:w-[60vw] flex-shrink-0">
+                 <TestimonialCard testimonial={testimonial} isVisible={isVisible} index={index} />
+               </div>
+             ))}
+           </div>
+        </div>
+
+        {/* Testimonials Grid (Desktop) */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
             <TestimonialCard
               key={testimonial.id}

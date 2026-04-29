@@ -109,52 +109,52 @@ function ContactCard({
   return (
     <div
       ref={ref}
-      className="bg-white rounded-2xl border border-slate-100 p-8 md:p-10 text-center shadow-sm
-                 hover:shadow-md hover:[&_.icon-box]:bg-blue-700 transition-all duration-300 h-full"
+      className="h-full group"
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(2rem)",
         transition: `opacity 0.5s ease ${delay}ms, transform 0.5s ease ${delay}ms`,
       }}
-      aria-label={`${card.title} contact information`}
     >
       <div
-        className="icon-box w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center mx-auto mb-6 transition-colors duration-300"
-        style={{
-          transform: visible ? "scale(1)" : "scale(0.95)",
-          transition: `transform 0.4s ease ${delay + 100}ms`,
-        }}
+        className="bg-white rounded-2xl border border-slate-100 p-8 md:p-10 text-center shadow-sm
+                   md:group-hover:shadow-xl md:group-hover:-translate-y-1.5 transition-all duration-400 ease-out h-full"
+        aria-label={`${card.title} contact information`}
       >
-        <card.Icon size={28} className="text-white" />
-      </div>
-
-      <h3 className="font-sans font-bold text-xl md:text-2xl text-slate-900 mb-3">
-        {card.title}
-      </h3>
-
-      {card.href ? (
-        <a
-          href={card.href}
-          aria-label={card.ariaLabel}
-          className="font-semibold text-base md:text-lg text-blue-800 hover:text-blue-600 transition-colors mb-2 block break-all"
+        <div
+          className="icon-box w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center mx-auto mb-6 transition-all duration-400 ease-out md:group-hover:scale-110 md:group-hover:bg-blue-700 md:group-hover:shadow-md"
         >
-          {card.primary}
-        </a>
-      ) : (
-        <p className="font-semibold text-base md:text-lg text-blue-800 mb-2">
-          {card.primary}
-        </p>
-      )}
+          <card.Icon size={28} className="text-white" />
+        </div>
 
-      {card.secondary && (
-        <p className="text-slate-500 text-sm md:text-base">{card.secondary}</p>
-      )}
+        <h3 className="font-sans font-bold text-xl md:text-2xl text-slate-900 mb-3 transition-colors duration-400 md:group-hover:text-blue-800">
+          {card.title}
+        </h3>
 
-      {card.additional?.map((line) => (
-        <p key={line} className="text-slate-500 text-sm md:text-base">
-          {line}
-        </p>
-      ))}
+        {card.href ? (
+          <a
+            href={card.href}
+            aria-label={card.ariaLabel}
+            className="font-semibold text-base md:text-lg text-blue-800 hover:text-blue-600 transition-colors mb-2 block break-all"
+          >
+            {card.primary}
+          </a>
+        ) : (
+          <p className="font-semibold text-base md:text-lg text-blue-800 mb-2">
+            {card.primary}
+          </p>
+        )}
+
+        {card.secondary && (
+          <p className="text-slate-500 text-sm md:text-base">{card.secondary}</p>
+        )}
+
+        {card.additional?.map((line) => (
+          <p key={line} className="text-slate-500 text-sm md:text-base">
+            {line}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }
@@ -643,15 +643,9 @@ function FAQSection() {
                   </RadixAccordion.Trigger>
                 </RadixAccordion.Header>
 
-                {/* Content — smooth height via CSS grid trick */}
+                {/* Content — smooth height via Radix CSS variables */}
                 <RadixAccordion.Content
-                  className="overflow-hidden
-                             data-[state=open]:animate-accordion-open
-                             data-[state=closed]:animate-accordion-close"
-                  style={{
-                    // CSS grid row trick for smooth height animation
-                    display: "grid",
-                  } as React.CSSProperties}
+                  className="overflow-hidden accordion-content"
                 >
                   <div className="px-6 md:px-8 pb-6">
                     <p className="font-sans text-slate-600 text-base leading-relaxed">
