@@ -224,7 +224,7 @@ export default function ProductSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-white pt-10 md:pt-16 pb-16 md:pb-24 w-full">
+    <section ref={sectionRef} className="bg-white pt-6 md:pt-12 pb-12 md:pb-20 w-full">
       {/* Section Header */}
       <div className="text-center px-6">
         <h2 
@@ -235,7 +235,7 @@ export default function ProductSection() {
           OUR PRODUCTS
         </h2>
         <div 
-          className={`w-20 h-1 bg-slate-900 mx-auto mt-4 mb-12 md:mb-16 transition-transform duration-500 delay-200 origin-center motion-reduce:transition-none motion-reduce:transform-none ${
+          className={`w-20 h-1 bg-slate-900 mx-auto mt-4 mb-8 md:mb-12 transition-transform duration-500 delay-200 origin-center motion-reduce:transition-none motion-reduce:transform-none ${
             isVisible ? "scale-x-100" : "scale-x-0"
           }`}
         />
@@ -256,7 +256,7 @@ export default function ProductSection() {
       </div>
 
       {/* View All Products Button */}
-      <div className="flex justify-center mt-12 md:mt-16 px-6">
+      <div className="flex justify-center mt-8 md:mt-12 px-6">
         <Link 
           href="/products" 
           className="border border-slate-900 text-slate-900 font-sans font-bold text-xs md:text-sm uppercase tracking-widest py-4 px-12 hover:bg-slate-900 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

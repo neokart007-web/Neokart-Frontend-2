@@ -430,7 +430,7 @@ export default function ContactUsPage() {
         content="Get in touch with the HEEDY team. Call, email, or send us a message — we're here to help with all your skincare needs."
       />
 
-      <main className="min-h-screen bg-slate-50">
+      <main id="top" className="min-h-screen bg-slate-50">
 
         {/* ── Hero ─────────────────────────────────────────────────── */}
         <section
@@ -556,7 +556,7 @@ function FAQSection() {
   const { ref: listRef, visible: listVisible } = useInView(0.1);
 
   return (
-    <section className="w-full bg-white py-16 md:py-20 lg:py-24" aria-label="Frequently asked questions">
+    <section id="faq" className="w-full bg-white py-16 md:py-20 lg:py-24" aria-label="Frequently asked questions">
       <div className="max-w-3xl mx-auto px-6 md:px-8">
 
         {/* ── Header ── */}

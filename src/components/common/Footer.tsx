@@ -2,22 +2,45 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Phone, Mail, Share2, Camera, MessageCircle, PlayCircle, Heart } from "lucide-react";
+import { MapPin, Phone, Mail, Heart } from "lucide-react";
+
+// Lucide removed brand icons from their core package, so we define them here:
+const Facebook = (props: any) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+  </svg>
+);
+
+const Instagram = (props: any) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+  </svg>
+);
+
+const Twitter = (props: any) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
+  </svg>
+);
+
+const Youtube = (props: any) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/>
+    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/>
+  </svg>
+);
 
 const shopLinks = [
-  { label: "Skin Care Essentials", href: "/collections/skin-care" },
-  { label: "Elite Face Care", href: "/collections/face-care" },
-  { label: "Luxe Lips", href: "/collections/lips" },
-  { label: "Radiant Eyes", href: "/collections/eyes" },
-  { label: "All Products", href: "/products" },
+  { label: "Skin Care", href: "/products?category=skin-care" },
+  { label: "Lip Care", href: "/products?category=lip-care" },
+  { label: "Body Care", href: "/products?category=body-care" },
 ];
 
 const careLinks = [
-  { label: "Contact Us", href: "/contact-us" },
-  { label: "Shipping Info", href: "/shipping" },
-  { label: "Returns & Exchanges", href: "/returns" },
-  { label: "FAQ", href: "/faq" },
-  { label: "About Us", href: "/about" },
+  { label: "Contact Us", href: "/contact-us#top" },
+  { label: "FAQ", href: "/contact-us#faq" },
 ];
 
 const contacts = [
@@ -42,10 +65,10 @@ const contacts = [
 ];
 
 const socials = [
-  { icon: Share2, label: "Visit our Facebook", href: "#" },
-  { icon: Camera, label: "Visit our Instagram", href: "#" },
-  { icon: MessageCircle, label: "Visit our Twitter", href: "#" },
-  { icon: PlayCircle, label: "Visit our YouTube", href: "#" },
+  { icon: Facebook, label: "Visit our Facebook", href: "https://facebook.com" },
+  { icon: Instagram, label: "Visit our Instagram", href: "https://instagram.com" },
+  { icon: Twitter, label: "Visit our Twitter", href: "https://twitter.com" },
+  { icon: Youtube, label: "Visit our YouTube", href: "https://youtube.com" },
 ];
 
 function ColumnTitle({ children }: { children: React.ReactNode }) {
@@ -64,7 +87,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-slate-50 w-full border-t border-slate-200">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-16 md:pt-20 pb-8">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-8 md:pt-12 pb-8">
         {/* 4-Column Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 lg:gap-16">
 

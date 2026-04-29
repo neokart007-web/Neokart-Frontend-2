@@ -64,7 +64,7 @@ export default function HeroSection() {
 
   return (
     <section 
-      className="relative w-full h-screen overflow-hidden bg-black"
+      className="relative w-full h-[80vh] md:h-screen overflow-hidden bg-black"
       aria-label="Hero section"
     >
       {/* Preloader */}

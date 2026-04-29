@@ -122,9 +122,8 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         <button
           onClick={handleAddToCart}
           aria-label={`Add ${product.name} to cart`}
-          className={`w-full text-white font-bold text-xs uppercase tracking-widest py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none ${
-            isAdded ? "bg-green-600 hover:bg-green-700" : "bg-slate-900 hover:bg-slate-800"
-          }`}
+          className={`w-full text-white font-bold text-xs uppercase tracking-widest py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none ${isAdded ? "bg-green-600 hover:bg-green-700" : "bg-slate-900 hover:bg-slate-800"
+            }`}
         >
           {isAdded ? "ADDED TO CART" : "ADD TO CART"}
         </button>
@@ -288,12 +287,19 @@ function FilterSidebar({
 
 // ─── Main Page Content ─────────────────────────────────────────────────────────
 
+const CATEGORY_OPTIONS = [
+  { id: "all", label: "All Categories" },
+  { id: "skin-care", label: "Skin Care" },
+  { id: "lip-care", label: "Lip Care" },
+  { id: "body-care", label: "Body Care" },
+];
+
 function ProductsContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<{ id: string, label: string }[]>([{ id: "all", label: "All Categories" }]);
+  const [categories, setCategories] = useState(CATEGORY_OPTIONS);
   const [loading, setLoading] = useState(true);
 
   const [activeCategory, setActiveCategory] = useState(initialCategory);
@@ -318,17 +324,13 @@ function ProductsContent() {
         ]);
 
         if (catJson.success && catJson.data) {
-          const activeCats = catJson.data.filter((c: any) => c.status === 'ACTIVE');
-          const mappedCats = activeCats.map((c: any) => ({
-            id: c.name,
-            label: c.name,
-          }));
-          setCategories([{ id: "all", label: "All Categories" }, ...mappedCats]);
+          // Note: using hardcoded categories per design requirements
+          setCategories(CATEGORY_OPTIONS);
 
           if (prodJson.success && prodJson.data) {
-            const activeCatNames = activeCats.map((c: any) => c.name.toLowerCase());
-            
-            const activeProducts = prodJson.data.filter((p: any) => 
+            const activeCatNames = CATEGORY_OPTIONS.map((c) => c.label.toLowerCase());
+
+            const activeProducts = prodJson.data.filter((p: any) =>
               activeCatNames.includes((p.category || "").toLowerCase())
             );
 
@@ -343,7 +345,7 @@ function ProductsContent() {
               currency: "₹",
               dealBadge: p.offerText || "",
               benefit: p.keyFeatures || "",
-              category: p.category || "all",
+              category: p.category ? p.category.toLowerCase().replace(/\s+/g, '-') : "all",
             }));
             setProducts(mappedProds);
           }

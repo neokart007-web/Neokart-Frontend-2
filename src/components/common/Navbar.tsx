@@ -75,10 +75,10 @@ export default function Navbar() {
       }`}
     >
       {/* ── Mobile Menu Toggle (Left on Mobile) ── */}
-      <div className="flex md:hidden flex-1 justify-start relative z-10">
+      <div className="flex md:hidden flex-1 justify-start relative z-20 pointer-events-none">
         <button
           onClick={toggleMobileMenu}
-          className="p-2 -ml-2 text-slate-900 hover:text-blue-500 transition-colors duration-200"
+          className="p-2 -ml-2 text-slate-900 hover:text-blue-500 transition-colors duration-200 pointer-events-auto"
           aria-label="Toggle mobile menu"
         >
           {isMobileMenuOpen ? <X size={24} strokeWidth={2} /> : <Menu size={24} strokeWidth={2} />}
@@ -86,7 +86,7 @@ export default function Navbar() {
       </div>
 
       {/* ── Logo (Center on Mobile, Left on Desktop) ── */}
-      <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 flex items-center">
+      <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 flex items-center z-10">
         <Link href="/" className="flex-shrink-0" aria-label="HEEDY home">
           <div className="relative w-56 sm:w-64 md:w-80 lg:w-96 h-20 lg:h-24">
             <Image
@@ -118,10 +118,10 @@ export default function Navbar() {
       </nav>
 
       {/* ── Right: Search & Utilities ── */}
-      <div className="flex items-center justify-end gap-2 md:gap-4 flex-1 md:flex-none relative z-10">
+      <div className="flex items-center justify-end gap-2 md:gap-4 flex-1 md:flex-none relative z-20 pointer-events-none md:pointer-events-auto">
         
         {/* --- Mobile Always Visible Icons --- */}
-        <div className="flex md:hidden items-center gap-1 sm:gap-2">
+        <div className="flex md:hidden items-center gap-1 sm:gap-2 pointer-events-auto">
           {/* Search Trigger */}
           <button
             onClick={handleToggleSearch}
