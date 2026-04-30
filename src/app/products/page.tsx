@@ -1,11 +1,12 @@
 "use client";
 
+import { useState, useEffect, Suspense, useCallback, useMemo, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
-import { Star, StarHalf, SlidersHorizontal, X, ChevronLeft } from "lucide-react";
+import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useCart } from "../../context/CartContext";
+import { Star, StarHalf, SlidersHorizontal, X, ChevronLeft } from "lucide-react";
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -320,14 +321,12 @@ function ProductsContent() {
           : 'http://localhost:5000';
           
         const [prodRes, catRes] = await Promise.all([
-          fetch(`${baseUrl}/api/v1/products`),
-          fetch(`${baseUrl}/api/v1/categories`)
+          axios.get(`${baseUrl}/api/v1/products`),
+          axios.get(`${baseUrl}/api/v1/categories`)
         ]);
 
-        const [prodJson, catJson] = await Promise.all([
-          prodRes.json(),
-          catRes.json()
-        ]);
+        const prodJson = prodRes.data;
+        const catJson = catRes.data;
 
         if (catJson.success && catJson.data) {
           // Note: using hardcoded categories per design requirements

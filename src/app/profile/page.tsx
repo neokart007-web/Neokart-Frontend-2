@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import { User, Package, MapPin, LogOut, X } from "lucide-react";
 
 interface UserProfile {
@@ -44,12 +45,11 @@ export default function ProfilePage() {
       const fetchAddresses = async () => {
         try {
           const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-          const res = await fetch(`${API_URL}/v1/users/addresses`, {
+          const res = await axios.get(`${API_URL}/v1/users/addresses`, {
             headers: { 'Authorization': `Bearer ${user.token}` }
           });
-          const data = await res.json();
-          if (data.success && data.data) {
-            setAddresses(data.data);
+          if (res.data.success && res.data.data) {
+            setAddresses(res.data.data);
           }
         } catch (err) {
           console.error("Failed to fetch addresses", err);
@@ -75,26 +75,23 @@ export default function ProfilePage() {
         country: newAddressForm.country
       };
 
-      const res = await fetch(`${API_URL}/v1/users/addresses`, {
-        method: 'POST',
+      const res = await axios.post(`${API_URL}/v1/users/addresses`, payload, {
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${user.token}` 
-        },
-        body: JSON.stringify(payload)
+        }
       });
       
-      const data = await res.json();
-      if (data.success) {
-        setAddresses(data.data);
+      if (res.data.success) {
+        setAddresses(res.data.data);
         setIsAddressModalOpen(false);
         setNewAddressForm({ street: "", city: "", state: "", zip: "", country: "India" });
       } else {
-        alert(data.message || "Failed to save address");
+        alert(res.data.message || "Failed to save address");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Error saving address");
+      alert(err.response?.data?.message || "Error saving address");
     } finally {
       setIsSavingAddress(false);
     }

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 import { Search, User, ShoppingBag, X, Menu, LogOut } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,10 +28,9 @@ export default function Navbar() {
       const fetchProducts = async () => {
         try {
           const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-          const res = await fetch(`${API_URL}/v1/products`);
-          const data = await res.json();
-          if (data.success && data.data) {
-            setAllProducts(data.data);
+          const res = await axios.get(`${API_URL}/v1/products`);
+          if (res.data.success && res.data.data) {
+            setAllProducts(res.data.data);
           }
         } catch (err) {
           console.error("Failed to fetch products for search", err);

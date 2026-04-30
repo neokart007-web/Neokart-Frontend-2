@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,30 +37,19 @@ export default function SignInPage() {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL 
         ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
         : 'http://localhost:5000';
-      const res = await fetch(`${baseUrl}/api/v1/auth/customer-login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
+      const res = await axios.post(`${baseUrl}/api/v1/auth/customer-login`, {
+        email: data.email,
+        password: data.password,
       });
 
-      const json = await res.json();
-
-      if (!res.ok) {
-        setApiError(json.message || "Invalid email or password");
-        return;
-      }
-
       // Success! Save user and redirect to home page
-      if (json.data) {
-        localStorage.setItem('heedy_user', JSON.stringify(json.data));
+      if (res.data.data) {
+        localStorage.setItem('heedy_user', JSON.stringify(res.data.data));
       }
       router.push("/");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Sign in error:", err);
-      setApiError("Something went wrong. Please try again.");
+      setApiError(err.response?.data?.message || "Something went wrong. Please try again.");
     }
   };
 

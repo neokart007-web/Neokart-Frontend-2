@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 import { Check, CreditCard, ShieldCheck, MapPin, X } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 
@@ -35,12 +36,11 @@ export default function CheckoutPage() {
         if (!token) return;
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-        const res = await fetch(`${API_URL}/v1/users/addresses`, {
+        const res = await axios.get(`${API_URL}/v1/users/addresses`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await res.json();
-        if (data.success && data.data) {
-          const mappedAddresses = data.data.map((addr: any) => ({
+        if (res.data.success && res.data.data) {
+          const mappedAddresses = res.data.data.map((addr: any) => ({
             id: addr._id,
             name: addr.city?.toLowerCase() || 'Address',
             line1: `${addr.street ? addr.street + ", " : ""}${addr.state?.toLowerCase() || ''}`,
@@ -81,18 +81,15 @@ export default function CheckoutPage() {
         country: newAddressForm.country
       };
 
-      const res = await fetch(`${API_URL}/v1/users/addresses`, {
-        method: 'POST',
+      const res = await axios.post(`${API_URL}/v1/users/addresses`, payload, {
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify(payload)
+        }
       });
       
-      const data = await res.json();
-      if (data.success) {
-        const newAddrs = data.data;
+      if (res.data.success) {
+        const newAddrs = res.data.data;
         const mappedAddresses = newAddrs.map((addr: any) => ({
           id: addr._id,
           name: addr.city?.toLowerCase() || 'Address',
@@ -106,11 +103,11 @@ export default function CheckoutPage() {
         setIsAddressModalOpen(false);
         setNewAddressForm({ street: "", city: "", state: "", zip: "", country: "India" });
       } else {
-        alert(data.message || "Failed to save address");
+        alert(res.data.message || "Failed to save address");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Error saving address");
+      alert(err.response?.data?.message || "Error saving address");
     } finally {
       setIsSavingAddress(false);
     }
@@ -129,23 +126,19 @@ export default function CheckoutPage() {
     setPromoMessage(null);
     try {
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-      const response = await fetch(`${API_URL}/v1/coupons/validate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: promoCode, cartTotal: subtotal })
-      });
-      const data = await response.json();
-      if (data.success) {
-        setDiscountAmount(data.data.discountAmount);
-        setPromoMessage({ text: data.message, type: "success" });
+      const response = await axios.post(`${API_URL}/v1/coupons/validate`, { code: promoCode, cartTotal: subtotal });
+      
+      if (response.data.success) {
+        setDiscountAmount(response.data.data.discountAmount);
+        setPromoMessage({ text: response.data.message, type: "success" });
       } else {
         setDiscountAmount(0);
-        setPromoMessage({ text: data.message || "Invalid promo code", type: "error" });
+        setPromoMessage({ text: response.data.message || "Invalid promo code", type: "error" });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       setDiscountAmount(0);
-      setPromoMessage({ text: "Failed to apply promo code. Is the server running?", type: "error" });
+      setPromoMessage({ text: error.response?.data?.message || "Failed to apply promo code.", type: "error" });
     } finally {
       setIsApplyingPromo(false);
     }

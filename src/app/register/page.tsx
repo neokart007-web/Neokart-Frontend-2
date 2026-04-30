@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -51,36 +52,26 @@ export default function RegisterPage() {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL 
         ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
         : 'http://localhost:5000';
-      const res = await fetch(`${baseUrl}/api/v1/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: data.fullName,
-          email: data.email,
-          password: data.password,
-          phone: data.phone,
-          address: {
-            street: data.street,
-            city: data.city,
-            state: data.state,
-            zipCode: data.zipCode,
-            country: data.country
-          }
-        }),
+      
+      await axios.post(`${baseUrl}/api/v1/auth/register`, {
+        name: data.fullName,
+        email: data.email,
+        password: data.password,
+        phone: data.phone,
+        addresses: [{
+          street: data.street,
+          city: data.city,
+          state: data.state,
+          zipCode: data.zipCode,
+          country: data.country
+        }]
       });
-
-      const json = await res.json();
-
-      if (!res.ok) {
-        setApiError(json.message || "Registration failed");
-        return;
-      }
 
       // Success! Redirect to OTP verification page
       router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Registration error:", err);
-      setApiError("Something went wrong. Please try again.");
+      setApiError(err.response?.data?.message || "Something went wrong. Please try again.");
     }
   };
 

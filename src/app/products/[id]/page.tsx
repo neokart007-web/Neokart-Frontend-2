@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 import { useParams } from "next/navigation";
 import {
   Star, StarHalf, ShoppingBag, Heart, ChevronRight,
@@ -71,15 +72,17 @@ export default function ProductDetailPage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL 
+          ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
+          : 'http://localhost:5000';
+
         const [prodRes, catRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/products`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/categories`)
+          axios.get(`${baseUrl}/api/v1/products`),
+          axios.get(`${baseUrl}/api/v1/categories`)
         ]);
         
-        const [prodJson, catJson] = await Promise.all([
-          prodRes.json(),
-          catRes.json()
-        ]);
+        const prodJson = prodRes.data;
+        const catJson = catRes.data;
         
         let activeCatNames: string[] = [];
         if (catJson.success && catJson.data) {
