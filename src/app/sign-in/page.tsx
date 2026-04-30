@@ -33,7 +33,10 @@ export default function SignInPage() {
   const onSubmit = async (data: SignInValues) => {
     try {
       setApiError(null);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/auth/customer-login`, {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL 
+        ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
+        : 'http://localhost:5000';
+      const res = await fetch(`${baseUrl}/api/v1/auth/customer-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

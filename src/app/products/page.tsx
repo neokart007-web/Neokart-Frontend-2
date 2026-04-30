@@ -297,12 +297,14 @@ const CATEGORY_OPTIONS = [
 function ProductsContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
+  const initialSearch = searchParams.get("search") || "";
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState(CATEGORY_OPTIONS);
   const [loading, setLoading] = useState(true);
 
   const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(PRICE_MAX);
   const [pendingMin, setPendingMin] = useState(0);
@@ -313,9 +315,13 @@ function ProductsContent() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL 
+          ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
+          : 'http://localhost:5000';
+          
         const [prodRes, catRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/products`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/categories`)
+          fetch(`${baseUrl}/api/v1/products`),
+          fetch(`${baseUrl}/api/v1/categories`)
         ]);
 
         const [prodJson, catJson] = await Promise.all([
@@ -363,6 +369,14 @@ function ProductsContent() {
     const category = searchParams.get("category");
     if (category && categories.some(c => c.id === category)) {
       setActiveCategory(category);
+    } else if (category === "all") {
+      setActiveCategory("all");
+    }
+    const search = searchParams.get("search");
+    if (search !== null) {
+      setSearchTerm(search);
+    } else {
+      setSearchTerm("");
     }
   }, [searchParams, categories]);
 
@@ -378,6 +392,7 @@ function ProductsContent() {
     setPendingMax(PRICE_MAX);
     setMinPrice(0);
     setMaxPrice(PRICE_MAX);
+    setSearchTerm("");
   };
 
   const filtered = useMemo(
@@ -386,9 +401,12 @@ function ProductsContent() {
         (p) =>
           (activeCategory === "all" || p.category.toLowerCase() === activeCategory.toLowerCase()) &&
           p.currentPrice >= minPrice &&
-          p.currentPrice <= maxPrice
+          p.currentPrice <= maxPrice &&
+          (searchTerm === "" || 
+           p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+           p.benefit.toLowerCase().includes(searchTerm.toLowerCase()))
       ),
-    [activeCategory, minPrice, maxPrice, products]
+    [activeCategory, minPrice, maxPrice, products, searchTerm]
   );
 
   // Close drawer on escape
@@ -471,14 +489,22 @@ function ProductsContent() {
           </div>
 
           {/* Results Bar + Mobile Filter Toggle */}
-          <div className="flex items-center justify-between bg-white border border-slate-100 rounded-xl px-5 py-4 mb-6 gap-4">
-            <p className="font-sans text-base text-slate-600">
-              Showing{" "}
-              <span className="font-bold text-slate-900">{filtered.length}</span>
-              {" "}of{" "}
-              <span className="font-bold text-slate-900">{products.length}</span>
-              {" "}Products
-            </p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white border border-slate-100 rounded-xl px-5 py-4 mb-6 gap-4">
+            <div>
+              <p className="font-sans text-base text-slate-600">
+                Showing{" "}
+                <span className="font-bold text-slate-900">{filtered.length}</span>
+                {" "}of{" "}
+                <span className="font-bold text-slate-900">{products.length}</span>
+                {" "}Products
+              </p>
+              {searchTerm && (
+                <p className="font-sans text-sm text-slate-500 mt-1">
+                  Search results for: <span className="font-bold text-slate-900">&quot;{searchTerm}&quot;</span>
+                  <button onClick={() => setSearchTerm("")} className="ml-3 text-blue-500 hover:underline text-xs">Clear search</button>
+                </p>
+              )}
+            </div>
             <button
               onClick={() => setDrawerOpen(true)}
               className="lg:hidden flex items-center gap-2 font-sans font-bold text-sm text-slate-700 border border-slate-200 rounded-xl px-4 py-2 hover:bg-slate-50 transition-colors"
