@@ -298,11 +298,8 @@ function FilterSidebar({
 
 // ─── Main Page Content ─────────────────────────────────────────────────────────
 
-const CATEGORY_OPTIONS = [
+const DEFAULT_CATEGORIES = [
   { id: "all", label: "All Categories" },
-  { id: "skin-care", label: "Skin Care" },
-  { id: "lip-care", label: "Lip Care" },
-  { id: "body-care", label: "Body Care" },
 ];
 
 function ProductsContent() {
@@ -311,7 +308,7 @@ function ProductsContent() {
   const initialSearch = searchParams.get("search") || "";
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState(CATEGORY_OPTIONS);
+  const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
   const [loading, setLoading] = useState(true);
 
   const [activeCategory, setActiveCategory] = useState(initialCategory);
@@ -339,11 +336,18 @@ function ProductsContent() {
         const catJson = catRes.data;
 
         if (catJson.success && catJson.data) {
-          // Note: using hardcoded categories per design requirements
-          setCategories(CATEGORY_OPTIONS);
+          const activeBackendCats = catJson.data.filter((c: any) => c.status === 'ACTIVE');
+          const dynamicCategories = [
+            { id: "all", label: "All Categories" },
+            ...activeBackendCats.map((c: any) => ({
+              id: c.name.toLowerCase().replace(/\s+/g, '-'),
+              label: c.name
+            }))
+          ];
+          setCategories(dynamicCategories);
 
           if (prodJson.success && prodJson.data) {
-            const activeCatNames = CATEGORY_OPTIONS.map((c) => c.label.toLowerCase());
+            const activeCatNames = activeBackendCats.map((c: any) => c.name.toLowerCase());
 
             const activeProducts = prodJson.data.filter((p: any) =>
               activeCatNames.includes((p.category || "").toLowerCase())
