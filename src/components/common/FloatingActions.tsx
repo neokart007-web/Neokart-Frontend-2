@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowUp, MessageCircle, Phone } from "lucide-react";
+import { ArrowUp, MessageCircle } from "lucide-react";
 
 export default function FloatingActions() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -40,14 +40,7 @@ export default function FloatingActions() {
         <MessageCircle size={20} />
       </a>
 
-      {/* Phone */}
-      <a
-        href="#"
-        className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 hover:scale-110 transition-all duration-200 flex items-center justify-center motion-reduce:transition-none motion-reduce:transform-none"
-        aria-label="Call us"
-      >
-        <Phone size={20} />
-      </a>
+
     </div>
   );
 }

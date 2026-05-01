@@ -194,7 +194,7 @@ export default function Footer() {
             for you.
           </p>
           <div className="flex items-center gap-2 flex-wrap justify-center">
-            {["Privacy Policy", "Terms of Service", "Cookie Settings"].map((item, i, arr) => (
+            {["Privacy Policy", "Terms of Service"].map((item, i, arr) => (
               <span key={item} className="flex items-center gap-2">
                 <Link
                   href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
