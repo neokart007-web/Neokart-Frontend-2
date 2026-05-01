@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "rea
 import { Star, StarHalf, SlidersHorizontal, X, ChevronLeft } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useCart } from "../../context/CartContext";
-
+// ------÷
 
 interface Product {
   id: string;
