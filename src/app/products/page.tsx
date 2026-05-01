@@ -7,7 +7,6 @@ import { Star, StarHalf, SlidersHorizontal, X, ChevronLeft } from "lucide-react"
 import { useSearchParams } from "next/navigation";
 import { useCart } from "../../context/CartContext";
 
-// ─── Data ────────────────────────────────────────────────────────────────────
 
 interface Product {
   id: string;
@@ -299,7 +298,7 @@ function FilterSidebar({
 
 function Pagination({ currentPage, totalPages, onPageChange }: { currentPage: number, totalPages: number, onPageChange: (p: number) => void }) {
   if (totalPages <= 1) return null;
-  
+
   const pages = [];
   for (let i = 1; i <= totalPages; i++) {
     pages.push(i);
@@ -319,11 +318,10 @@ function Pagination({ currentPage, totalPages, onPageChange }: { currentPage: nu
           <button
             key={p}
             onClick={() => onPageChange(p)}
-            className={`px-4 py-2 font-sans text-sm border-r border-slate-200 transition-colors ${
-              currentPage === p
-                ? "bg-blue-600 text-white"
-                : "bg-white text-blue-500 hover:bg-slate-50"
-            }`}
+            className={`px-4 py-2 font-sans text-sm border-r border-slate-200 transition-colors ${currentPage === p
+              ? "bg-blue-600 text-white"
+              : "bg-white text-blue-500 hover:bg-slate-50"
+              }`}
           >
             {p}
           </button>
@@ -602,13 +600,13 @@ function ProductsContent() {
                   <ProductCard key={product.id} product={product} index={index} />
                 ))}
               </div>
-              <Pagination 
-                currentPage={currentPage} 
-                totalPages={totalPages} 
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
                 onPageChange={(p) => {
                   setCurrentPage(p);
                   window.scrollTo({ top: 0, behavior: "smooth" });
-                }} 
+                }}
               />
             </>
           ) : (
