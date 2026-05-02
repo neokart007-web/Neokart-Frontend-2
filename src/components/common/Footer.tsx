@@ -194,10 +194,10 @@ export default function Footer() {
             for you.
           </p>
           <div className="flex items-center gap-2 flex-wrap justify-center">
-            {["Privacy Policy", "Terms of Service"].map((item, i, arr) => (
+            {["Privacy Policy", "Terms & Conditions"].map((item, i, arr) => (
               <span key={item} className="flex items-center gap-2">
                 <Link
-                  href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                  href={item === "Privacy Policy" ? "/privacy-policy" : "/terms-and-conditions"}
                   className="font-sans font-normal text-sm text-slate-500 hover:text-slate-700 transition-colors duration-200"
                 >
                   {item}
