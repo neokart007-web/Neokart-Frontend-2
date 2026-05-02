@@ -105,7 +105,7 @@ export default function CartPage() {
                       {/* Quantity Selector */}
                       <div className="inline-flex items-center border-2 border-slate-200 rounded-xl overflow-hidden bg-white">
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.id, item.quantity - 1, item.size)}
                           aria-label="Decrease quantity"
                           disabled={item.quantity <= 1}
                           className="w-10 h-10 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
@@ -116,9 +116,10 @@ export default function CartPage() {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.id, item.quantity + 1, item.size)}
                           aria-label="Increase quantity"
-                          className="w-10 h-10 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors"
+                          disabled={item.maxStock !== undefined && item.quantity >= item.maxStock}
+                          className="w-10 h-10 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
                         >
                           <Plus size={14} />
                         </button>

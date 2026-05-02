@@ -66,7 +66,10 @@ export default function ProductDetailPage() {
   const [wishlisted, setWishlisted] = useState(false);
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState<"benefits" | "ingredients" | "how-to">("benefits");
+  const [variantStocks, setVariantStocks] = useState<number[]>([]);
   const { addToCart } = useCart();
+
+  const currentStock = variantStocks[selectedSize] ?? 0;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -112,9 +115,12 @@ export default function ProductDetailPage() {
             ingredients: p.description || "Refer to packaging",
             howToUse: "Follow instructions on packaging",
             sizes: p.variants && p.variants.length > 0 ? p.variants.map((v: any) => v.volume) : ["Standard"],
+            stocks: p.variants && p.variants.length > 0 ? p.variants.map((v: any) => v.stock || 0) : [0],
           }));
           setProducts(mapped);
-          setProduct(mapped.find((p: Product) => p.id === id) || null);
+          const found = mapped.find((p: any) => p.id === id) || null;
+          setProduct(found);
+          if (found) setVariantStocks(found.stocks || []);
         }
       } catch (error) {
         console.error("Failed to fetch products:", error);
@@ -126,7 +132,7 @@ export default function ProductDetailPage() {
   }, [id]);
 
   const handleAddToCart = () => {
-    if (!product) return;
+    if (!product || currentStock === 0) return;
     
     addToCart({
       id: product.id,
@@ -139,6 +145,12 @@ export default function ProductDetailPage() {
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 2500);
+  };
+
+  // Reset qty when variant changes
+  const handleSizeChange = (i: number) => {
+    setSelectedSize(i);
+    setQty(1);
   };
 
   if (loading) {
@@ -295,69 +307,98 @@ export default function ProductDetailPage() {
                   Size
                 </p>
                 <div className="flex gap-2 flex-wrap">
-                  {product.sizes.map((size, i) => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(i)}
-                      className={`px-5 py-2.5 rounded-xl font-sans font-semibold text-sm border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${i === selectedSize
-                          ? "border-slate-900 bg-slate-900 text-white"
-                          : "border-slate-200 text-slate-600 hover:border-slate-400 bg-white"
+                  {product.sizes.map((size, i) => {
+                    const sizeStock = variantStocks[i] ?? 0;
+                    return (
+                      <button
+                        key={size}
+                        onClick={() => handleSizeChange(i)}
+                        disabled={sizeStock === 0}
+                        className={`px-5 py-2.5 rounded-xl font-sans font-semibold text-sm border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative ${
+                          sizeStock === 0
+                            ? "border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50"
+                            : i === selectedSize
+                            ? "border-slate-900 bg-slate-900 text-white"
+                            : "border-slate-200 text-slate-600 hover:border-slate-400 bg-white"
                         }`}
-                      aria-pressed={i === selectedSize}
-                    >
-                      {size}
-                    </button>
-                  ))}
+                        aria-pressed={i === selectedSize}
+                      >
+                        {size}
+                        {sizeStock === 0 && <span className="text-[10px] block font-medium">sold out</span>}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
 
             {/* Quantity */}
             <div className="mb-8">
-              <p className="font-sans font-semibold text-sm text-slate-700 mb-3 uppercase tracking-[0.1em]">
-                Quantity
-              </p>
-              <div className="inline-flex items-center border-2 border-slate-200 rounded-xl overflow-hidden">
-                <button
-                  onClick={() => setQty((q) => Math.max(1, q - 1))}
-                  aria-label="Decrease quantity"
-                  className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
-                  disabled={qty <= 1}
-                >
-                  <Minus size={16} />
-                </button>
-                <span className="w-14 text-center font-bold text-lg text-slate-900 select-none">
-                  {qty}
-                </span>
-                <button
-                  onClick={() => setQty((q) => q + 1)}
-                  aria-label="Increase quantity"
-                  className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors"
-                >
-                  <Plus size={16} />
-                </button>
+              <div className="flex items-center justify-between mb-3">
+                <p className="font-sans font-semibold text-sm text-slate-700 uppercase tracking-[0.1em]">
+                  Quantity
+                </p>
+                {currentStock > 0 && currentStock <= 10 && (
+                  <span className="text-xs font-bold text-orange-500">Only {currentStock} left!</span>
+                )}
               </div>
+              {currentStock === 0 ? (
+                <p className="text-red-500 font-bold text-sm">Out of stock for this variant</p>
+              ) : (
+                <div className="inline-flex items-center border-2 border-slate-200 rounded-xl overflow-hidden">
+                  <button
+                    onClick={() => setQty((q) => Math.max(1, q - 1))}
+                    aria-label="Decrease quantity"
+                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
+                    disabled={qty <= 1}
+                  >
+                    <Minus size={16} />
+                  </button>
+                  <span className="w-14 text-center font-bold text-lg text-slate-900 select-none">
+                    {qty}
+                  </span>
+                  <button
+                    onClick={() => setQty((q) => Math.min(currentStock, q + 1))}
+                    aria-label="Increase quantity"
+                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
+                    disabled={qty >= currentStock}
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 mb-8">
               <button
                 onClick={handleAddToCart}
+                disabled={currentStock === 0}
                 aria-label="Add to cart"
-                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${added
+                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                  currentStock === 0
+                    ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+                    : added
                     ? "bg-green-500 text-white"
                     : "bg-slate-900 text-white hover:bg-slate-800"
-                  }`}
+                }`}
               >
-                {added ? (
+                {currentStock === 0 ? (
+                  <>Out of Stock</>
+                ) : added ? (
                   <><Check size={18} /> Added to Cart</>
                 ) : (
                   <><ShoppingBag size={18} /> Add to Cart</>
                 )}
               </button>
               <button
+                disabled={currentStock === 0}
                 aria-label="Buy now"
-                className="flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full border-2 border-slate-900 text-slate-900 font-bold text-sm uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full border-2 font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                  currentStock === 0
+                    ? "border-slate-200 text-slate-300 cursor-not-allowed"
+                    : "border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white"
+                }`}
               >
                 Buy Now
               </button>
