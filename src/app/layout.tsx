@@ -27,6 +27,7 @@ export const metadata: Metadata = {
 
 import { CartProvider } from "../context/CartContext";
 import { ToastProvider } from "../context/ToastContext";
+import GoogleOAuthWrapper from "../components/auth/GoogleOAuthWrapper";
 
 export default function RootLayout({
   children,
@@ -41,13 +42,16 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col relative" suppressHydrationWarning>
         <ToastProvider>
           <CartProvider>
-            <Navbar />
-            {children}
-            <Footer />
-            <FloatingActions />
+            <GoogleOAuthWrapper>
+              <Navbar />
+              {children}
+              <Footer />
+              <FloatingActions />
+            </GoogleOAuthWrapper>
           </CartProvider>
         </ToastProvider>
       </body>
     </html>
   );
 }
+
