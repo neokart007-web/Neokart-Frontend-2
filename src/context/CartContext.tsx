@@ -11,12 +11,13 @@ export interface CartItem {
   currency: string;
   size?: string;
   quantity: number;
+  maxStock?: number;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (item: CartItem) => void;
-  updateQuantity: (id: string, qty: number) => void;
+  updateQuantity: (id: string, qty: number, size?: string) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
   cartCount: number;
@@ -63,7 +64,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 price: variant?.price || 0,
                 currency: '₹',
                 size: variant?.volume || item.size,
-                quantity: item.quantity
+                quantity: item.quantity,
+                maxStock: variant?.stock || 0
               };
             });
             setCartItems(items);
@@ -85,10 +87,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const addToCart = async (item: CartItem) => {
     setCartItems(prev => {
-      const existing = prev.find(i => i.id === item.id);
+      const existing = prev.find(i => i.id === item.id && i.size === item.size);
       let newCart;
       if (existing) {
-        newCart = prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i);
+        const maxAvailable = item.maxStock !== undefined ? item.maxStock : Infinity;
+        const newQty = Math.min(existing.quantity + item.quantity, maxAvailable);
+        newCart = prev.map(i => (i.id === item.id && i.size === item.size) ? { ...i, quantity: newQty, maxStock: item.maxStock } : i);
       } else {
         newCart = [...prev, item];
       }
@@ -112,10 +116,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const updateQuantity = async (id: string, qty: number) => {
+  const updateQuantity = async (id: string, qty: number, size?: string) => {
     if (qty < 1) return;
     setCartItems(prev => {
-      const newCart = prev.map(i => i.id === id ? { ...i, quantity: qty } : i);
+      const existing = prev.find(i => i.id === id && i.size === size);
+      const maxAvailable = existing?.maxStock !== undefined ? existing.maxStock : Infinity;
+      const validQty = Math.min(qty, maxAvailable);
+      const newCart = prev.map(i => (i.id === id && i.size === size) ? { ...i, quantity: validQty } : i);
       localStorage.setItem("heedy_cart", JSON.stringify(newCart));
       return newCart;
     });

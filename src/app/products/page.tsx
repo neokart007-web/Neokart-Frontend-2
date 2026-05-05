@@ -22,6 +22,7 @@ interface Product {
   dealBadge: string;
   benefit: string;
   category: string;
+  totalStock: number;
 }
 
 // Categories and Products will be fetched dynamically
@@ -57,6 +58,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (product.totalStock === 0) return;
     addToCart({
       id: product.id,
       name: product.name,
@@ -119,16 +121,25 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           </div>
           <p className="font-bold text-[10px] uppercase tracking-wider text-red-600 mb-1">{product.dealBadge}</p>
           <p className="text-xs text-slate-500 line-clamp-1 mb-2">{product.benefit}</p>
+          {product.totalStock > 0 && product.totalStock < 5 && (
+            <p className="text-xs font-bold text-red-500 mb-2">Only {product.totalStock} left!</p>
+          )}
         </div>
       </Link>
       <div className="px-4 pb-6">
         <button
           onClick={handleAddToCart}
-          aria-label={`Add ${product.name} to cart`}
-          className={`w-full text-white font-bold text-[10px] md:text-xs uppercase tracking-widest py-2 md:py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none ${isAdded ? "bg-green-600 hover:bg-green-700" : "bg-slate-900 hover:bg-slate-800"
-            }`}
+          disabled={product.totalStock === 0}
+          aria-label={product.totalStock === 0 ? `Out of stock for ${product.name}` : `Add ${product.name} to cart`}
+          className={`w-full text-white font-bold text-[10px] md:text-xs uppercase tracking-widest py-2 md:py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none ${
+            product.totalStock === 0 
+              ? "bg-slate-200 text-slate-400 cursor-not-allowed" 
+              : isAdded 
+              ? "bg-green-600 hover:bg-green-700" 
+              : "bg-slate-900 hover:bg-slate-800"
+          }`}
         >
-          {isAdded ? "ADDED TO CART" : "ADD TO CART"}
+          {product.totalStock === 0 ? "OUT OF STOCK" : isAdded ? "ADDED TO CART" : "ADD TO CART"}
         </button>
       </div>
     </article>
@@ -411,6 +422,7 @@ function ProductsContent() {
               dealBadge: p.offerText || "",
               benefit: p.keyFeatures || "",
               category: p.category ? p.category.toLowerCase().replace(/\s+/g, '-') : "all",
+              totalStock: p.variants ? p.variants.reduce((sum: number, v: any) => sum + (v.stock || 0), 0) : 0,
             }));
             setProducts(mappedProds);
           }
