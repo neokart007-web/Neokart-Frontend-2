@@ -286,7 +286,7 @@ export default function ProfilePage() {
                         <div key={order._id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
                           <div>
                             <p className="font-bold text-sm text-slate-900">Order #{order._id.substring(0, 8)}</p>
-                            <p className="text-xs text-slate-500 mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
+                            <p className="text-xs text-slate-500 mt-1">{`${String(new Date(order.createdAt).getDate()).padStart(2, '0')}/${String(new Date(order.createdAt).getMonth() + 1).padStart(2, '0')}/${new Date(order.createdAt).getFullYear()}`}</p>
                           </div>
                           <div className="text-right">
                             <p className="font-bold text-sm text-slate-900">₹{order.total}</p>
@@ -319,7 +319,7 @@ export default function ProfilePage() {
                         <div className="bg-slate-50 border-b border-slate-100 p-6 sm:px-8 flex flex-wrap items-center justify-between gap-4">
                           <div>
                             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Order Placed</p>
-                            <p className="text-sm font-bold text-slate-900">{new Date(order.createdAt).toLocaleDateString()}</p>
+                            <p className="text-sm font-bold text-slate-900">{`${String(new Date(order.createdAt).getDate()).padStart(2, '0')}/${String(new Date(order.createdAt).getMonth() + 1).padStart(2, '0')}/${new Date(order.createdAt).getFullYear()}`}</p>
                           </div>
                           <div>
                             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Total Amount</p>
