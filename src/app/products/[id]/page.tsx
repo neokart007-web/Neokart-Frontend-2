@@ -66,6 +66,8 @@ export default function ProductDetailPage() {
   const [wishlisted, setWishlisted] = useState(false);
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState<"benefits" | "ingredients" | "how-to">("benefits");
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isIngredientsExpanded, setIsIngredientsExpanded] = useState(false);
   const [variantStocks, setVariantStocks] = useState<number[]>([]);
   const { addToCart } = useCart();
 
@@ -75,7 +77,7 @@ export default function ProductDetailPage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL 
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL
           ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
           : 'http://localhost:5000';
 
@@ -83,10 +85,10 @@ export default function ProductDetailPage() {
           axios.get(`${baseUrl}/api/v1/products`),
           axios.get(`${baseUrl}/api/v1/categories`)
         ]);
-        
+
         const prodJson = prodRes.data;
         const catJson = catRes.data;
-        
+
         let activeCatNames: string[] = [];
         if (catJson.success && catJson.data) {
           activeCatNames = catJson.data
@@ -95,14 +97,14 @@ export default function ProductDetailPage() {
         }
 
         if (prodJson.success && prodJson.data) {
-          const activeProducts = prodJson.data.filter((p: any) => 
+          const activeProducts = prodJson.data.filter((p: any) =>
             activeCatNames.includes((p.category || "").toLowerCase())
           );
 
           const mapped = activeProducts.map((p: any) => ({
             id: p._id,
             name: p.name,
-            tagline: p.description?.substring(0, 100) + "..." || "",
+            tagline: p.description || "",
             images: p.images && p.images.length > 0 ? p.images : ["/products/suncream-1.jpg"],
             rating: p.starRating || 0,
             reviewCount: p.reviewsCount || 0,
@@ -111,7 +113,7 @@ export default function ProductDetailPage() {
             currency: "₹",
             dealBadge: p.offerText || "",
             category: p.category || "all",
-            benefits: p.keyFeatures ? p.keyFeatures.split(',').map((s: string) => s.trim()) : ["Premium Quality"],
+            benefits: p.keyFeatures ? p.keyFeatures.split(/,|\n/).map((s: string) => s.trim()).filter(Boolean) : ["Premium Quality"],
             ingredients: p.description || "Refer to packaging",
             howToUse: "Follow instructions on packaging",
             sizes: p.variants && p.variants.length > 0 ? p.variants.map((v: any) => v.volume) : ["Standard"],
@@ -133,7 +135,7 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (!product || currentStock === 0) return;
-    
+
     addToCart({
       id: product.id,
       name: product.name,
@@ -181,9 +183,7 @@ export default function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-white pt-30">
-      <div className="bg-yellow-100 text-yellow-800 p-2 text-center text-xs font-bold">
-        DEBUG: Rendering Product: {product.name} (ID: {id})
-      </div>
+
       {/* ── Breadcrumb ── */}
       <nav
         className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-4 flex items-center gap-2 text-xs font-sans text-slate-400"
@@ -245,8 +245,8 @@ export default function ProductDetailPage() {
                     onClick={() => setActiveImage(i)}
                     aria-label={`View image ${i + 1}`}
                     className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-shrink-0 ${i === activeImage
-                        ? "border-slate-900 shadow-md"
-                        : "border-slate-200 hover:border-slate-400"
+                      ? "border-slate-900 shadow-md"
+                      : "border-slate-200 hover:border-slate-400"
                       }`}
                   >
                     <Image src={src} alt={`Thumbnail ${i + 1}`} fill sizes="80px" className="object-cover" />
@@ -269,9 +269,19 @@ export default function ProductDetailPage() {
             </h1>
 
             {/* Tagline */}
-            <p className="font-sans text-slate-500 text-base leading-relaxed mb-5">
-              {product.tagline}
-            </p>
+            <div className="mb-5">
+              <p className={`font-sans text-slate-500 text-base leading-relaxed whitespace-pre-wrap transition-all duration-300 ${!isDescriptionExpanded ? 'line-clamp-3' : ''}`}>
+                {product.tagline}
+              </p>
+              {product.tagline && product.tagline.length > 150 && (
+                <button
+                  onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                  className="text-blue-600 font-semibold text-sm mt-1 hover:text-blue-800 transition-colors inline-block"
+                >
+                  {isDescriptionExpanded ? 'Read Less' : 'Read More'}
+                </button>
+              )}
+            </div>
 
             {/* Rating */}
             <div className="flex items-center gap-2 mb-6">
@@ -314,13 +324,12 @@ export default function ProductDetailPage() {
                         key={size}
                         onClick={() => handleSizeChange(i)}
                         disabled={sizeStock === 0}
-                        className={`px-5 py-2.5 rounded-xl font-sans font-semibold text-sm border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative ${
-                          sizeStock === 0
+                        className={`px-5 py-2.5 rounded-xl font-sans font-semibold text-sm border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative ${sizeStock === 0
                             ? "border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50"
                             : i === selectedSize
-                            ? "border-slate-900 bg-slate-900 text-white"
-                            : "border-slate-200 text-slate-600 hover:border-slate-400 bg-white"
-                        }`}
+                              ? "border-slate-900 bg-slate-900 text-white"
+                              : "border-slate-200 text-slate-600 hover:border-slate-400 bg-white"
+                          }`}
                         aria-pressed={i === selectedSize}
                       >
                         {size}
@@ -375,13 +384,12 @@ export default function ProductDetailPage() {
                 onClick={handleAddToCart}
                 disabled={currentStock === 0}
                 aria-label="Add to cart"
-                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                  currentStock === 0
+                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${currentStock === 0
                     ? "bg-slate-200 text-slate-400 cursor-not-allowed"
                     : added
-                    ? "bg-green-500 text-white"
-                    : "bg-slate-900 text-white hover:bg-slate-800"
-                }`}
+                      ? "bg-green-500 text-white"
+                      : "bg-slate-900 text-white hover:bg-slate-800"
+                  }`}
               >
                 {currentStock === 0 ? (
                   <>Out of Stock</>
@@ -394,11 +402,10 @@ export default function ProductDetailPage() {
               <button
                 disabled={currentStock === 0}
                 aria-label="Buy now"
-                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full border-2 font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                  currentStock === 0
+                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full border-2 font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${currentStock === 0
                     ? "border-slate-200 text-slate-300 cursor-not-allowed"
                     : "border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white"
-                }`}
+                  }`}
               >
                 Buy Now
               </button>
@@ -433,8 +440,8 @@ export default function ProductDetailPage() {
               key={key}
               onClick={() => setActiveTab(key)}
               className={`pb-4 font-sans font-bold text-sm uppercase tracking-[0.12em] border-b-2 transition-all duration-200 focus:outline-none ${activeTab === key
-                  ? "border-slate-900 text-slate-900"
-                  : "border-transparent text-slate-400 hover:text-slate-700"
+                ? "border-slate-900 text-slate-900"
+                : "border-transparent text-slate-400 hover:text-slate-700"
                 }`}
             >
               {label}
@@ -457,9 +464,19 @@ export default function ProductDetailPage() {
             </ul>
           )}
           {activeTab === "ingredients" && (
-            <p className="font-sans text-base text-slate-600 leading-relaxed">
-              {product.ingredients}
-            </p>
+            <div>
+              <p className={`font-sans text-base text-slate-600 leading-relaxed whitespace-pre-wrap transition-all duration-300 ${!isIngredientsExpanded ? 'line-clamp-4' : ''}`}>
+                {product.ingredients}
+              </p>
+              {product.ingredients && product.ingredients.length > 200 && (
+                <button
+                  onClick={() => setIsIngredientsExpanded(!isIngredientsExpanded)}
+                  className="text-blue-600 font-semibold text-sm mt-2 hover:text-blue-800 transition-colors inline-block"
+                >
+                  {isIngredientsExpanded ? 'Read Less' : 'Read More'}
+                </button>
+              )}
+            </div>
           )}
           {activeTab === "how-to" && (
             <p className="font-sans text-base text-slate-600 leading-relaxed">
