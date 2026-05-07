@@ -69,10 +69,7 @@ export default function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState<"benefits" | "ingredients" | "how-to">("benefits");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isIngredientsExpanded, setIsIngredientsExpanded] = useState(false);
-  const [variantStocks, setVariantStocks] = useState<number[]>([]);
   const { addToCart } = useCart();
-
-  const currentStock = variantStocks[selectedSize] ?? 0;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -118,12 +115,10 @@ export default function ProductDetailPage() {
             ingredients: p.description || "Refer to packaging",
             howToUse: "Follow instructions on packaging",
             sizes: p.variants && p.variants.length > 0 ? p.variants.map((v: any) => v.volume) : ["Standard"],
-            stocks: p.variants && p.variants.length > 0 ? p.variants.map((v: any) => v.stock || 0) : [0],
           }));
           setProducts(mapped);
           const found = mapped.find((p: any) => p.id === id) || null;
           setProduct(found);
-          if (found) setVariantStocks(found.stocks || []);
         }
       } catch (error) {
         console.error("Failed to fetch products:", error);
@@ -135,7 +130,7 @@ export default function ProductDetailPage() {
   }, [id]);
 
   const handleAddToCart = () => {
-    if (!product || currentStock === 0) return;
+    if (!product) return;
 
     const savedUser = localStorage.getItem("heedy_user");
     if (!savedUser) {
@@ -325,22 +320,17 @@ export default function ProductDetailPage() {
                 </p>
                 <div className="flex gap-2 flex-wrap">
                   {product.sizes.map((size, i) => {
-                    const sizeStock = variantStocks[i] ?? 0;
                     return (
                       <button
                         key={size}
                         onClick={() => handleSizeChange(i)}
-                        disabled={sizeStock === 0}
-                        className={`px-5 py-2.5 rounded-xl font-sans font-semibold text-sm border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative ${sizeStock === 0
-                          ? "border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50"
-                          : i === selectedSize
+                        className={`px-5 py-2.5 rounded-xl font-sans font-semibold text-sm border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative ${i === selectedSize
                             ? "border-slate-900 bg-slate-900 text-white"
                             : "border-slate-200 text-slate-600 hover:border-slate-400 bg-white"
                           }`}
                         aria-pressed={i === selectedSize}
                       >
                         {size}
-                        {sizeStock === 0 && <span className="text-[10px] block font-medium">sold out</span>}
                       </button>
                     );
                   })}
@@ -354,13 +344,7 @@ export default function ProductDetailPage() {
                 <p className="font-sans font-semibold text-sm text-slate-700 uppercase tracking-[0.1em]">
                   Quantity
                 </p>
-                {currentStock > 0 && currentStock <= 10 && (
-                  <span className="text-xs font-bold text-orange-500">Only {currentStock} left!</span>
-                )}
               </div>
-              {currentStock === 0 ? (
-                <p className="text-red-500 font-bold text-sm">Out of stock for this variant</p>
-              ) : (
                 <div className="inline-flex items-center border-2 border-slate-200 rounded-xl overflow-hidden">
                   <button
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
@@ -374,40 +358,32 @@ export default function ProductDetailPage() {
                     {qty}
                   </span>
                   <button
-                    onClick={() => setQty((q) => Math.min(currentStock, q + 1))}
+                    onClick={() => setQty((q) => q + 1)}
                     aria-label="Increase quantity"
                     className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
-                    disabled={qty >= currentStock}
                   >
                     <Plus size={16} />
                   </button>
                 </div>
-              )}
             </div>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 mb-8">
               <button
                 onClick={handleAddToCart}
-                disabled={currentStock === 0}
                 aria-label="Add to cart"
-                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${currentStock === 0
-                  ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                  : added
+                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${added
                     ? "bg-green-500 text-white"
                     : "bg-slate-900 text-white hover:bg-slate-800"
                   }`}
               >
-                {currentStock === 0 ? (
-                  <>Out of Stock</>
-                ) : added ? (
+                {added ? (
                   <><Check size={18} /> Added to Cart</>
                 ) : (
                   <><ShoppingBag size={18} /> Add to Cart</>
                 )}
               </button>
               <button
-                disabled={currentStock === 0}
                 aria-label="Buy now"
                 onClick={() => {
                   const savedUser = localStorage.getItem("heedy_user");
@@ -418,10 +394,7 @@ export default function ProductDetailPage() {
                   handleAddToCart();
                   router.push("/checkout");
                 }}
-                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full border-2 font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${currentStock === 0
-                  ? "border-slate-200 text-slate-300 cursor-not-allowed"
-                  : "border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white"
-                  }`}
+                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full border-2 font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white`}
               >
                 Buy Now
               </button>

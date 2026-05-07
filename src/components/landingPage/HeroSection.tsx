@@ -12,13 +12,24 @@ interface IBanner {
   title: string;
   description: string;
   image: string;
+  mobileImage?: string;
   status: string;
 }
 
-const DEFAULT_SLIDES = [
+interface ISlide {
+  id: string;
+  image: string;
+  mobileImage: string | null;
+  alt: string;
+  headline: string;
+  subheadline: string;
+}
+
+const DEFAULT_SLIDES: ISlide[] = [
   {
     id: "default-1",
     image: "/hero-bg.png",
+    mobileImage: "/hero-bg.png",
     alt: "Premium skincare dynamic hydration",
     headline: "DYNAMIC HYDRATION",
     subheadline: "Sweat-resistant, feather-light, invisible finish.",
@@ -26,13 +37,26 @@ const DEFAULT_SLIDES = [
 ];
 
 export default function HeroSection() {
-  const [slides, setSlides] = useState(DEFAULT_SLIDES);
+  const [allSlides, setAllSlides] = useState<ISlide[]>(DEFAULT_SLIDES);
+  const [isMobile, setIsMobile] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   
   const minSwipeDistance = 50;
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    // Only run on client side
+    if (typeof window !== "undefined") {
+      handleResize();
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -51,11 +75,14 @@ export default function HeroSection() {
               image: b.image.startsWith("/")
                 ? `${baseUrl}${b.image}`
                 : b.image,
+              mobileImage: b.mobileImage 
+                ? (b.mobileImage.startsWith("/") ? `${baseUrl}${b.mobileImage}` : b.mobileImage) 
+                : null,
               alt: b.title,
               headline: b.title,
               subheadline: b.description,
             }));
-            setSlides(mapped);
+            setAllSlides(mapped);
           }
         }
       } catch (err) {
@@ -74,20 +101,34 @@ export default function HeroSection() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Filter slides dynamically based on screen size
+  const displaySlides = allSlides.filter(slide => {
+    if (slide.id.startsWith("default-")) return true;
+    return isMobile ? !!slide.mobileImage : true;
+  });
+
+  const finalSlides = displaySlides.length > 0 ? displaySlides : DEFAULT_SLIDES;
+
   useEffect(() => {
-    if (isLoading || slides.length <= 1) return;
+    if (currentSlide >= finalSlides.length) {
+      setCurrentSlide(0);
+    }
+  }, [finalSlides.length, currentSlide]);
+
+  useEffect(() => {
+    if (isLoading || finalSlides.length <= 1) return;
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      setCurrentSlide((prev) => (prev + 1) % finalSlides.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, [isLoading, slides.length]);
+  }, [isLoading, finalSlides.length]);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    setCurrentSlide((prev) => (prev + 1) % finalSlides.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+    setCurrentSlide((prev) => (prev === 0 ? finalSlides.length - 1 : prev - 1));
   };
 
   const goToSlide = (index: number) => {
@@ -152,7 +193,7 @@ export default function HeroSection() {
 
       {/* Background & Content Layer */}
       <AnimatePresence mode="sync">
-        {slides.map((slide, index) =>
+        {finalSlides.map((slide, index) =>
           index === currentSlide ? (
             <motion.div
               key={slide.id}
@@ -169,15 +210,28 @@ export default function HeroSection() {
                 transition={{ duration: 10, ease: "easeOut" }}
                 className="absolute inset-0 origin-center"
               >
-                <Image
-                  src={slide.image}
-                  alt={slide.alt}
-                  fill
-                  priority={index === 0 || index === 1}
-                  loading={index === 0 || index === 1 ? undefined : "lazy"}
-                  className="object-cover"
-                  unoptimized={slide.image.startsWith("http://localhost")}
-                />
+                <div className="hidden md:block absolute inset-0">
+                  <Image
+                    src={slide.image}
+                    alt={slide.alt}
+                    fill
+                    priority={index === 0 || index === 1}
+                    loading={index === 0 || index === 1 ? undefined : "lazy"}
+                    className="object-cover"
+                    unoptimized={slide.image.startsWith("http://localhost")}
+                  />
+                </div>
+                <div className="block md:hidden absolute inset-0">
+                  <Image
+                    src={slide.mobileImage || slide.image}
+                    alt={slide.alt}
+                    fill
+                    priority={index === 0 || index === 1}
+                    loading={index === 0 || index === 1 ? undefined : "lazy"}
+                    className="object-cover object-center"
+                    unoptimized={(slide.mobileImage || slide.image).startsWith("http://localhost")}
+                  />
+                </div>
               </motion.div>
               <div className="absolute inset-0 bg-black/20" /> {/* overlay */}
 
@@ -212,7 +266,7 @@ export default function HeroSection() {
       </AnimatePresence>
 
       {/* Navigation Layer - show only if multiple slides */}
-      {slides.length > 1 && (
+      {finalSlides.length > 1 && (
         <>
           <button
             onClick={prevSlide}
@@ -232,7 +286,7 @@ export default function HeroSection() {
 
           {/* Dots Indicator */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2" role="tablist">
-            {slides.map((slide, index) => (
+            {finalSlides.map((slide, index) => (
               <button
                 key={slide.id}
                 role="tab"
