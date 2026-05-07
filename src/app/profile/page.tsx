@@ -25,10 +25,13 @@ export default function ProfilePage() {
   const [addresses, setAddresses] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [isSavingAddress, setIsSavingAddress] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [newAddressForm, setNewAddressForm] = useState({
     street: "",
+    apartment: "",
+    landmark: "",
     city: "",
     state: "",
     zip: "",
@@ -115,23 +118,36 @@ export default function ProfilePage() {
 
       const payload = {
         street: newAddressForm.street,
+        apartment: newAddressForm.apartment,
+        landmark: newAddressForm.landmark,
         city: newAddressForm.city,
         state: newAddressForm.state,
         zipCode: newAddressForm.zip,
         country: newAddressForm.country
       };
 
-      const res = await axios.post(`${API_URL}/v1/users/addresses`, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.token}`
-        }
-      });
+      let res;
+      if (editingAddressId) {
+        res = await axios.put(`${API_URL}/v1/users/addresses/${editingAddressId}`, payload, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+          }
+        });
+      } else {
+        res = await axios.post(`${API_URL}/v1/users/addresses`, payload, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+          }
+        });
+      }
 
       if (res.data.success) {
         setAddresses(res.data.data);
         setIsAddressModalOpen(false);
-        setNewAddressForm({ street: "", city: "", state: "", zip: "", country: "India" });
+        setEditingAddressId(null);
+        setNewAddressForm({ street: "", apartment: "", landmark: "", city: "", state: "", zip: "", country: "India" });
         setAddressErrors({});
       } else {
         showToast(res.data.message || "Failed to save address", "error");
@@ -347,18 +363,12 @@ export default function ProfilePage() {
                 )}
 
                 {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <div className="grid grid-cols-1 gap-6 mb-12">
                   <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
                       TOTAL ORDERS
                     </p>
                     <p className="font-sans font-bold text-4xl text-slate-900">{orders.length}</p>
-                  </div>
-                  <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
-                      HEEDY POINTS
-                    </p>
-                    <p className="font-sans font-bold text-4xl text-slate-900">1,450</p>
                   </div>
                 </div>
 
@@ -375,9 +385,11 @@ export default function ProfilePage() {
                           </div>
                           <div className="text-right">
                             <p className="font-bold text-sm text-slate-900">₹{order.total}</p>
-                            <span className={`inline-block mt-1 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider ${order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700' :
+                            <span className={`inline-block mt-1 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider ${
+                              order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700' :
+                              order.orderStatus === 'cancelled' ? 'bg-red-100 text-red-700' :
                               order.orderStatus === 'processing' ? 'bg-blue-100 text-blue-700' :
-                                'bg-slate-100 text-slate-700'
+                              'bg-slate-100 text-slate-700'
                               }`}>
                               {order.orderStatus}
                             </span>
@@ -399,11 +411,13 @@ export default function ProfilePage() {
                 {orders.length > 0 ? (
                   <div className="flex flex-col gap-6">
                     {[...orders].sort((a, b) => {
-                      if (a.orderStatus === 'delivered' && b.orderStatus !== 'delivered') return 1;
-                      if (a.orderStatus !== 'delivered' && b.orderStatus === 'delivered') return -1;
-                      return 0;
+                      const aIsDone = a.orderStatus === 'delivered' || a.orderStatus === 'cancelled';
+                      const bIsDone = b.orderStatus === 'delivered' || b.orderStatus === 'cancelled';
+                      if (aIsDone && !bIsDone) return 1;
+                      if (!aIsDone && bIsDone) return -1;
+                      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                     }).map((order) => (
-                      <div key={order._id} className={`bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden ${order.orderStatus === 'delivered' ? 'opacity-80' : ''}`}>
+                      <div key={order._id} className={`bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden ${(order.orderStatus === 'delivered' || order.orderStatus === 'cancelled') ? 'opacity-80' : ''}`}>
                         <div className="bg-slate-50 border-b border-slate-100 p-6 sm:px-8 flex flex-wrap items-center justify-between gap-4">
                           <div>
                             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Order Placed</p>
@@ -418,9 +432,11 @@ export default function ProfilePage() {
                             <p className="text-sm font-bold text-slate-900">#{order._id.substring(0, 8)}</p>
                           </div>
                           <div className="flex-1 text-right min-w-[100px]">
-                            <span className={`inline-block text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider ${order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700' :
+                            <span className={`inline-block text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider ${
+                              order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700' :
+                              order.orderStatus === 'cancelled' ? 'bg-red-100 text-red-700' :
                               order.orderStatus === 'processing' ? 'bg-blue-100 text-blue-700' :
-                                'bg-slate-100 text-slate-700'
+                              'bg-slate-100 text-slate-700'
                               }`}>
                               {order.orderStatus}
                             </span>
@@ -432,7 +448,7 @@ export default function ProfilePage() {
                               <div key={idx} className="flex items-center gap-4 border-b border-slate-100 pb-4 last:border-0 last:pb-0">
                                 <div className="w-16 h-16 rounded-xl bg-slate-100 shrink-0 overflow-hidden">
                                   {item.product?.images?.[0] ? (
-                                    <img src={item.product.images[0]} alt={item.product?.name} className={`w-full h-full object-cover ${order.orderStatus === 'delivered' ? 'grayscale' : ''}`} />
+                                    <img src={item.product.images[0]} alt={item.product?.name} className={`w-full h-full object-cover ${(order.orderStatus === 'delivered' || order.orderStatus === 'cancelled') ? 'grayscale' : ''}`} />
                                   ) : (
                                     <div className="w-full h-full bg-slate-200" />
                                   )}
@@ -468,19 +484,33 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-1 gap-6">
                   {addresses.map((addr, idx) => (
                     <div key={addr._id || idx} className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm relative">
-                      {idx === 0 && (
-                        <div className="absolute top-8 right-8 bg-blue-50 text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
-                          Primary
-                        </div>
-                      )}
                       <h3 className="font-bold text-lg text-slate-900 mb-4">Address {idx + 1}</h3>
                       <div className="text-slate-500 text-base leading-relaxed mb-6">
                         {addr.street && <p>{addr.street}</p>}
+                        {addr.apartment && <p>{addr.apartment}</p>}
+                        {addr.landmark && <p>Landmark: {addr.landmark}</p>}
                         <p>{addr.city}{addr.state ? `, ${addr.state}` : ''} {addr.zipCode}</p>
                         <p>{addr.country}</p>
                       </div>
                       <div className="flex items-center gap-6">
-                        <button className="text-blue-600 text-sm font-bold hover:underline">Edit Details</button>
+                        <button
+                          onClick={() => {
+                            setNewAddressForm({
+                              street: addr.street || "",
+                              apartment: addr.apartment || "",
+                              landmark: addr.landmark || "",
+                              city: addr.city || "",
+                              state: addr.state || "",
+                              zip: addr.zipCode || "",
+                              country: addr.country || "India"
+                            });
+                            setEditingAddressId(addr._id);
+                            setIsAddressModalOpen(true);
+                          }}
+                          className="text-blue-600 text-sm font-bold hover:underline"
+                        >
+                          Edit Details
+                        </button>
                         <button
                           onClick={() => setDeleteConfirmId(addr._id)}
                           className="text-red-500 text-sm font-bold hover:underline"
@@ -492,7 +522,11 @@ export default function ProfilePage() {
                   ))}
 
                   <button
-                    onClick={() => setIsAddressModalOpen(true)}
+                    onClick={() => {
+                      setNewAddressForm({ street: "", apartment: "", landmark: "", city: "", state: "", zip: "", country: "India" });
+                      setEditingAddressId(null);
+                      setIsAddressModalOpen(true);
+                    }}
                     className="border-2 border-dashed border-slate-200 rounded-[2rem] p-8 w-full flex items-center justify-center text-slate-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-all font-bold group"
                   >
                     + Add New Shipping Location
@@ -514,7 +548,7 @@ export default function ProfilePage() {
           <div className="relative bg-white rounded-[2rem] w-full max-w-lg shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-6 sm:p-8 border-b border-slate-100">
               <h2 className="font-sans font-black text-2xl text-slate-900 tracking-tight">
-                New Shipping Address
+                {editingAddressId ? "Edit Shipping Address" : "New Shipping Address"}
               </h2>
               <button
                 onClick={() => setIsAddressModalOpen(false)}
@@ -535,6 +569,29 @@ export default function ProfilePage() {
                   className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400 ${addressErrors.street ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                 />
                 {addressErrors.street && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.street}</p>}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Apartment, suite, etc. <span className="text-slate-400 font-normal">(Optional)</span></label>
+                  <input
+                    type="text"
+                    value={newAddressForm.apartment}
+                    onChange={(e) => setNewAddressForm({ ...newAddressForm, apartment: e.target.value })}
+                    placeholder="e.g. Apt 4B"
+                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+                  />
+                </div>
+                <div>
+                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Landmark <span className="text-slate-400 font-normal">(Optional)</span></label>
+                  <input
+                    type="text"
+                    value={newAddressForm.landmark}
+                    onChange={(e) => setNewAddressForm({ ...newAddressForm, landmark: e.target.value })}
+                    placeholder="e.g. Near City Mall"
+                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

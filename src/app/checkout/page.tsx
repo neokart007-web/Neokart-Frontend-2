@@ -29,6 +29,7 @@ export default function CheckoutPage() {
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
 
   const [isSavingAddress, setIsSavingAddress] = useState(false);
+  const [isVerifyingPayment, setIsVerifyingPayment] = useState(false);
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -227,7 +228,7 @@ export default function CheckoutPage() {
       const { razorpayOrder, isMock } = createOrderRes.data.data;
 
       if (isMock) {
-        showToast("Processing payment...", "info");
+        setIsVerifyingPayment(true);
         const verifyRes = await axios.post(`${API_URL}/v1/payments/verify`, {
           razorpay_order_id: razorpayOrder.id,
           razorpay_payment_id: "mock_payment",
@@ -244,11 +245,11 @@ export default function CheckoutPage() {
         });
         
         if (verifyRes.data.success) {
-          showToast("Payment successful! Order placed.", "success");
           clearCart();
-          window.location.href = "/profile";
+          window.location.href = "/order-success";
         } else {
-          showToast("Payment verification failed.", "error");
+          setIsVerifyingPayment(false);
+          window.location.href = "/order-failure";
         }
         return;
       }
@@ -267,6 +268,7 @@ export default function CheckoutPage() {
         description: "Order Payment",
         order_id: razorpayOrder.id,
         handler: async function (response: any) {
+          setIsVerifyingPayment(true);
           try {
             // Verify payment
             const verifyRes = await axios.post(`${API_URL}/v1/payments/verify`, {
@@ -285,16 +287,16 @@ export default function CheckoutPage() {
             });
 
             if (verifyRes.data.success) {
-              showToast("Payment successful! Order placed.", "success");
               clearCart();
-              // Redirect to profile or orders page
-              window.location.href = "/profile"; 
+              window.location.href = "/order-success"; 
             } else {
-              showToast("Payment verification failed.", "error");
+              setIsVerifyingPayment(false);
+              window.location.href = "/order-failure";
             }
           } catch (err) {
             console.error(err);
-            showToast("Payment verification failed.", "error");
+            setIsVerifyingPayment(false);
+            window.location.href = "/order-failure";
           }
         },
         prefill: {
@@ -309,15 +311,26 @@ export default function CheckoutPage() {
 
       const rzp = new (window as any).Razorpay(options);
       rzp.on('payment.failed', function (response: any){
-        showToast("Payment Failed: " + response.error.description, "error");
+        window.location.href = "/order-failure";
       });
       rzp.open();
 
     } catch (err: any) {
       console.error(err);
+      setIsVerifyingPayment(false);
       showToast(err.response?.data?.message || "An error occurred during checkout.", "error");
     }
   };
+
+  if (isVerifyingPayment) {
+    return (
+      <div className="min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center">
+        <div className="w-16 h-16 border-4 border-slate-200 border-t-[#0A192F] rounded-full animate-spin mb-6"></div>
+        <h2 className="font-sans font-bold text-2xl text-slate-900 mb-2">Verifying Payment</h2>
+        <p className="text-slate-500">Please wait while we confirm your order. Do not close this window.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] pt-24 pb-16">

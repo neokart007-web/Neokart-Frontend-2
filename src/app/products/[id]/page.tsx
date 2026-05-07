@@ -6,7 +6,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import {
-  Star, StarHalf, ShoppingBag, Heart, ChevronRight,
+  Star, StarHalf, ShoppingBag, ChevronRight,
   Shield, Truck, RotateCcw, Plus, Minus, Check,
 } from "lucide-react";
 import { useCart } from "../../../context/CartContext";
@@ -64,7 +64,6 @@ export default function ProductDetailPage() {
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
   const [qty, setQty] = useState(1);
-  const [wishlisted, setWishlisted] = useState(false);
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState<"benefits" | "ingredients" | "how-to">("benefits");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -224,18 +223,6 @@ export default function ProductDetailPage() {
                   {discount}% OFF
                 </div>
               )}
-              {/* Wishlist */}
-              <button
-                onClick={() => setWishlisted((w) => !w)}
-                aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-200"
-              >
-                <Heart
-                  size={18}
-                  className={`transition-colors duration-200 ${wishlisted ? "fill-red-500 text-red-500" : "text-slate-400"
-                    }`}
-                />
-              </button>
             </div>
 
             {/* Thumbnails */}
@@ -382,21 +369,6 @@ export default function ProductDetailPage() {
                 ) : (
                   <><ShoppingBag size={18} /> Add to Cart</>
                 )}
-              </button>
-              <button
-                aria-label="Buy now"
-                onClick={() => {
-                  const savedUser = localStorage.getItem("heedy_user");
-                  if (!savedUser) {
-                    router.push("/sign-in");
-                    return;
-                  }
-                  handleAddToCart();
-                  router.push("/checkout");
-                }}
-                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full border-2 font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white`}
-              >
-                Buy Now
               </button>
             </div>
 
