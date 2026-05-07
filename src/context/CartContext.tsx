@@ -11,7 +11,6 @@ export interface CartItem {
   currency: string;
   size?: string;
   quantity: number;
-  maxStock?: number;
 }
 
 interface CartContextType {
@@ -64,8 +63,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 price: variant?.price || 0,
                 currency: '₹',
                 size: variant?.volume || item.size,
-                quantity: item.quantity,
-                maxStock: variant?.stock || 0
+                quantity: item.quantity
               };
             });
             setCartItems(items);
@@ -90,9 +88,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const existing = prev.find(i => i.id === item.id && i.size === item.size);
       let newCart;
       if (existing) {
-        const maxAvailable = item.maxStock !== undefined ? item.maxStock : Infinity;
-        const newQty = Math.min(existing.quantity + item.quantity, maxAvailable);
-        newCart = prev.map(i => (i.id === item.id && i.size === item.size) ? { ...i, quantity: newQty, maxStock: item.maxStock } : i);
+        const newQty = existing.quantity + item.quantity;
+        newCart = prev.map(i => (i.id === item.id && i.size === item.size) ? { ...i, quantity: newQty } : i);
       } else {
         newCart = [...prev, item];
       }
@@ -120,8 +117,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (qty < 1) return;
     setCartItems(prev => {
       const existing = prev.find(i => i.id === id && i.size === size);
-      const maxAvailable = existing?.maxStock !== undefined ? existing.maxStock : Infinity;
-      const validQty = Math.min(qty, maxAvailable);
+      const validQty = qty;
       const newCart = prev.map(i => (i.id === id && i.size === size) ? { ...i, quantity: validQty } : i);
       localStorage.setItem("heedy_cart", JSON.stringify(newCart));
       return newCart;

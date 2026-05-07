@@ -19,7 +19,6 @@ interface Product {
   currency: string;
   dealBadge: string;
   benefit: string;
-  totalStock: number;
 }
 
 const DEFAULT_PRODUCTS: Product[] = [];
@@ -44,8 +43,6 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (product.totalStock === 0) return;
-    
     const savedUser = localStorage.getItem("heedy_user");
     if (!savedUser) {
       router.push("/sign-in");
@@ -120,25 +117,18 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
           <p className="font-sans font-normal text-xs text-slate-500 text-center line-clamp-1">
             {product.benefit}
           </p>
-          {product.totalStock > 0 && product.totalStock < 5 && (
-            <p className="text-xs font-bold text-red-500 text-center mt-2">Only {product.totalStock} left!</p>
-          )}
         </div>
       </Link>
       <div className="px-4 pb-6">
         <button
           onClick={handleAddToCart}
-          disabled={product.totalStock === 0}
-          aria-label={product.totalStock === 0 ? `Out of stock for ${product.name}` : `Add ${product.name} to cart`}
-          className={`w-full text-white font-sans font-bold text-[10px] md:text-xs uppercase tracking-widest py-2 md:py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-            product.totalStock === 0 
-              ? "bg-slate-200 text-slate-400 cursor-not-allowed" 
-              : isAdded 
-              ? "bg-green-600 hover:bg-green-700" 
+          aria-label={`Add ${product.name} to cart`}
+          className={`w-full text-white font-sans font-bold text-[10px] md:text-xs uppercase tracking-widest py-2 md:py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${isAdded
+              ? "bg-green-600 hover:bg-green-700"
               : "bg-slate-900 hover:bg-slate-800"
-          }`}
+            }`}
         >
-          {product.totalStock === 0 ? "OUT OF STOCK" : isAdded ? "ADDED TO CART" : "ADD TO CART"}
+          {isAdded ? "ADDED TO CART" : "ADD TO CART"}
         </button>
       </div>
     </article>
@@ -171,7 +161,6 @@ export default function ProductSection() {
             currency: "₹",
             dealBadge: p.offerText || "",
             benefit: p.keyFeatures || "",
-            totalStock: p.variants ? p.variants.reduce((sum: number, v: any) => sum + (v.stock || 0), 0) : 0,
           }));
           setProducts(mappedProds);
         }
