@@ -55,15 +55,18 @@ export default function ValueSection() {
                 }`}
               style={{ transitionDelay: "300ms" }}
             >
-              OUR SCIENTIFIC HERITAGE
+              MORE THAN A PRODUCT
             </p>
 
-            <h2
-              className={`font-serif font-normal text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-6 transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
-                }`}
+            <h2 
+              className={`font-serif font-normal text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-6 transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${
+                isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
+              }`}
               style={{ transitionDelay: "400ms" }}
             >
-              Why Choose <span className="italic">Heedy</span>
+              It&apos;s<br />
+              Confidence<br />
+              <span className="italic">You Can Feel</span>
             </h2>
 
             <p
@@ -71,7 +74,7 @@ export default function ValueSection() {
                 }`}
               style={{ transitionDelay: "500ms" }}
             >
-              We combine Alpine botanical purity with advanced dermatological science to create sun protection that feels like a second skin.
+              At HEEDY, we don&apos;t just create products. We create experiences that elevate your everyday lifestyle.
             </p>
 
             {/* Feature Grid */}
@@ -84,10 +87,10 @@ export default function ValueSection() {
                 style={{ transitionDelay: "600ms" }}
               >
                 <h3 className="font-sans font-bold text-sm md:text-base tracking-[0.15em] uppercase text-white mb-3">
-                  SWISS BIO-ACTIVE
+                  PREMIUM QUALITY
                 </h3>
                 <p className="font-sans font-normal text-xs md:text-sm tracking-wide uppercase text-slate-500 leading-relaxed">
-                  CLINICALLY PROVEN TO REDUCE CELLULAR OXIDATION BY 85%.
+                  CAREFULLY SELECTED INGREDIENTS WITH STRICT QUALITY STANDARDS FOR TOP-TIER PERFORMANCE.
                 </p>
               </div>
 
@@ -98,10 +101,40 @@ export default function ValueSection() {
                 style={{ transitionDelay: "700ms" }}
               >
                 <h3 className="font-sans font-bold text-sm md:text-base tracking-[0.15em] uppercase text-white mb-3">
-                  OCEAN SAFE
+                  SKIN-FRIENDLY FORMULA
                 </h3>
                 <p className="font-sans font-normal text-xs md:text-sm tracking-wide uppercase text-slate-500 leading-relaxed">
-                  100% REEF-FRIENDLY FILTERS WITH ZERO MICROPLASTICS.
+                  GENTLE, EFFECTIVE, AND SUITED FOR DAILY USE — ESPECIALLY FOR INDIAN CONDITIONS.
+                </p>
+              </div>
+
+              {/* Feature 3 */}
+              <div 
+                className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${
+                  isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
+                }`}
+                style={{ transitionDelay: "800ms" }}
+              >
+                <h3 className="font-sans font-bold text-sm md:text-base tracking-[0.15em] uppercase text-white mb-3">
+                  REAL RESULTS
+                </h3>
+                <p className="font-sans font-normal text-xs md:text-sm tracking-wide uppercase text-slate-500 leading-relaxed">
+                  VISIBLE AND CONSISTENT OUTCOMES — NO EMPTY PROMISES, JUST WHAT YOU SEE.
+                </p>
+              </div>
+
+              {/* Feature 4 */}
+              <div 
+                className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${
+                  isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
+                }`}
+                style={{ transitionDelay: "900ms" }}
+              >
+                <h3 className="font-sans font-bold text-sm md:text-base tracking-[0.15em] uppercase text-white mb-3">
+                  BUILT FOR INDIA
+                </h3>
+                <p className="font-sans font-normal text-xs md:text-sm tracking-wide uppercase text-slate-500 leading-relaxed">
+                  GLOBAL QUALITY, ACCESSIBLE AND RELATABLE — A BRAND WITH PURPOSE AND VISION.
                 </p>
               </div>
 
@@ -111,9 +144,10 @@ export default function ValueSection() {
             <Link
               href="/process"
               aria-label="Discover our scientific process and product development"
-              className={`mt-10 self-center md:self-start bg-white text-[#0A1E3D] px-8 md:px-10 py-4 md:py-5 rounded-full font-sans font-bold text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-slate-100 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-[#0A1E3D] motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                }`}
-              style={{ transitionDelay: "800ms" }}
+              className={`mt-10 self-center md:self-start bg-white text-[#0A1E3D] px-8 md:px-10 py-4 md:py-5 rounded-full font-sans font-bold text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-slate-100 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-[#0A1E3D] motion-reduce:transition-none motion-reduce:transform-none ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              }`}
+              style={{ transitionDelay: "1000ms" }}
             >
               DISCOVER OUR PROCESS
             </Link>

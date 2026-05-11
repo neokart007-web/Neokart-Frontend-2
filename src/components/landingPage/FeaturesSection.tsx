@@ -16,28 +16,28 @@ const features: Feature[] = [
     step: "01",
     category: "TECHNOLOGY",
     title: "Micro-Zinc Shield",
-    description: "Ultra-fine physical blockers for high-strength protection without the heavy texture."
+    description: "Ultra-fine mineral protection that forms a lightweight barrier against harmful UV rays without clogging pores or leaving a white cast."
   },
   {
     id: "hydration-lock",
     step: "02",
     category: "HYDRATION",
-    title: "Hydration Lock",
-    description: "Ceramides and Hyaluronic acid ensure your moisture barrier remains intact during exposure."
+    title: "Hydration Lock System",
+    description: "Infused with Hyaluronic Acid and Ceramides to deeply hydrate and strengthen your skin barrier, keeping moisture locked in all day."
   },
   {
     id: "photo-stable",
     step: "03",
     category: "EFFICACY",
-    title: "Photo-Stable",
-    description: "Formulas that don't degrade under UV light, ensuring long-lasting defense all day."
+    title: "Photo-Stable Formula",
+    description: "Engineered to remain stable under sunlight, ensuring long-lasting protection and consistent performance without breaking down."
   },
   {
-    id: "reef-friendly",
+    id: "clean-conscious",
     step: "04",
     category: "ETHICS",
-    title: "Reef Friendly",
-    description: "Sustainably sourced ingredients that protect your skin and the marine ecosystem."
+    title: "Clean & Conscious",
+    description: "Made with skin-safe, cruelty-free, and environmentally responsible ingredients that care for you and the planet."
   }
 ];
 
@@ -83,7 +83,7 @@ export default function FeaturesSection() {
               }`}
               style={{ transitionDelay: "100ms" }}
             >
-              Advanced Solar Defence
+              Advanced Skin Defence
             </h2>
           </div>
           
@@ -94,7 +94,7 @@ export default function FeaturesSection() {
             style={{ transitionDelay: "200ms" }}
           >
             <p className="font-sans font-normal text-base md:text-lg text-slate-400 leading-relaxed">
-              Every drop is infused with antioxidants to combat photo-aging and environmental stress.
+              Every drop of HEEDY is crafted with powerful actives to protect, nourish, and elevate your skin in modern environments.
             </p>
           </div>
         </div>

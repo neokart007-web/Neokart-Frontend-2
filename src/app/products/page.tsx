@@ -556,23 +556,14 @@ function ProductsContent() {
           </Link>
 
           {/* Collection Banner */}
-          <div className="relative w-full h-48 md:h-64 lg:h-72 rounded-2xl overflow-hidden mb-8">
+          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] lg:aspect-[24/9] rounded-2xl overflow-hidden mb-8 bg-blue-50/50">
             <Image
-              src="/images/collection-banner.jpg"
-              alt="HEEDY curated collection banner"
+              src="/images/shop-banner.png"
+              alt="HEEDY Moisturizing Brightening Sunscreen"
               fill
               priority
-              className="object-cover"
+              className="object-cover object-center"
             />
-            <div className="absolute inset-0 bg-black/35" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-              <p className="font-sans font-semibold text-xs tracking-[0.3em] uppercase text-blue-300 mb-3">
-                CURATED FOR YOU
-              </p>
-              <h1 className="font-serif font-normal text-4xl md:text-5xl text-white leading-tight">
-                Our Collection
-              </h1>
-            </div>
           </div>
 
           {/* Results Bar + Mobile Filter Toggle */}
