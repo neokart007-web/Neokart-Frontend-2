@@ -30,18 +30,17 @@ export default function ValueSection() {
     <section ref={sectionRef} className="bg-[#0A1E3D] w-full py-16 md:py-24 lg:py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
-          
+
           {/* Image Panel */}
-          <div 
-            className={`relative rounded-2xl lg:rounded-3xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 shadow-2xl shadow-black/20 aspect-[4/5] lg:aspect-square w-full transition-all duration-700 ease-out group motion-reduce:transition-none motion-reduce:transform-none ${
-              isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-5"
-            }`}
+          <div
+            className={`relative rounded-2xl lg:rounded-3xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 shadow-2xl shadow-black/20 aspect-[4/5] lg:aspect-square w-full transition-all duration-700 ease-out group motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-5"
+              }`}
           >
             <Image
               src="/images/value-image.jpg"
               alt="Curology moisturizer product on geometric platform"
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none"
+              className="h-fit transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
             {/* Subtle overlay */}
@@ -50,11 +49,10 @@ export default function ValueSection() {
 
           {/* Content Panel */}
           <div className="flex flex-col justify-center">
-            
-            <p 
-              className={`font-sans font-semibold text-xs md:text-sm tracking-[0.25em] uppercase text-blue-300 mb-4 transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${
-                isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
-              }`}
+
+            <p
+              className={`font-sans font-semibold text-xs md:text-sm tracking-[0.25em] uppercase text-blue-300 mb-4 transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
+                }`}
               style={{ transitionDelay: "300ms" }}
             >
               MORE THAN A PRODUCT
@@ -70,11 +68,10 @@ export default function ValueSection() {
               Confidence<br />
               <span className="italic">You Can Feel</span>
             </h2>
-            
-            <p 
-              className={`font-sans font-normal text-base md:text-lg text-slate-400 leading-relaxed max-w-lg mb-12 transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${
-                isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
-              }`}
+
+            <p
+              className={`font-sans font-normal text-base md:text-lg text-slate-400 leading-relaxed max-w-lg mb-12 transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
+                }`}
               style={{ transitionDelay: "500ms" }}
             >
               At HEEDY, we don&apos;t just create products. We create experiences that elevate your everyday lifestyle.
@@ -82,12 +79,11 @@ export default function ValueSection() {
 
             {/* Feature Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-12">
-              
+
               {/* Feature 1 */}
-              <div 
-                className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${
-                  isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
-                }`}
+              <div
+                className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
+                  }`}
                 style={{ transitionDelay: "600ms" }}
               >
                 <h3 className="font-sans font-bold text-sm md:text-base tracking-[0.15em] uppercase text-white mb-3">
@@ -99,10 +95,9 @@ export default function ValueSection() {
               </div>
 
               {/* Feature 2 */}
-              <div 
-                className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${
-                  isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
-                }`}
+              <div
+                className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"
+                  }`}
                 style={{ transitionDelay: "700ms" }}
               >
                 <h3 className="font-sans font-bold text-sm md:text-base tracking-[0.15em] uppercase text-white mb-3">
