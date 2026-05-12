@@ -37,11 +37,12 @@ export default function ValueSection() {
               }`}
           >
             <Image
-              src="/images/value-image.jpg"
+              src="/images/value-image.png"
               alt="Curology moisturizer product on geometric platform"
               fill
-              className="h-fit transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none"
-              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
+              className=" object-fill transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none"
+              sizes="(max-width: 1024px) 80vw, 50vw"
             />
             {/* Subtle overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A1E3D]/30 to-transparent pointer-events-none" />

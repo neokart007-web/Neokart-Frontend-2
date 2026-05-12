@@ -216,6 +216,7 @@ export default function HeroSection() {
                     alt={slide.alt}
                     fill
                     priority={index === 0 || index === 1}
+                    sizes="100vw"
                     loading={index === 0 || index === 1 ? undefined : "lazy"}
                     className="object-cover"
                     unoptimized={slide.image.startsWith("http://localhost")}
@@ -227,6 +228,7 @@ export default function HeroSection() {
                     alt={slide.alt}
                     fill
                     priority={index === 0 || index === 1}
+                    sizes="100vw"
                     loading={index === 0 || index === 1 ? undefined : "lazy"}
                     className="object-cover object-center"
                     unoptimized={(slide.mobileImage || slide.image).startsWith("http://localhost")}

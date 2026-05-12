@@ -133,8 +133,8 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           onClick={handleAddToCart}
           aria-label={`Add ${product.name} to cart`}
           className={`w-full text-white font-bold text-[10px] md:text-xs uppercase tracking-widest py-2 md:py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none ${isAdded
-                ? "bg-green-600 hover:bg-green-700"
-                : "bg-slate-900 hover:bg-slate-800"
+            ? "bg-green-600 hover:bg-green-700"
+            : "bg-slate-900 hover:bg-slate-800"
             }`}
         >
           {isAdded ? "ADDED TO CART" : "ADD TO CART"}
