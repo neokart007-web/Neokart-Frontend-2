@@ -220,7 +220,7 @@ function ContactForm() {
     try {
       setSubmitError("");
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      const response = await axios.post(`${baseUrl}/api/v1/contacts`, data);
+      const response = await axios.post(`${baseUrl}/v1/contacts`, data);
       if (response.data.success) {
         setSubmitted(true);
       }
