@@ -43,7 +43,7 @@ export default function HeroSection() {
   const [isLoading, setIsLoading] = useState(true);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  
+
   const minSwipeDistance = 50;
 
   useEffect(() => {
@@ -75,8 +75,8 @@ export default function HeroSection() {
               image: b.image.startsWith("/")
                 ? `${baseUrl}${b.image}`
                 : b.image,
-              mobileImage: b.mobileImage 
-                ? (b.mobileImage.startsWith("/") ? `${baseUrl}${b.mobileImage}` : b.mobileImage) 
+              mobileImage: b.mobileImage
+                ? (b.mobileImage.startsWith("/") ? `${baseUrl}${b.mobileImage}` : b.mobileImage)
                 : null,
               alt: b.title,
               headline: b.title,
@@ -149,7 +149,7 @@ export default function HeroSection() {
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
-    
+
     if (isLeftSwipe) {
       nextSlide();
     }
@@ -239,10 +239,6 @@ export default function HeroSection() {
 
               {/* Content specific to this slide */}
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 pointer-events-none">
-                {/* Optional Eyebrow */}
-                <p className="mb-4 text-blue-300 font-sans font-semibold text-xs tracking-[0.2em] uppercase pointer-events-auto">
-                  PREMIUM SKINCARE
-                </p>
 
                 {/* Headline */}
                 <h1 className="mb-6 text-white drop-shadow-sm font-sans font-normal text-4xl md:text-6xl lg:text-8xl tracking-[0.2em] md:tracking-[0.2em] uppercase pointer-events-auto">
@@ -254,13 +250,7 @@ export default function HeroSection() {
                   {slide.subheadline}
                 </p>
 
-                {/* CTA */}
-                <Link
-                  href="/products"
-                  className="bg-white text-gray-900 px-8 py-3 md:px-10 md:py-4 lg:px-12 lg:py-5 rounded-full font-sans font-semibold text-sm tracking-widest uppercase border-2 border-transparent hover:bg-gradient-to-r hover:from-blue-300 hover:to-blue-500 hover:text-black hover:border-white hover:scale-105 transition-all duration-200 motion-reduce:transition-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 pointer-events-auto inline-block"
-                >
-                  SHOP NOW
-                </Link>
+
               </div>
             </motion.div>
           ) : null
@@ -295,11 +285,10 @@ export default function HeroSection() {
                 aria-selected={currentSlide === index}
                 aria-label={`Go to slide ${index + 1}`}
                 onClick={() => goToSlide(index)}
-                className={`transition-colors duration-300 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${
-                  currentSlide === index
+                className={`transition-colors duration-300 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${currentSlide === index
                     ? "w-2.5 h-2.5 rounded-full bg-blue-500"
                     : "w-2.5 h-2.5 rounded-full bg-white/50"
-                }`}
+                  }`}
               />
             ))}
           </div>

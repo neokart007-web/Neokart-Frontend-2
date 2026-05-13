@@ -77,7 +77,7 @@ export default function CheckoutPage() {
   const handleSaveAddress = async () => {
     if (!validateAddressForm()) return;
     setIsSavingAddress(true);
-    
+
     try {
       const userStr = localStorage.getItem("heedy_user");
       if (!userStr) {
@@ -85,11 +85,11 @@ export default function CheckoutPage() {
         setIsSavingAddress(false);
         return;
       }
-      
+
       const { token } = JSON.parse(userStr);
       const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
       const API_URL = `${baseUrl}/api`;
-      
+
       const payload = {
         street: newAddressForm.street,
         city: newAddressForm.city,
@@ -99,12 +99,12 @@ export default function CheckoutPage() {
       };
 
       const res = await axios.post(`${API_URL}/v1/users/addresses`, payload, {
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
+          'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (res.data.success) {
         const newAddrs = res.data.data;
         const mappedAddresses = newAddrs.map((addr: any) => ({
@@ -146,7 +146,7 @@ export default function CheckoutPage() {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
       const API_URL = `${baseUrl}/api`;
       const response = await axios.post(`${API_URL}/v1/coupons/validate`, { code: promoCode, cartTotal: subtotal });
-      
+
       if (response.data.success) {
         setDiscountAmount(response.data.data.discountAmount);
         setPromoMessage({ text: response.data.message, type: "success" });
@@ -178,7 +178,7 @@ export default function CheckoutPage() {
       showToast("Please select a shipping address.", "warning");
       return;
     }
-    
+
     if (cartItems.length === 0) {
       showToast("Your cart is empty.", "warning");
       return;
@@ -194,7 +194,7 @@ export default function CheckoutPage() {
 
       const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
       const API_URL = `${baseUrl}/api`;
-      
+
       const selectedAddress = addresses.find(a => a.id === selectedAddressId);
 
       // Format items for backend
@@ -243,7 +243,7 @@ export default function CheckoutPage() {
         }, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (verifyRes.data.success) {
           clearCart();
           window.location.href = "/order-success";
@@ -288,7 +288,7 @@ export default function CheckoutPage() {
 
             if (verifyRes.data.success) {
               clearCart();
-              window.location.href = "/order-success"; 
+              window.location.href = "/order-success";
             } else {
               setIsVerifyingPayment(false);
               window.location.href = "/order-failure";
@@ -310,7 +310,7 @@ export default function CheckoutPage() {
       };
 
       const rzp = new (window as any).Razorpay(options);
-      rzp.on('payment.failed', function (response: any){
+      rzp.on('payment.failed', function (response: any) {
         window.location.href = "/order-failure";
       });
       rzp.open();
@@ -335,17 +335,17 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-[#FAFAFA] pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-8">
-        
+
         {/* Main Title */}
         <h1 className="font-sans font-bold text-3xl md:text-4xl text-slate-900 mb-12">
           Secure Checkout
         </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
-          
+
           {/* ── Left Column (Steps) ── */}
           <div className="lg:col-span-8 flex flex-col gap-12">
-            
+
             {/* Step 1: SHIPPING DESTINATION */}
             <div className="flex flex-col gap-6">
               <div className="flex items-start gap-4">
@@ -356,7 +356,7 @@ export default function CheckoutPage() {
                   Shipping<br />Destination
                 </h2>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row flex-wrap gap-6 ml-0 sm:ml-12 mt-4">
                 {addresses.map((addr) => {
                   const isSelected = selectedAddressId === addr.id;
@@ -364,9 +364,8 @@ export default function CheckoutPage() {
                     <button
                       key={addr.id}
                       onClick={() => setSelectedAddressId(addr.id)}
-                      className={`relative border rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 w-full max-w-sm bg-white text-left transition-colors ${
-                        isSelected ? "border-slate-300" : "border-slate-200 hover:border-slate-300"
-                      }`}
+                      className={`relative border rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 w-full max-w-sm bg-white text-left transition-colors ${isSelected ? "border-slate-300" : "border-slate-200 hover:border-slate-300"
+                        }`}
                     >
                       {isSelected && (
                         <div className="absolute -top-3 right-8 w-6 h-6 bg-[#0A192F] text-white rounded-full flex items-center justify-center border-4 border-white box-content">
@@ -388,7 +387,7 @@ export default function CheckoutPage() {
                 })}
 
                 {/* New Address Button */}
-                <button 
+                <button
                   onClick={() => setIsAddressModalOpen(true)}
                   className="border border-slate-200 rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 w-full sm:w-40 flex flex-col items-center justify-center gap-2 bg-white hover:bg-slate-50 transition-colors text-slate-900 font-bold text-sm"
                 >
@@ -410,7 +409,7 @@ export default function CheckoutPage() {
                   Promotion Code
                 </h2>
               </div>
-              
+
               <div className="flex flex-col gap-2 ml-0 sm:ml-12">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <input
@@ -420,7 +419,7 @@ export default function CheckoutPage() {
                     placeholder="Enter gift card or discount code"
                     className="flex-1 border border-slate-200 rounded-xl px-5 py-4 text-base focus:outline-none focus:ring-2 focus:ring-[#0A192F] bg-white placeholder:text-slate-400"
                   />
-                  <button 
+                  <button
                     onClick={handleApplyPromo}
                     disabled={isApplyingPromo}
                     className="bg-[#111] text-white font-bold text-sm px-10 py-4 rounded-xl hover:bg-black transition-colors shrink-0 disabled:opacity-50"
@@ -436,35 +435,16 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <div className="h-px bg-slate-200 w-full ml-0 sm:ml-12" />
+            {/* <div className="h-px bg-slate-200 w-full ml-0 sm:ml-2" /> */}
 
-            {/* Step 3: PAYMENT METHOD */}
-            <div className="flex flex-col gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-8 h-8 rounded-full bg-[#0A192F] text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
-                  3
-                </div>
-                <h2 className="font-sans font-bold text-xl text-[#0A192F] uppercase tracking-wider">
-                  Payment Method
-                </h2>
-              </div>
-              
-              <div className="ml-0 sm:ml-12">
-                <button className="w-full sm:max-w-md flex items-center gap-4 border border-slate-900 rounded-xl px-6 py-5 bg-white hover:bg-slate-50 transition-colors text-left">
-                  <CreditCard size={24} className="text-slate-700 shrink-0" />
-                  <span className="font-sans font-bold text-slate-900 text-base">
-                    Secure Online Payment
-                  </span>
-                </button>
-              </div>
-            </div>
+
 
           </div>
 
           {/* ── Right Column (Order Bag) ── */}
           <div className="lg:col-span-4 bg-white p-8 rounded-3xl shadow-sm border border-slate-100 sticky top-32">
             <h2 className="font-sans font-bold text-xl text-slate-900 mb-8">Order Bag</h2>
-            
+
             {/* Cart Items List */}
             <div className="flex flex-col gap-6 mb-8 max-h-[400px] overflow-y-auto pr-2">
               {cartItems.length === 0 ? (
@@ -534,13 +514,13 @@ export default function CheckoutPage() {
               <span className="font-sans font-black text-2xl text-slate-900">₹{total.toFixed(2)}</span>
             </div>
 
-            <button 
+            <button
               onClick={handleCheckout}
               className="w-full bg-[#111] text-white font-bold text-base py-4 sm:py-5 rounded-xl hover:bg-black transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 mb-4"
             >
               Secure Checkout
             </button>
-            
+
             <div className="flex items-center justify-center gap-2 text-slate-400">
               <ShieldCheck size={14} />
               <p className="font-sans text-[10px] uppercase tracking-widest">
@@ -555,7 +535,7 @@ export default function CheckoutPage() {
       {/* ── New Address Modal ── */}
       {isAddressModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div 
+          <div
             className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
             onClick={() => setIsAddressModalOpen(false)}
           />
@@ -565,22 +545,22 @@ export default function CheckoutPage() {
               <h2 className="font-sans font-black text-2xl text-slate-900 tracking-tight">
                 New Shipping Address
               </h2>
-              <button 
+              <button
                 onClick={() => setIsAddressModalOpen(false)}
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors focus:outline-none"
               >
                 <X size={16} />
               </button>
             </div>
-            
+
             {/* Form */}
             <div className="p-6 sm:p-8 flex flex-col gap-5">
               <div>
                 <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Street Address</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={newAddressForm.street}
-                  onChange={(e) => { setNewAddressForm({...newAddressForm, street: e.target.value}); setAddressErrors(prev => ({...prev, street: ''})); }}
+                  onChange={(e) => { setNewAddressForm({ ...newAddressForm, street: e.target.value }); setAddressErrors(prev => ({ ...prev, street: '' })); }}
                   placeholder="e.g. 123 Luxury Lane"
                   className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0A192F] placeholder:text-slate-400 ${addressErrors.street ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                 />
@@ -590,10 +570,10 @@ export default function CheckoutPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block font-sans font-bold text-sm text-slate-700 mb-2">City <span className="text-red-500">*</span></label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={newAddressForm.city}
-                    onChange={(e) => { setNewAddressForm({...newAddressForm, city: e.target.value}); setAddressErrors(prev => ({...prev, city: ''})); }}
+                    onChange={(e) => { setNewAddressForm({ ...newAddressForm, city: e.target.value }); setAddressErrors(prev => ({ ...prev, city: '' })); }}
                     placeholder="Mumbai"
                     className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0A192F] placeholder:text-slate-400 ${addressErrors.city ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
@@ -601,10 +581,10 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label className="block font-sans font-bold text-sm text-slate-700 mb-2">State <span className="text-red-500">*</span></label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={newAddressForm.state}
-                    onChange={(e) => { setNewAddressForm({...newAddressForm, state: e.target.value}); setAddressErrors(prev => ({...prev, state: ''})); }}
+                    onChange={(e) => { setNewAddressForm({ ...newAddressForm, state: e.target.value }); setAddressErrors(prev => ({ ...prev, state: '' })); }}
                     placeholder="Maharashtra"
                     className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0A192F] placeholder:text-slate-400 ${addressErrors.state ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
@@ -615,10 +595,10 @@ export default function CheckoutPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block font-sans font-bold text-sm text-slate-700 mb-2">ZIP Code <span className="text-red-500">*</span></label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={newAddressForm.zip}
-                    onChange={(e) => { setNewAddressForm({...newAddressForm, zip: e.target.value}); setAddressErrors(prev => ({...prev, zip: ''})); }}
+                    onChange={(e) => { setNewAddressForm({ ...newAddressForm, zip: e.target.value }); setAddressErrors(prev => ({ ...prev, zip: '' })); }}
                     placeholder="123456"
                     className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0A192F] placeholder:text-slate-400 ${addressErrors.zip ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
@@ -626,17 +606,17 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Country</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={newAddressForm.country}
-                    onChange={(e) => setNewAddressForm({...newAddressForm, country: e.target.value})}
+                    onChange={(e) => setNewAddressForm({ ...newAddressForm, country: e.target.value })}
                     placeholder="India"
                     className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0A192F] placeholder:text-slate-400"
                   />
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={handleSaveAddress}
                 disabled={isSavingAddress}
                 className="w-full bg-[#111] text-white font-bold text-base py-4 rounded-xl mt-4 hover:bg-black transition-colors focus:outline-none disabled:opacity-50"
