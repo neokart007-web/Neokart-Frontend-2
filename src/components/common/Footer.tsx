@@ -88,11 +88,11 @@ export default function Footer() {
   return (
     <footer className="bg-slate-50 w-full border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-8 md:pt-12 pb-8">
-        {/* 4-Column Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 lg:gap-16">
+        {/* Footer Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-12 lg:gap-16">
 
           {/* Column 1 — Brand */}
-          <div>
+          <div className="lg:col-span-4">
             <Link href="/" className="inline-flex items-center mb-6" aria-label="HEEDY brand logo">
               <div className="relative w-52 h-14">
                 <Image
@@ -122,42 +122,45 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2 — Shop Collections */}
-          <div>
-            <ColumnTitle>SHOP COLLECTIONS</ColumnTitle>
-            <ul className="space-y-4">
-              {shopLinks.map(({ label, href }) => (
-                <li key={label}>
-                  <Link
-                    href={href}
-                    className="font-sans font-normal text-base text-slate-600 hover:text-blue-800 transition-colors duration-200"
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Links Section (Side by side on all screens) */}
+          <div className="lg:col-span-4 grid grid-cols-2 gap-8">
+            {/* Column 2 — Shop Collections */}
+            <div>
+              <ColumnTitle>SHOP COLLECTIONS</ColumnTitle>
+              <ul className="space-y-4">
+                {shopLinks.map(({ label, href }) => (
+                  <li key={label}>
+                    <Link
+                      href={href}
+                      className="font-sans font-normal text-base text-slate-600 hover:text-blue-800 transition-colors duration-200"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Column 3 — Client Care */}
-          <div>
-            <ColumnTitle>CLIENT CARE</ColumnTitle>
-            <ul className="space-y-4">
-              {careLinks.map(({ label, href }) => (
-                <li key={label}>
-                  <Link
-                    href={href}
-                    className="font-sans font-normal text-base text-slate-600 hover:text-blue-800 transition-colors duration-200"
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* Column 3 — Client Care */}
+            <div>
+              <ColumnTitle>CLIENT CARE</ColumnTitle>
+              <ul className="space-y-4">
+                {careLinks.map(({ label, href }) => (
+                  <li key={label}>
+                    <Link
+                      href={href}
+                      className="font-sans font-normal text-base text-slate-600 hover:text-blue-800 transition-colors duration-200"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Column 4 — Get In Touch */}
-          <div>
+          <div className="lg:col-span-4">
             <ColumnTitle>GET IN TOUCH</ColumnTitle>
             <ul className="space-y-6">
               {contacts.map(({ icon: Icon, label, value, href }) => (
