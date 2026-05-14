@@ -225,7 +225,7 @@ export default function CheckoutPage() {
         return;
       }
 
-      const { razorpayOrder, isMock } = createOrderRes.data.data;
+      const { razorpayOrder, isMock, key_id } = createOrderRes.data.data;
 
       if (isMock) {
         setIsVerifyingPayment(true);
@@ -261,7 +261,7 @@ export default function CheckoutPage() {
       }
 
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_YourTestKey", // Replace with actual Key ID in env
+        key: key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_YourTestKey", // Use backend key first to guarantee match
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         name: "Heedy",
