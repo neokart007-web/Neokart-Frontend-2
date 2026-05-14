@@ -121,7 +121,7 @@ export default function ProductDetailPage() {
           setProduct(found);
         }
       } catch (error) {
-        console.error("Failed to fetch products:", error);
+        console.error("Failed to fetch product:", error);
       } finally {
         setLoading(false);
       }
@@ -244,9 +244,8 @@ export default function ProductDetailPage() {
                         }
                       }}
                       aria-label={`View image ${i + 1}`}
-                      className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-shrink-0 ${
-                        i === activeImage ? "border-slate-900 shadow-md" : "border-slate-200 hover:border-slate-400"
-                      } ${!showAllThumbs && isExtra && hasMore ? "hidden md:block" : ""}`}
+                      className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-shrink-0 ${i === activeImage ? "border-slate-900 shadow-md" : "border-slate-200 hover:border-slate-400"
+                        } ${!showAllThumbs && isExtra && hasMore ? "hidden md:block" : ""}`}
                     >
                       <Image src={src} alt={`Thumbnail ${i + 1}`} fill sizes="80px" className="object-cover" />
                       {!showAllThumbs && isFourth && hasMore && (
@@ -328,8 +327,8 @@ export default function ProductDetailPage() {
                         key={size}
                         onClick={() => handleSizeChange(i)}
                         className={`px-5 py-2.5 rounded-xl font-sans font-semibold text-sm border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative ${i === selectedSize
-                            ? "border-slate-900 bg-slate-900 text-white"
-                            : "border-slate-200 text-slate-600 hover:border-slate-400 bg-white"
+                          ? "border-slate-900 bg-slate-900 text-white"
+                          : "border-slate-200 text-slate-600 hover:border-slate-400 bg-white"
                           }`}
                         aria-pressed={i === selectedSize}
                       >
@@ -348,26 +347,26 @@ export default function ProductDetailPage() {
                   Quantity
                 </p>
               </div>
-                <div className="inline-flex items-center border-2 border-slate-200 rounded-xl overflow-hidden">
-                  <button
-                    onClick={() => setQty((q) => Math.max(1, q - 1))}
-                    aria-label="Decrease quantity"
-                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
-                    disabled={qty <= 1}
-                  >
-                    <Minus size={16} />
-                  </button>
-                  <span className="w-14 text-center font-bold text-lg text-slate-900 select-none">
-                    {qty}
-                  </span>
-                  <button
-                    onClick={() => setQty((q) => q + 1)}
-                    aria-label="Increase quantity"
-                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
-                  >
-                    <Plus size={16} />
-                  </button>
-                </div>
+              <div className="inline-flex items-center border-2 border-slate-200 rounded-xl overflow-hidden">
+                <button
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
+                  aria-label="Decrease quantity"
+                  className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
+                  disabled={qty <= 1}
+                >
+                  <Minus size={16} />
+                </button>
+                <span className="w-14 text-center font-bold text-lg text-slate-900 select-none">
+                  {qty}
+                </span>
+                <button
+                  onClick={() => setQty((q) => q + 1)}
+                  aria-label="Increase quantity"
+                  className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
             </div>
 
             {/* CTAs */}
@@ -376,8 +375,8 @@ export default function ProductDetailPage() {
                 onClick={handleAddToCart}
                 aria-label="Add to cart"
                 className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${added
-                    ? "bg-green-500 text-white"
-                    : "bg-slate-900 text-white hover:bg-slate-800"
+                  ? "bg-green-500 text-white"
+                  : "bg-slate-900 text-white hover:bg-slate-800"
                   }`}
               >
                 {added ? (
