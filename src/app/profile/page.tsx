@@ -47,15 +47,48 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
-    // Load user from localStorage
-    const savedUser = localStorage.getItem("heedy_user");
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    } else {
-      // Not logged in, redirect to sign-in
-      router.push("/sign-in");
-    }
-    setLoading(false);
+    const handleAuth = async () => {
+      // Check for auto-login token in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get('token');
+
+      if (urlToken) {
+        try {
+          const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
+          const API_URL = `${baseUrl}/api`;
+
+          const res = await axios.get(`${API_URL}/v1/users/profile`, {
+            headers: { 'Authorization': `Bearer ${urlToken}` }
+          });
+
+          if (res.data.success) {
+            const userData = { ...res.data.data, token: urlToken };
+            setUser(userData);
+            localStorage.setItem("heedy_user", JSON.stringify(userData));
+
+            // Clean up the URL to remove the token without reloading the page
+            window.history.replaceState({}, document.title, window.location.pathname);
+            setLoading(false);
+            return;
+          }
+        } catch (err) {
+          console.error("Auto-login failed:", err);
+          // Fallback to regular auth below if auto-login fails
+        }
+      }
+
+      // Load user from localStorage
+      const savedUser = localStorage.getItem("heedy_user");
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      } else {
+        // Not logged in, redirect to sign-in
+        router.push("/sign-in");
+      }
+      setLoading(false);
+    };
+
+    handleAuth();
   }, [router]);
 
   useEffect(() => {
@@ -393,11 +426,10 @@ export default function ProfilePage() {
                           </div>
                           <div className="text-right">
                             <p className="font-bold text-sm text-slate-900">₹{order.total}</p>
-                            <span className={`inline-block mt-1 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider ${
-                              order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700' :
+                            <span className={`inline-block mt-1 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider ${order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700' :
                               order.orderStatus === 'cancelled' ? 'bg-red-100 text-red-700' :
-                              order.orderStatus === 'processing' ? 'bg-blue-100 text-blue-700' :
-                              'bg-slate-100 text-slate-700'
+                                order.orderStatus === 'processing' ? 'bg-blue-100 text-blue-700' :
+                                  'bg-slate-100 text-slate-700'
                               }`}>
                               {order.orderStatus}
                             </span>
@@ -440,11 +472,10 @@ export default function ProfilePage() {
                             <p className="text-sm font-bold text-slate-900">#{order._id.substring(0, 8)}</p>
                           </div>
                           <div className="flex-1 text-right min-w-[100px]">
-                            <span className={`inline-block text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider ${
-                              order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700' :
+                            <span className={`inline-block text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider ${order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700' :
                               order.orderStatus === 'cancelled' ? 'bg-red-100 text-red-700' :
-                              order.orderStatus === 'processing' ? 'bg-blue-100 text-blue-700' :
-                              'bg-slate-100 text-slate-700'
+                                order.orderStatus === 'processing' ? 'bg-blue-100 text-blue-700' :
+                                  'bg-slate-100 text-slate-700'
                               }`}>
                               {order.orderStatus}
                             </span>
