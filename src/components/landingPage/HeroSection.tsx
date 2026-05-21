@@ -249,8 +249,6 @@ export default function HeroSection() {
                 <p className="mb-10 text-white/90 max-w-xl font-sans font-normal text-base md:text-lg lg:text-xl tracking-wide pointer-events-auto">
                   {slide.subheadline}
                 </p>
-
-
               </div>
             </motion.div>
           ) : null
