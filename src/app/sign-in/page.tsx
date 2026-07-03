@@ -68,10 +68,10 @@ export default function SignInPage() {
 
         <div className="max-w-lg mx-auto relative z-10 w-full">
           <p className="font-sans font-bold text-xs uppercase tracking-[0.25em] text-slate-800 mb-6 md:mb-8">
-            HEEDY LUXURY COMMERCE
+            NEOKART LUXURY COMMERCE
           </p>
 
-          <h1 className="font-serif font-normal text-4xl md:text-5xl lg:text-6xl text-[#0A192F] leading-tight mb-6">
+          <h1 className="font-serif font-normal text-4xl md:text-5xl lg:text-6xl text-[#0a0a0a] leading-tight mb-6">
             Welcome back to your premium beauty experience.
           </h1>
 
@@ -173,7 +173,7 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-[#0A192F] text-white font-bold text-base rounded-xl py-4 sm:py-5 flex items-center justify-center gap-2 group hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70"
+              className="w-full bg-[#0a0a0a] text-white font-bold text-base rounded-xl py-4 sm:py-5 flex items-center justify-center gap-2 group hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70"
             >
               {isSubmitting ? "Signing in..." : "Sign In"}
               <ArrowRight size={20} className="transition-transform group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:transform-none" />
@@ -203,7 +203,7 @@ export default function SignInPage() {
               href="/register"
               className="inline-flex items-center justify-center gap-1.5 font-sans text-sm text-slate-500 hover:text-slate-900 transition-colors"
             >
-              New to Heedy? <span className="font-bold text-slate-800">Create Account</span> <UserPlus size={16} className="text-slate-800" />
+              New to Neokart? <span className="font-bold text-slate-800">Create Account</span> <UserPlus size={16} className="text-slate-800" />
             </Link>
           </div>
         </div>

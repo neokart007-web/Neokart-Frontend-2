@@ -50,10 +50,10 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterValues) => {
     try {
       setApiError(null);
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL 
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL
         ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
         : 'http://localhost:5000';
-      
+
       await axios.post(`${baseUrl}/api/v1/auth/register`, {
         name: data.fullName,
         email: data.email,
@@ -82,17 +82,17 @@ export default function RegisterPage() {
       <div className="bg-[#F5F0EB] lg:w-5/12 flex flex-col justify-center px-6 py-10 lg:p-16 xl:p-24 relative overflow-hidden">
         <div className="max-w-md mx-auto relative z-10 w-full">
           <p className="font-sans font-bold text-xs uppercase tracking-[0.25em] text-slate-800 mb-6 lg:mb-8">
-            HEEDY MEMBERSHIP
+            NEOKART MEMBERSHIP
           </p>
-          
-          <h1 className="font-serif font-normal text-4xl lg:text-5xl xl:text-6xl text-[#0A192F] leading-tight mb-6">
+
+          <h1 className="font-serif font-normal text-4xl lg:text-5xl xl:text-6xl text-[#0a0a0a] leading-tight mb-6">
             Join the world of refined beauty.
           </h1>
-          
+
           <p className="font-sans text-slate-600 text-base leading-relaxed mb-12 max-w-sm">
             Create an account to unlock exclusive benefits, personalized recommendations, and a faster checkout experience.
           </p>
-          
+
           <div className="flex items-center gap-3 text-slate-700">
             <ShieldCheck size={20} className="text-slate-900" />
             <span className="font-sans font-medium text-sm">Premium Account Access</span>
@@ -116,7 +116,7 @@ export default function RegisterPage() {
                 {apiError}
               </div>
             )}
-            
+
             {/* Full Name */}
             <div>
               <label htmlFor="fullName" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
@@ -127,9 +127,8 @@ export default function RegisterPage() {
                 type="text"
                 placeholder="John Doe"
                 {...register("fullName")}
-                className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${
-                  errors.fullName ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
-                }`}
+                className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${errors.fullName ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                  }`}
                 aria-invalid={errors.fullName ? "true" : "false"}
               />
               {errors.fullName && <p className="mt-2 text-sm text-red-500">{errors.fullName.message}</p>}
@@ -146,9 +145,8 @@ export default function RegisterPage() {
                   type="email"
                   placeholder="you@luxury.com"
                   {...register("email")}
-                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${
-                    errors.email ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
-                  }`}
+                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${errors.email ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                    }`}
                 />
                 {errors.email && <p className="mt-2 text-sm text-red-500">{errors.email.message}</p>}
               </div>
@@ -162,9 +160,8 @@ export default function RegisterPage() {
                   type="tel"
                   placeholder="1234567890"
                   {...register("phone")}
-                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${
-                    errors.phone ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
-                  }`}
+                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${errors.phone ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                    }`}
                 />
                 {errors.phone && <p className="mt-2 text-sm text-red-500">{errors.phone.message}</p>}
               </div>
@@ -182,9 +179,8 @@ export default function RegisterPage() {
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     {...register("password")}
-                    className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors pr-14 ${
-                      errors.password ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
-                    }`}
+                    className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors pr-14 ${errors.password ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                      }`}
                   />
                   <button
                     type="button"
@@ -208,9 +204,8 @@ export default function RegisterPage() {
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="••••••••"
                     {...register("confirmPassword")}
-                    className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors pr-14 ${
-                      errors.confirmPassword ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
-                    }`}
+                    className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors pr-14 ${errors.confirmPassword ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                      }`}
                   />
                   <button
                     type="button"
@@ -288,9 +283,8 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="10001"
                   {...register("zipCode")}
-                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${
-                    errors.zipCode ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
-                  }`}
+                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${errors.zipCode ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                    }`}
                 />
                 {errors.zipCode && <p className="mt-2 text-sm text-red-500">{errors.zipCode.message}</p>}
               </div>
@@ -312,9 +306,9 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-[#0A192F] text-white font-bold text-base rounded-xl py-4 sm:py-5 mt-6 flex items-center justify-center gap-2 group hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70"
+              className="w-full bg-[#0a0a0a] text-white font-bold text-base rounded-xl py-4 sm:py-5 mt-6 flex items-center justify-center gap-2 group hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70"
             >
-              {isSubmitting ? "Creating Account..." : "Create Account"} 
+              {isSubmitting ? "Creating Account..." : "Create Account"}
               <ArrowRight size={20} className="transition-transform group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:transform-none" />
             </button>
           </form>
@@ -338,8 +332,8 @@ export default function RegisterPage() {
 
           {/* Footer */}
           <div className="text-center">
-            <Link 
-              href="/sign-in" 
+            <Link
+              href="/sign-in"
               className="font-sans text-sm text-slate-500 hover:text-slate-900 transition-colors"
             >
               Already have an account? <span className="font-bold text-slate-800">Sign In</span>

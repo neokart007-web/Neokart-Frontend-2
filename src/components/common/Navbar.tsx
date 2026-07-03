@@ -132,7 +132,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-24 lg:h-28 px-6 lg:px-12 flex items-center justify-between border-b ${scrolled ? "bg-white shadow-sm border-slate-200" : "bg-white border-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-14 lg:h-16 px-6 lg:px-12 flex items-center justify-between border-b ${scrolled ? "bg-white shadow-sm border-slate-200" : "bg-white border-transparent"
         }`}
     >
       {/* ── Mobile Menu Toggle & Profile (Left on Mobile) ── */}
@@ -155,11 +155,11 @@ export default function Navbar() {
 
       {/* ── Logo (Center on Mobile, Left on Desktop) ── */}
       <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 flex items-center z-10">
-        <Link href="/" className="flex-shrink-0" aria-label="HEEDY home">
-          <div className="relative w-56 sm:w-64 md:w-80 lg:w-96 h-20 lg:h-24">
+        <Link href="/" className="flex-shrink-0" aria-label="NEOKART home">
+          <div className="relative w-40 sm:w-44 md:w-52 lg:w-56 h-10 lg:h-12">
             <Image
-              src="/logo.jpg"
-              alt="HEEDY Logo"
+              src="/logo.jpeg"
+              alt="Neokart Logo"
               fill
               sizes="(max-width: 640px) 224px, (max-width: 768px) 256px, (max-width: 1024px) 320px, 384px"
               className="object-contain md:object-left object-center"

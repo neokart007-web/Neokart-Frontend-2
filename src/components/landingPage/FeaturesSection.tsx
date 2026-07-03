@@ -94,7 +94,7 @@ export default function FeaturesSection() {
             style={{ transitionDelay: "200ms" }}
           >
             <p className="font-sans font-normal text-base md:text-lg text-slate-400 leading-relaxed">
-              Every drop of HEEDY is crafted with powerful actives to protect, nourish, and elevate your skin in modern environments.
+              Every drop of NEOKART is crafted with powerful actives to protect, nourish, and elevate your skin in modern environments.
             </p>
           </div>
         </div>

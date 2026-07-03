@@ -264,7 +264,7 @@ export default function CheckoutPage() {
         key: key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_YourTestKey", // Use backend key first to guarantee match
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
-        name: "Heedy",
+        name: "Neokart",
         description: "Order Payment",
         order_id: razorpayOrder.id,
         handler: async function (response: any) {
@@ -305,7 +305,7 @@ export default function CheckoutPage() {
           contact: "9999999999"
         },
         theme: {
-          color: "#0A192F"
+          color: "#0a0a0a"
         }
       };
 
@@ -325,7 +325,7 @@ export default function CheckoutPage() {
   if (isVerifyingPayment) {
     return (
       <div className="min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center">
-        <div className="w-16 h-16 border-4 border-slate-200 border-t-[#0A192F] rounded-full animate-spin mb-6"></div>
+        <div className="w-16 h-16 border-4 border-slate-200 border-t-[#0a0a0a] rounded-full animate-spin mb-6"></div>
         <h2 className="font-sans font-bold text-2xl text-slate-900 mb-2">Verifying Payment</h2>
         <p className="text-slate-500">Please wait while we confirm your order. Do not close this window.</p>
       </div>
@@ -349,10 +349,10 @@ export default function CheckoutPage() {
             {/* Step 1: SHIPPING DESTINATION */}
             <div className="flex flex-col gap-6">
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-[#0A192F] text-white flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">
+                <div className="w-8 h-8 rounded-full bg-[#0a0a0a] text-white flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">
                   1
                 </div>
-                <h2 className="font-sans font-black text-4xl lg:text-5xl text-[#0A192F] uppercase tracking-tight text-left w-full leading-[1.1]">
+                <h2 className="font-sans font-black text-4xl lg:text-5xl text-[#0a0a0a] uppercase tracking-tight text-left w-full leading-[1.1]">
                   Shipping<br />Destination
                 </h2>
               </div>
@@ -368,7 +368,7 @@ export default function CheckoutPage() {
                         }`}
                     >
                       {isSelected && (
-                        <div className="absolute -top-3 right-8 w-6 h-6 bg-[#0A192F] text-white rounded-full flex items-center justify-center border-4 border-white box-content">
+                        <div className="absolute -top-3 right-8 w-6 h-6 bg-[#0a0a0a] text-white rounded-full flex items-center justify-center border-4 border-white box-content">
                           <Check size={12} strokeWidth={4} />
                         </div>
                       )}
@@ -402,10 +402,10 @@ export default function CheckoutPage() {
             {/* Step 2: PROMOTION CODE */}
             <div className="flex flex-col gap-6">
               <div className="flex items-center gap-4">
-                <div className="w-8 h-8 rounded-full bg-[#0A192F] text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-[#0a0a0a] text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
                   2
                 </div>
-                <h2 className="font-sans font-bold text-xl text-[#0A192F] uppercase tracking-wider">
+                <h2 className="font-sans font-bold text-xl text-[#0a0a0a] uppercase tracking-wider">
                   Promotion Code
                 </h2>
               </div>
@@ -417,7 +417,7 @@ export default function CheckoutPage() {
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
                     placeholder="Enter gift card or discount code"
-                    className="flex-1 border border-slate-200 rounded-xl px-5 py-4 text-base focus:outline-none focus:ring-2 focus:ring-[#0A192F] bg-white placeholder:text-slate-400"
+                    className="flex-1 border border-slate-200 rounded-xl px-5 py-4 text-base focus:outline-none focus:ring-2 focus:ring-[#0a0a0a] bg-white placeholder:text-slate-400"
                   />
                   <button
                     onClick={handleApplyPromo}
@@ -460,7 +460,7 @@ export default function CheckoutPage() {
                         sizes="64px"
                         className="object-cover"
                       />
-                      <div className="absolute top-0 right-0 bg-[#0A192F] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-bl-lg">
+                      <div className="absolute top-0 right-0 bg-[#0a0a0a] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-bl-lg">
                         {item.quantity}
                       </div>
                     </div>
@@ -558,7 +558,7 @@ export default function CheckoutPage() {
                   value={newAddressForm.street}
                   onChange={(e) => { setNewAddressForm({ ...newAddressForm, street: e.target.value }); setAddressErrors(prev => ({ ...prev, street: '' })); }}
                   placeholder="e.g. 123 Luxury Lane"
-                  className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0A192F] placeholder:text-slate-400 ${addressErrors.street ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                  className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-400 ${addressErrors.street ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                 />
                 {addressErrors.street && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.street}</p>}
               </div>
@@ -571,7 +571,7 @@ export default function CheckoutPage() {
                     value={newAddressForm.city}
                     onChange={(e) => { setNewAddressForm({ ...newAddressForm, city: e.target.value }); setAddressErrors(prev => ({ ...prev, city: '' })); }}
                     placeholder="Mumbai"
-                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0A192F] placeholder:text-slate-400 ${addressErrors.city ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-400 ${addressErrors.city ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
                   {addressErrors.city && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.city}</p>}
                 </div>
@@ -582,7 +582,7 @@ export default function CheckoutPage() {
                     value={newAddressForm.state}
                     onChange={(e) => { setNewAddressForm({ ...newAddressForm, state: e.target.value }); setAddressErrors(prev => ({ ...prev, state: '' })); }}
                     placeholder="Maharashtra"
-                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0A192F] placeholder:text-slate-400 ${addressErrors.state ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-400 ${addressErrors.state ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
                   {addressErrors.state && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.state}</p>}
                 </div>
@@ -596,7 +596,7 @@ export default function CheckoutPage() {
                     value={newAddressForm.zip}
                     onChange={(e) => { setNewAddressForm({ ...newAddressForm, zip: e.target.value }); setAddressErrors(prev => ({ ...prev, zip: '' })); }}
                     placeholder="123456"
-                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0A192F] placeholder:text-slate-400 ${addressErrors.zip ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-400 ${addressErrors.zip ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
                   {addressErrors.zip && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.zip}</p>}
                 </div>
@@ -607,7 +607,7 @@ export default function CheckoutPage() {
                     value={newAddressForm.country}
                     onChange={(e) => setNewAddressForm({ ...newAddressForm, country: e.target.value })}
                     placeholder="India"
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0A192F] placeholder:text-slate-400"
+                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-400"
                   />
                 </div>
               </div>

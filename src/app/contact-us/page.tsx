@@ -440,10 +440,10 @@ export default function ContactUsPage() {
 
   return (
     <>
-      <title>Contact Us – HEEDY | We&apos;d Love to Hear From You</title>
+      <title>Contact Us – NEOKART | We&apos;d Love to Hear From You</title>
       <meta
         name="description"
-        content="Get in touch with the HEEDY team. Call, email, or send us a message — we're here to help with all your skincare needs."
+        content="Get in touch with the NEOKART team. Call, email, or send us a message — we're here to help with all your skincare needs."
       />
 
       <main id="top" className="min-h-screen bg-slate-50">
@@ -453,7 +453,7 @@ export default function ContactUsPage() {
           className="relative w-full pt-32 md:pt-40 pb-36 md:pb-48"
           style={{
             background:
-              "linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #1E40AF 100%)",
+              "linear-gradient(135deg, #0a0a0a 0%, #4a3391 50%, #593dab 100%)",
           }}
         >
           <div className="max-w-4xl mx-auto px-6 text-center">

@@ -21,7 +21,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "HEEDY",
+  title: "NEOKART",
   description: "Premium skincare and cosmetics for your daily routine.",
 };
 

@@ -145,7 +145,7 @@ export default function TestimonialsSection() {
   if (!loading && testimonials.length === 0) return null;
 
   return (
-    <section ref={sectionRef} className="bg-[#0A1E3D] w-full py-12 md:py-20 lg:py-24 overflow-hidden">
+    <section ref={sectionRef} className="bg-[#0a0a0a] w-full py-12 md:py-20 lg:py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
 
         {/* Section Header */}

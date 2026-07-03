@@ -87,12 +87,12 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
   return (
     <article
       aria-label={product.name}
-      className="bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-lg transition-shadow duration-300 group flex flex-col motion-reduce:transition-none"
+      className="bg-[#121212] rounded-2xl overflow-hidden border border-white/10 hover:shadow-lg hover:border-white/20 transition-all duration-300 group flex flex-col motion-reduce:transition-none"
       style={{ animationDelay: `${index * 60}ms` }}
     >
       <Link href={`/products/${product.id}`} className="flex flex-col flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500">
         {/* Image */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-slate-50">
+        <div className="relative aspect-[3/4] overflow-hidden bg-[#1a1a1a]">
           {product.images.map((src, i) => (
             <Image
               key={i}
@@ -115,17 +115,17 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         <div className="px-4 pt-4 pb-3 flex flex-col flex-grow text-center">
           <div className="flex justify-center gap-0.5 mb-2" aria-label={`${product.rating} out of 5 stars`}>
             {renderStars(product.rating)}
-            <span className="text-sm text-slate-400 ml-1">({product.reviewCount})</span>
+            <span className="text-sm text-slate-500 ml-1">({product.reviewCount})</span>
           </div>
-          <h3 className="font-sans font-bold text-sm md:text-base text-slate-900 leading-tight mb-2 md:mb-3 line-clamp-2">
+          <h3 className="font-sans font-bold text-sm md:text-base text-white leading-tight mb-2 md:mb-3 line-clamp-2">
             {product.name}
           </h3>
           <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-2">
-            <span className="font-bold text-lg md:text-xl text-slate-900">{product.currency}{product.currentPrice}</span>
-            <span className="text-xs md:text-sm line-through text-slate-400">{product.currency}{product.originalPrice}</span>
+            <span className="font-bold text-lg md:text-xl text-white">{product.currency}{product.currentPrice}</span>
+            <span className="text-xs md:text-sm line-through text-white/40">{product.currency}{product.originalPrice}</span>
           </div>
-          <p className="font-bold text-[10px] uppercase tracking-wider text-red-600 mb-1">{product.dealBadge}</p>
-          <p className="text-xs text-slate-500 line-clamp-1 mb-2">{product.benefit}</p>
+          <p className="font-bold text-[10px] uppercase tracking-wider text-red-500 mb-1">{product.dealBadge}</p>
+          <p className="text-xs text-slate-400 line-clamp-1 mb-2">{product.benefit}</p>
         </div>
       </Link>
       <div className="px-4 pb-6">
@@ -134,7 +134,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           aria-label={`Add ${product.name} to cart`}
           className={`w-full text-white font-bold text-[10px] md:text-xs uppercase tracking-widest py-2 md:py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none ${isAdded
             ? "bg-green-600 hover:bg-green-700"
-            : "bg-slate-900 hover:bg-slate-800"
+            : "bg-[#593dab] hover:bg-[#4a3391]"
             }`}
         >
           {isAdded ? "ADDED TO CART" : "ADD TO CART"}
@@ -185,7 +185,7 @@ function FilterSidebar({
     <aside aria-label="Product filters" className="p-6 space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="font-sans font-bold text-xl tracking-wider uppercase text-slate-900">FILTERS</h2>
+        <h2 className="font-sans font-bold text-xl tracking-wider uppercase text-white">FILTERS</h2>
         <button onClick={onClear} className="font-sans font-semibold text-sm text-blue-500 hover:text-blue-700 transition-colors">
           CLEAR
         </button>
@@ -203,8 +203,8 @@ function FilterSidebar({
               aria-pressed={activeCategory === cat.id}
               onClick={() => onCategoryChange(cat.id)}
               className={`px-5 py-3 rounded-xl font-sans font-medium text-sm text-left transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${activeCategory === cat.id
-                ? "bg-slate-900 text-white"
-                : "bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200"
+                ? "bg-[#593dab] text-white"
+                : "bg-[#121212] text-slate-300 border border-white/10 hover:bg-[#1a1a1a]"
                 }`}
             >
               {cat.label}
@@ -512,11 +512,11 @@ function ProductsContent() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-30">
+    <div className="min-h-screen bg-[#0a0a0a] pt-30">
       <div className="flex min-h-[calc(100vh-5rem)]">
 
         {/* ── Desktop Sidebar ─────────────────────────────────────── */}
-        <aside className="hidden lg:block w-72 xl:w-80 bg-slate-50 border-r border-slate-200 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto shrink-0">
+        <aside className="hidden lg:block w-72 xl:w-80 bg-[#0a0a0a] border-r border-white/10 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto shrink-0">
           <FilterSidebar {...sidebarProps} />
         </aside>
 
@@ -528,13 +528,13 @@ function ProductsContent() {
               onClick={() => setDrawerOpen(false)}
               aria-hidden="true"
             />
-            <div className="fixed inset-y-0 left-0 z-50 w-80 max-w-full bg-white overflow-y-auto lg:hidden shadow-2xl">
+            <div className="fixed inset-y-0 left-0 z-50 w-80 max-w-full bg-[#0a0a0a] overflow-y-auto lg:hidden shadow-2xl">
               <div className="flex items-center justify-between px-6 pt-6 pb-2">
-                <span className="font-bold text-xl uppercase tracking-wider text-slate-900">Filters</span>
+                <span className="font-bold text-xl uppercase tracking-wider text-white">Filters</span>
                 <button
                   onClick={() => setDrawerOpen(false)}
                   aria-label="Close filters"
-                  className="p-2 rounded-full hover:bg-slate-100 transition-colors"
+                  className="p-2 rounded-full hover:bg-white/10 text-white transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -549,7 +549,7 @@ function ProductsContent() {
           {/* Mobile Back to Home */}
           <Link
             href="/"
-            className="md:hidden inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 mb-5 transition-colors text-sm font-semibold bg-white border border-slate-200 px-5 py-2.5 rounded-full shadow-sm"
+            className="md:hidden inline-flex items-center gap-2 text-slate-300 hover:text-white mb-5 transition-colors text-sm font-semibold bg-[#121212] border border-white/10 px-5 py-2.5 rounded-full shadow-sm"
           >
             <ChevronLeft size={16} />
             Back to Home
@@ -559,7 +559,7 @@ function ProductsContent() {
           <div className="relative w-full aspect-[16/9] md:aspect-[21/9] lg:aspect-[24/9] rounded-2xl overflow-hidden mb-8 bg-blue-50/50">
             <Image
               src="/images/shop-banner.png"
-              alt="HEEDY Moisturizing Brightening Sunscreen"
+              alt="NEOKART Moisturizing Brightening Sunscreen"
               fill
               priority
               className="object-cover object-center"
@@ -567,25 +567,25 @@ function ProductsContent() {
           </div>
 
           {/* Results Bar + Mobile Filter Toggle */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white border border-slate-100 rounded-xl px-5 py-4 mb-6 gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-[#121212] border border-white/10 rounded-xl px-5 py-4 mb-6 gap-4">
             <div>
-              <p className="font-sans text-base text-slate-600">
+              <p className="font-sans text-base text-slate-300">
                 Showing{" "}
-                <span className="font-bold text-slate-900">{filtered.length}</span>
+                <span className="font-bold text-white">{filtered.length}</span>
                 {" "}of{" "}
-                <span className="font-bold text-slate-900">{products.length}</span>
+                <span className="font-bold text-white">{products.length}</span>
                 {" "}Products
               </p>
               {searchTerm && (
-                <p className="font-sans text-sm text-slate-500 mt-1">
-                  Search results for: <span className="font-bold text-slate-900">&quot;{searchTerm}&quot;</span>
+                <p className="font-sans text-sm text-slate-400 mt-1">
+                  Search results for: <span className="font-bold text-white">&quot;{searchTerm}&quot;</span>
                   <button onClick={() => setSearchTerm("")} className="ml-3 text-blue-500 hover:underline text-xs">Clear search</button>
                 </p>
               )}
             </div>
             <button
               onClick={() => setDrawerOpen(true)}
-              className="lg:hidden flex items-center gap-2 font-sans font-bold text-sm text-slate-700 border border-slate-200 rounded-xl px-4 py-2 hover:bg-slate-50 transition-colors"
+              className="lg:hidden flex items-center gap-2 font-sans font-bold text-sm text-white border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors"
             >
               <SlidersHorizontal size={16} />
               Filters
@@ -595,7 +595,7 @@ function ProductsContent() {
           {/* Product Grid */}
           {loading ? (
             <div className="flex items-center justify-center py-24">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-slate-900"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
             </div>
           ) : filtered.length > 0 ? (
             <>
@@ -616,13 +616,13 @@ function ProductsContent() {
           ) : (
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <p className="text-4xl mb-4">🔍</p>
-              <h3 className="font-serif text-2xl text-slate-900 mb-2">No products found</h3>
-              <p className="font-sans text-base text-slate-500 mb-6">
+              <h3 className="font-serif text-2xl text-white mb-2">No products found</h3>
+              <p className="font-sans text-base text-slate-400 mb-6">
                 Try adjusting your filters or clearing them to see all products.
               </p>
               <button
                 onClick={handleClear}
-                className="bg-slate-900 text-white font-bold text-sm uppercase tracking-widest px-8 py-3 rounded-full hover:bg-slate-800 transition-colors"
+                className="bg-[#593dab] text-white font-bold text-sm uppercase tracking-widest px-8 py-3 rounded-full hover:bg-[#4a3391] transition-colors"
               >
                 CLEAR FILTERS
               </button>
@@ -639,8 +639,8 @@ function ProductsContent() {
 export default function ProductsPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-white pt-20 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-slate-900"></div>
+      <div className="min-h-screen bg-[#0a0a0a] pt-20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
       </div>
     }>
       <ProductsContent />

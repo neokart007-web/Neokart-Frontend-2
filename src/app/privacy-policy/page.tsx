@@ -14,10 +14,10 @@ export default function PrivacyPolicyPage() {
 
   return (
     <>
-      <title>Privacy Policy – HEEDY</title>
+      <title>Privacy Policy – NEOKART</title>
       <meta
         name="description"
-        content="Read the Privacy Policy of HEEDY. Learn how we collect, use, and protect your data."
+        content="Read the Privacy Policy of NEOKART. Learn how we collect, use, and protect your data."
       />
 
       <main id="top" className="min-h-screen bg-slate-50">
@@ -26,7 +26,7 @@ export default function PrivacyPolicyPage() {
           className="relative w-full pt-32 md:pt-40 pb-36 md:pb-48"
           style={{
             background:
-              "linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #1E40AF 100%)",
+              "linear-gradient(135deg, #0a0a0a 0%, #4a3391 50%, #593dab 100%)",
           }}
         >
           <div className="max-w-4xl mx-auto px-6 text-center">
@@ -71,7 +71,7 @@ export default function PrivacyPolicyPage() {
                   "opacity 0.6s ease 300ms, transform 0.6s ease 300ms",
               }}
             >
-              At HEEDY, we value your privacy. This policy explains how we collect and use your data.
+              At NEOKART, we value your privacy. This policy explains how we collect and use your data.
             </p>
           </div>
         </section>

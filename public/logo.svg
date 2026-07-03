@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 150" role="img" aria-label="Neokart">
+  <style>
+    .word { font-family: "Arial Black", "Arial Bold", Arial, "Helvetica Neue", Helvetica, sans-serif; font-weight: 900; font-size: 130px; letter-spacing: -3px; }
+  </style>
+  <!-- "Ne" in purple -->
+  <text x="0" y="115" class="word" fill="#6C3FCE">Ne</text>
+  <!-- custom "o" as a location-pin marker -->
+  <g transform="translate(178,72)">
+    <circle cx="0" cy="0" r="38" fill="#6C3FCE"/>
+    <path d="M -13 -20 L 22 0 L -13 20 Z" fill="#ffffff"/>
+    <circle cx="0" cy="0" r="9" fill="#6C3FCE"/>
+  </g>
+  <!-- "kart" in black -->
+  <text x="228" y="115" class="word" fill="#141414">kart</text>
+</svg>

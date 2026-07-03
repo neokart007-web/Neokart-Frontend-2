@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ffffff;
 }
 
 @theme inline {
@@ -11,6 +11,39 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-playfair);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Brand theme — two colors
+   Accent : #593dab (purple)  ·  Dark/Ink : #0a0a0a (near-black)
+
+   The UI was built on the `blue` accent scale and the darkest `slate` tones,
+   so we remap those design tokens instead of touching every className. Every
+   existing `*-blue-*` utility now renders purple, and the darkest `slate`
+   tones render as brand black. Neutral grays (slate 50–700) are left intact.
+   ────────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Accent — purple ramp centred on #593dab (was `blue`) */
+  --color-blue-50: #f4f1fb;
+  --color-blue-100: #eae3f7;
+  --color-blue-200: #d5c8ef;
+  --color-blue-300: #b6a2e3;
+  --color-blue-400: #9376d2;
+  --color-blue-500: #7654c1;
+  --color-blue-600: #593dab;
+  --color-blue-700: #4a3391;
+  --color-blue-800: #3d2b76;
+  --color-blue-900: #332561;
+  --color-blue-950: #1f1640;
+
+  /* Dark / ink — brand black (was darkest `slate`) */
+  --color-slate-800: #1a1a1a;
+  --color-slate-900: #0a0a0a;
+  --color-slate-950: #050505;
+
+  /* Named brand tokens for direct use (`bg-brand`, `text-ink`, …) */
+  --color-brand: #593dab;
+  --color-ink: #0a0a0a;
 }
 
 body {
@@ -26,20 +59,36 @@ body {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* ── Radix Accordion smooth height animation ─────────────────────────────── */
 
 @keyframes accordion-open {
-  from { height: 0; opacity: 0; }
-  to   { height: var(--radix-accordion-content-height); opacity: 1; }
+  from {
+    height: 0;
+    opacity: 0;
+  }
+
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
 }
 
 @keyframes accordion-close {
-  from { height: var(--radix-accordion-content-height); opacity: 1; }
-  to   { height: 0; opacity: 0; }
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+
+  to {
+    height: 0;
+    opacity: 0;
+  }
 }
 
 .accordion-content[data-state="open"] {
@@ -53,6 +102,13 @@ body {
 /* ── Fade-in-up entrance animation ──────────────────────────────────────── */
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(1.5rem); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

@@ -62,13 +62,13 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
 
   return (
     <article
-      className={`bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-lg transition-all duration-300 group flex flex-col h-full motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      className={`bg-[#121212] rounded-2xl overflow-hidden border border-white/10 hover:shadow-lg hover:border-white/20 transition-all duration-300 group flex flex-col h-full motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       style={{ transitionDelay: `${index * 100}ms` }}
     >
       <Link href={`/products/${product.id}`} className="flex flex-col flex-grow outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-2xl overflow-hidden">
         {/* Image Area */}
-        <div className="relative overflow-hidden aspect-[3/4] bg-slate-50 flex-shrink-0">
+        <div className="relative overflow-hidden aspect-[3/4] bg-[#1a1a1a] flex-shrink-0">
           {product.images.slice(0, 2).map((img, i) => {
             const hasMultipleImages = product.images.length > 1;
             return (
@@ -94,27 +94,27 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
         <div className="px-4 pt-4 pb-3 flex flex-col flex-grow">
           <div className="flex items-center justify-center gap-0.5 mb-2" aria-label={`${product.rating} out of 5 stars`}>
             {renderStars(product.rating)}
-            <span className="text-sm font-medium text-slate-400 ml-1">({product.reviewCount})</span>
+            <span className="text-sm font-medium text-slate-500 ml-1">({product.reviewCount})</span>
           </div>
 
-          <h3 className="font-sans font-bold text-sm md:text-lg text-slate-900 leading-tight text-center mb-2 md:mb-3 line-clamp-2">
+          <h3 className="font-sans font-bold text-sm md:text-lg text-white leading-tight text-center mb-2 md:mb-3 line-clamp-2">
             {product.name}
           </h3>
 
           <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-2" aria-label={`Sale price ${product.currentPrice}, original price ${product.originalPrice}`}>
-            <span className="font-sans font-bold text-lg md:text-2xl text-slate-900">
+            <span className="font-sans font-bold text-lg md:text-2xl text-white">
               {product.currency}{product.currentPrice}
             </span>
-            <span className="font-sans font-normal text-xs md:text-sm text-slate-400 line-through">
+            <span className="font-sans font-normal text-xs md:text-sm text-white/40 line-through">
               {product.currency}{product.originalPrice}
             </span>
           </div>
 
-          <div className="text-red-600 font-sans font-bold text-[10px] sm:text-xs uppercase tracking-wider text-center mb-1">
+          <div className="text-red-500 font-sans font-bold text-[10px] sm:text-xs uppercase tracking-wider text-center mb-1">
             {product.dealBadge}
           </div>
 
-          <p className="font-sans font-normal text-xs text-slate-500 text-center line-clamp-1">
+          <p className="font-sans font-normal text-xs text-slate-400 text-center line-clamp-1">
             {product.benefit}
           </p>
         </div>
@@ -125,7 +125,7 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
           aria-label={`Add ${product.name} to cart`}
           className={`w-full text-white font-sans font-bold text-[10px] md:text-xs uppercase tracking-widest py-2 md:py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${isAdded
               ? "bg-green-600 hover:bg-green-700"
-              : "bg-slate-900 hover:bg-slate-800"
+              : "bg-[#593dab] hover:bg-[#4a3391]"
             }`}
         >
           {isAdded ? "ADDED TO CART" : "ADD TO CART"}
@@ -190,17 +190,17 @@ export default function ProductSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-white pt-6 md:pt-12 pb-12 md:pb-20 w-full">
+    <section ref={sectionRef} className="bg-[#0a0a0a] pt-6 md:pt-12 pb-12 md:pb-20 w-full">
       {/* Section Header */}
       <div className="text-center px-6">
         <h2
-          className={`font-sans font-black text-5xl md:text-6xl lg:text-7xl tracking-[0.15em] uppercase text-slate-900 mb-4 transition-all duration-600 ease-out motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          className={`font-sans font-black text-2xl md:text-3xl lg:text-4xl tracking-[0.15em] uppercase text-white mb-4 transition-all duration-600 ease-out motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
         >
           OUR PRODUCTS
         </h2>
         <div
-          className={`w-20 h-1 bg-slate-900 mx-auto mt-4 mb-8 md:mb-12 transition-transform duration-500 delay-200 origin-center motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "scale-x-100" : "scale-x-0"
+          className={`w-20 h-1 bg-[#593dab] mx-auto mt-4 mb-8 md:mb-12 transition-transform duration-500 delay-200 origin-center motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "scale-x-100" : "scale-x-0"
             }`}
         />
       </div>
@@ -223,7 +223,7 @@ export default function ProductSection() {
       <div className="flex justify-center mt-8 md:mt-12 px-6">
         <Link
           href="/products"
-          className="border border-slate-900 text-slate-900 font-sans font-bold text-xs md:text-sm uppercase tracking-widest py-4 px-12 hover:bg-slate-900 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="border border-white text-white font-sans font-bold text-xs md:text-sm uppercase tracking-widest py-4 px-12 hover:bg-white hover:text-[#0a0a0a] transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
         >
           VIEW ALL PRODUCTS
         </Link>

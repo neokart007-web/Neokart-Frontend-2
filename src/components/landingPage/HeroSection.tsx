@@ -174,17 +174,17 @@ export default function HeroSection() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#593dab]"
           >
-            <h1 className="text-black font-sans font-black text-6xl md:text-8xl tracking-[0.2em] uppercase mb-8">
-              HEEDY
+            <h1 className="text-white font-sans font-black text-6xl md:text-8xl tracking-[0.2em] uppercase mb-8">
+              NEOKART
             </h1>
-            <div className="w-64 md:w-80 h-[2px] bg-slate-100 overflow-hidden relative">
+            <div className="w-64 md:w-80 h-[2px] bg-white/25 overflow-hidden relative">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 2, ease: "easeInOut" }}
-                className="h-full bg-blue-400"
+                className="h-full bg-white"
               />
             </div>
           </motion.div>
@@ -235,7 +235,7 @@ export default function HeroSection() {
                   />
                 </div>
               </motion.div>
-              <div className="absolute inset-0 bg-black/20" /> {/* overlay */}
+              <div className="absolute inset-0 bg-[#593dab]/30" /> {/* overlay */}
 
               {/* Content specific to this slide */}
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 pointer-events-none">

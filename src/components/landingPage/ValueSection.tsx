@@ -27,7 +27,7 @@ export default function ValueSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-[#0A1E3D] w-full py-16 md:py-24 lg:py-32 overflow-hidden">
+    <section ref={sectionRef} className="bg-[#0a0a0a] w-full py-16 md:py-24 lg:py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
 
@@ -45,7 +45,7 @@ export default function ValueSection() {
               sizes="(max-width: 1024px) 80vw, 50vw"
             />
             {/* Subtle overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A1E3D]/30 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/30 to-transparent pointer-events-none" />
           </div>
 
           {/* Content Panel */}
@@ -75,7 +75,7 @@ export default function ValueSection() {
                 }`}
               style={{ transitionDelay: "500ms" }}
             >
-              At HEEDY, we don&apos;t just create products. We create experiences that elevate your everyday lifestyle.
+              At NEOKART, we don&apos;t just create products. We create experiences that elevate your everyday lifestyle.
             </p>
 
             {/* Feature Grid */}
@@ -145,7 +145,7 @@ export default function ValueSection() {
             <Link
               href="/process"
               aria-label="Discover our scientific process and product development"
-              className={`mt-10 self-center md:self-start bg-white text-[#0A1E3D] px-8 md:px-10 py-4 md:py-5 rounded-full font-sans font-bold text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-slate-100 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-[#0A1E3D] motion-reduce:transition-none motion-reduce:transform-none ${
+              className={`mt-10 self-center md:self-start bg-white text-[#0a0a0a] px-8 md:px-10 py-4 md:py-5 rounded-full font-sans font-bold text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-slate-100 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-[#0a0a0a] motion-reduce:transition-none motion-reduce:transform-none ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}
               style={{ transitionDelay: "1000ms" }}
