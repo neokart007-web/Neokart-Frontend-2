@@ -17,7 +17,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const { cartCount, clearCart } = useCart();
+  const { cartCount, clearLocalCart } = useCart();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -35,10 +35,10 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
+    // Clear local session + cart state only; the DB cart is preserved for next login.
     localStorage.removeItem("heedy_user");
-    localStorage.removeItem("heedy_cart");
     setIsLoggedIn(false);
-    clearCart();
+    clearLocalCart();
     router.push("/sign-in");
   };
 

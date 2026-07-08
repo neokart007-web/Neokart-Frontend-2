@@ -18,7 +18,7 @@ interface UserProfile {
 export default function ProfilePage() {
   const router = useRouter();
   const { showToast } = useToast();
-  const { clearCart } = useCart();
+  const { clearLocalCart, syncCartAfterLogin } = useCart();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"overview" | "orders" | "addresses">("overview");
@@ -65,6 +65,9 @@ export default function ProfilePage() {
             const userData = { ...res.data.data, token: urlToken };
             setUser(userData);
             localStorage.setItem("heedy_user", JSON.stringify(userData));
+
+            // Merge any guest cart and restore the account's saved cart.
+            await syncCartAfterLogin();
 
             // Clean up the URL to remove the token without reloading the page
             window.history.replaceState({}, document.title, window.location.pathname);
@@ -220,11 +223,10 @@ export default function ProfilePage() {
   };
 
   const handleSignOut = () => {
+    // Clear local session + cart state only. The DB cart is left intact so it
+    // restores on the next login (and stays available on other devices).
     localStorage.removeItem("heedy_user");
-    localStorage.removeItem("heedy_cart");
-    clearCart();
-    // Also might want to call backend logout to clear HTTP-only cookie if there's an endpoint
-    // For now, clear local state and redirect
+    clearLocalCart();
     router.push("/sign-in");
   };
 

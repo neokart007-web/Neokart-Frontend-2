@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
 export interface CartItem {
@@ -17,79 +17,148 @@ interface CartContextType {
   cartItems: CartItem[];
   addToCart: (item: CartItem) => void;
   updateQuantity: (id: string, qty: number, size?: string) => void;
-  removeItem: (id: string) => void;
+  removeItem: (id: string, size?: string) => void;
   clearCart: () => void;
+  clearLocalCart: () => void;
+  refreshCart: () => Promise<void>;
+  syncCartAfterLogin: () => Promise<void>;
   cartCount: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+// ── Module-level helpers (no component state, safe to hoist) ──
+const getApiUrl = () => {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL
+    ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "")
+    : "http://localhost:5000";
+  return `${baseUrl}/api/v1`;
+};
 
-  const getApiUrl = () => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
-    return `${baseUrl}/api/v1`;
-  };
-
-  const getToken = () => {
-    if (typeof window !== "undefined") {
-      const userStr = localStorage.getItem("heedy_user");
-      if (userStr) {
-        return JSON.parse(userStr).token;
+const getToken = (): string | null => {
+  if (typeof window !== "undefined") {
+    const userStr = localStorage.getItem("heedy_user");
+    if (userStr) {
+      try {
+        return JSON.parse(userStr).token ?? null;
+      } catch {
+        return null;
       }
     }
-    return null;
-  };
+  }
+  return null;
+};
 
+const readLocalCart = (): CartItem[] => {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem("heedy_cart");
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+};
+
+// Map a populated backend cart (items.product) into frontend CartItem shape.
+const mapBackendItems = (items: any[]): CartItem[] =>
+  items
+    .filter((item) => item?.product) // drop lines whose product was deleted
+    .map((item) => {
+      const variant =
+        item.product.variants?.find((v: any) => v.volume === item.size) ||
+        item.product.variants?.[0];
+
+      return {
+        id: item.product._id,
+        name: item.product.name,
+        image: item.product.images?.[0] || "",
+        price: variant?.price || 0,
+        currency: "₹",
+        size: variant?.volume || item.size,
+        quantity: item.quantity,
+      };
+    });
+
+export function CartProvider({ children }: { children: React.ReactNode }) {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [, setIsLoaded] = useState(false);
+
+  // Fetch the authenticated user's cart from the backend and adopt it as source of truth.
+  const refreshCart = useCallback(async () => {
+    const token = getToken();
+    if (!token) return;
+    try {
+      const res = await axios.get(`${getApiUrl()}/cart`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.data.success && res.data.data?.items) {
+        const items = mapBackendItems(res.data.data.items);
+        setCartItems(items);
+        localStorage.setItem("heedy_cart", JSON.stringify(items));
+      }
+    } catch (err) {
+      console.error("Failed to refresh cart from backend", err);
+    }
+  }, []);
+
+  // Called right after login: merge any guest cart into the DB cart, then adopt the result.
+  const syncCartAfterLogin = useCallback(async () => {
+    const token = getToken();
+    if (!token) return;
+
+    const guestItems = readLocalCart();
+
+    try {
+      if (guestItems.length > 0) {
+        const res = await axios.post(
+          `${getApiUrl()}/cart/merge`,
+          {
+            items: guestItems.map((i) => ({
+              productId: i.id,
+              quantity: i.quantity,
+              size: i.size,
+            })),
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (res.data.success && res.data.data?.items) {
+          const items = mapBackendItems(res.data.data.items);
+          setCartItems(items);
+          localStorage.setItem("heedy_cart", JSON.stringify(items));
+          return;
+        }
+      }
+      // No guest items (or merge returned nothing) — just pull the saved cart.
+      await refreshCart();
+    } catch (err) {
+      console.error("Failed to sync cart after login", err);
+      await refreshCart();
+    }
+  }, [refreshCart]);
+
+  // On first mount / browser refresh: restore from backend if logged in, else from localStorage.
   useEffect(() => {
     const initCart = async () => {
       const token = getToken();
       if (token) {
-        try {
-          const res = await axios.get(`${getApiUrl()}/cart`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          if (res.data.success && res.data.data?.items) {
-            const items = res.data.data.items.map((item: any) => {
-              // Extract from variant
-              const variant = item.product.variants?.find((v: any) => v.volume === item.size) || item.product.variants?.[0];
-              
-              return {
-                id: item.product._id,
-                name: item.product.name,
-                image: item.product.images?.[0] || '',
-                price: variant?.price || 0,
-                currency: '₹',
-                size: variant?.volume || item.size,
-                quantity: item.quantity
-              };
-            });
-            setCartItems(items);
-            localStorage.setItem("heedy_cart", JSON.stringify(items));
-          }
-        } catch (err) {
-          console.error("Failed to fetch cart from backend", err);
-          const localCart = localStorage.getItem("heedy_cart");
-          if (localCart) setCartItems(JSON.parse(localCart));
-        }
+        await refreshCart();
       } else {
-        const localCart = localStorage.getItem("heedy_cart");
-        if (localCart) setCartItems(JSON.parse(localCart));
+        setCartItems(readLocalCart());
       }
       setIsLoaded(true);
     };
     initCart();
-  }, []);
+  }, [refreshCart]);
 
   const addToCart = async (item: CartItem) => {
-    setCartItems(prev => {
-      const existing = prev.find(i => i.id === item.id && i.size === item.size);
+    setCartItems((prev) => {
+      const existing = prev.find((i) => i.id === item.id && i.size === item.size);
       let newCart;
       if (existing) {
         const newQty = existing.quantity + item.quantity;
-        newCart = prev.map(i => (i.id === item.id && i.size === item.size) ? { ...i, quantity: newQty } : i);
+        newCart = prev.map((i) =>
+          i.id === item.id && i.size === item.size ? { ...i, quantity: newQty } : i
+        );
       } else {
         newCart = [...prev, item];
       }
@@ -100,13 +169,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const token = getToken();
     if (token) {
       try {
-        await axios.post(`${getApiUrl()}/cart`, {
-          productId: item.id,
-          quantity: item.quantity,
-          size: item.size
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await axios.post(
+          `${getApiUrl()}/cart`,
+          { productId: item.id, quantity: item.quantity, size: item.size },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
       } catch (err) {
         console.error("Failed to add to backend cart", err);
       }
@@ -115,10 +182,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const updateQuantity = async (id: string, qty: number, size?: string) => {
     if (qty < 1) return;
-    setCartItems(prev => {
-      const existing = prev.find(i => i.id === id && i.size === size);
-      const validQty = qty;
-      const newCart = prev.map(i => (i.id === id && i.size === size) ? { ...i, quantity: validQty } : i);
+    setCartItems((prev) => {
+      const newCart = prev.map((i) =>
+        i.id === id && i.size === size ? { ...i, quantity: qty } : i
+      );
       localStorage.setItem("heedy_cart", JSON.stringify(newCart));
       return newCart;
     });
@@ -126,21 +193,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const token = getToken();
     if (token) {
       try {
-        await axios.put(`${getApiUrl()}/cart/item`, {
-          productId: id,
-          quantity: qty
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await axios.put(
+          `${getApiUrl()}/cart/item`,
+          { productId: id, quantity: qty, size },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
       } catch (err) {
         console.error("Failed to update backend cart", err);
       }
     }
   };
 
-  const removeItem = async (id: string) => {
-    setCartItems(prev => {
-      const newCart = prev.filter(i => i.id !== id);
+  const removeItem = async (id: string, size?: string) => {
+    setCartItems((prev) => {
+      const newCart = prev.filter((i) => i.id !== id);
       localStorage.setItem("heedy_cart", JSON.stringify(newCart));
       return newCart;
     });
@@ -150,7 +216,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       try {
         await axios.delete(`${getApiUrl()}/cart/item`, {
           headers: { Authorization: `Bearer ${token}` },
-          data: { productId: id }
+          data: { productId: id, size },
         });
       } catch (err) {
         console.error("Failed to remove from backend cart", err);
@@ -158,6 +224,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Clears everywhere — local + backend. Use after a successful order.
   const clearCart = async () => {
     setCartItems([]);
     localStorage.removeItem("heedy_cart");
@@ -166,7 +233,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (token) {
       try {
         await axios.delete(`${getApiUrl()}/cart`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
       } catch (err) {
         console.error("Failed to clear backend cart", err);
@@ -174,10 +241,28 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Clears local state only, leaving the DB cart intact. Use on logout.
+  const clearLocalCart = () => {
+    setCartItems([]);
+    localStorage.removeItem("heedy_cart");
+  };
+
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, updateQuantity, removeItem, clearCart, cartCount }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addToCart,
+        updateQuantity,
+        removeItem,
+        clearCart,
+        clearLocalCart,
+        refreshCart,
+        syncCartAfterLogin,
+        cartCount,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

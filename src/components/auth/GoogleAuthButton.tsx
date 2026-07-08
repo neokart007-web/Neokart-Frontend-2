@@ -4,6 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useToast } from "../../context/ToastContext";
+import { useCart } from "../../context/CartContext";
 
 interface GoogleAuthButtonProps {
   mode?: "signin" | "register";
@@ -20,6 +21,7 @@ function GoogleAuthButtonConfigured({ mode = "signin" }: GoogleAuthButtonProps) 
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { showToast } = useToast();
+  const { syncCartAfterLogin } = useCart();
 
   // Dynamically import useGoogleLogin only when configured
   const { useGoogleLogin } = require("@react-oauth/google");
@@ -54,6 +56,8 @@ function GoogleAuthButtonConfigured({ mode = "signin" }: GoogleAuthButtonProps) 
 
         if (res.data.data) {
           localStorage.setItem("heedy_user", JSON.stringify(res.data.data));
+          // Merge any guest cart into the account cart and restore saved items.
+          await syncCartAfterLogin();
           showToast(
             mode === "signin"
               ? "Signed in with Google successfully!"

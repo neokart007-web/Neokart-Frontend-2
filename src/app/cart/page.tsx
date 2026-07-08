@@ -64,7 +64,7 @@ export default function CartPage() {
                 >
                   {/* Remove Button (Desktop absolute, Mobile relative) */}
                   <button
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => removeItem(item.id, item.size)}
                     aria-label="Remove item"
                     className="absolute top-2 right-4 sm:top-6 sm:right-6 text-slate-400 hover:text-red-500 transition-colors focus:outline-none"
                   >
