@@ -364,7 +364,7 @@ export default function CheckoutPage() {
                     <button
                       key={addr.id}
                       onClick={() => setSelectedAddressId(addr.id)}
-                      className={`relative border rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 w-full max-w-sm bg-black text-left transition-colors ${isSelected ? "border-slate-300" : "border-slate-200 hover:border-slate-300"
+                      className={`relative border rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 w-full max-w-sm bg-[#aea3cf]/95 text-left transition-colors ${isSelected ? "border-slate-300" : "border-slate-200 hover:border-slate-300"
                         }`}
                     >
                       {isSelected && (
@@ -389,7 +389,7 @@ export default function CheckoutPage() {
                 {/* New Address Button */}
                 <button
                   onClick={() => setIsAddressModalOpen(true)}
-                  className="border border-slate-200 rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 w-full sm:w-40 flex flex-col items-center justify-center gap-2 bg-black hover:bg-slate-50 transition-colors text-slate-900 font-bold text-sm"
+                  className="border border-slate-200 rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 w-full sm:w-40 flex flex-col items-center justify-center gap-2 bg-[#aea3cf]/95 hover:bg-[#aea3cf] transition-colors text-slate-900 font-bold text-sm"
                 >
                   <span className="text-xl font-normal">+</span>
                   <span className="text-center">New<br />Address</span>
@@ -417,7 +417,7 @@ export default function CheckoutPage() {
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
                     placeholder="Enter gift card or discount code"
-                    className="flex-1 border border-slate-200 rounded-xl px-5 py-4 text-base focus:outline-none focus:ring-2 focus:ring-[#0a0a0a] bg-black placeholder:text-slate-400"
+                    className="flex-1 border border-slate-200 rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0a0a0a] bg-[#aea3cf]/95 placeholder:text-slate-700"
                   />
                   <button
                     onClick={handleApplyPromo}
@@ -442,7 +442,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* ── Right Column (Order Bag) ── */}
-          <div className="lg:col-span-4 bg-black p-8 rounded-3xl shadow-sm border border-slate-100 sticky top-32">
+          <div className="lg:col-span-4 bg-[#aea3cf]/95 p-8 rounded-3xl shadow-sm border border-slate-100 sticky top-32">
             <h2 className="font-sans font-bold text-xl text-slate-900 mb-8">Order Bag</h2>
 
             {/* Cart Items List */}
@@ -535,7 +535,7 @@ export default function CheckoutPage() {
             className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
             onClick={() => setIsAddressModalOpen(false)}
           />
-          <div className="relative bg-black rounded-[2rem] w-full max-w-lg shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative bg-[#aea3cf]/95 rounded-[2rem] w-full max-w-lg shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Header */}
             <div className="flex items-center justify-between p-6 sm:p-8 border-b border-slate-100">
               <h2 className="font-sans font-black text-2xl text-slate-900 tracking-tight">
