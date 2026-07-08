@@ -324,20 +324,20 @@ export default function CheckoutPage() {
 
   if (isVerifyingPayment) {
     return (
-      <div className="min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center">
-        <div className="w-16 h-16 border-4 border-slate-200 border-t-[#0a0a0a] rounded-full animate-spin mb-6"></div>
-        <h2 className="font-sans font-bold text-2xl text-slate-900 mb-2">Verifying Payment</h2>
-        <p className="text-slate-500">Please wait while we confirm your order. Do not close this window.</p>
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center">
+        <div className="w-16 h-16 border-4 border-slate-600 border-t-white rounded-full animate-spin mb-6"></div>
+        <h2 className="font-sans font-bold text-2xl text-white mb-2">Verifying Payment</h2>
+        <p className="text-slate-400">Please wait while we confirm your order. Do not close this window.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] pt-24 pb-16">
+    <div className="min-h-screen bg-black pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-8">
 
         {/* Main Title */}
-        <h1 className="font-sans font-bold text-3xl md:text-4xl text-slate-900 mb-12">
+        <h1 className="font-sans font-bold text-3xl md:text-4xl text-white mb-12">
           Secure Checkout
         </h1>
 
@@ -349,10 +349,10 @@ export default function CheckoutPage() {
             {/* Step 1: SHIPPING DESTINATION */}
             <div className="flex flex-col gap-6">
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-[#0a0a0a] text-white flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">
+                <div className="w-8 h-8 rounded-full bg-white text-[#0a0a0a] flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">
                   1
                 </div>
-                <h2 className="font-sans font-black text-4xl lg:text-5xl text-[#0a0a0a] uppercase tracking-tight text-left w-full leading-[1.1]">
+                <h2 className="font-sans font-black text-4xl lg:text-5xl text-white uppercase tracking-tight text-left w-full leading-[1.1]">
                   Shipping<br />Destination
                 </h2>
               </div>
@@ -402,10 +402,10 @@ export default function CheckoutPage() {
             {/* Step 2: PROMOTION CODE */}
             <div className="flex flex-col gap-6">
               <div className="flex items-center gap-4">
-                <div className="w-8 h-8 rounded-full bg-[#0a0a0a] text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-white text-[#0a0a0a] flex items-center justify-center text-sm font-bold flex-shrink-0">
                   2
                 </div>
-                <h2 className="font-sans font-bold text-xl text-[#0a0a0a] uppercase tracking-wider">
+                <h2 className="font-sans font-bold text-xl text-white uppercase tracking-wider">
                   Promotion Code
                 </h2>
               </div>
@@ -558,7 +558,7 @@ export default function CheckoutPage() {
                   value={newAddressForm.street}
                   onChange={(e) => { setNewAddressForm({ ...newAddressForm, street: e.target.value }); setAddressErrors(prev => ({ ...prev, street: '' })); }}
                   placeholder="e.g. 123 Luxury Lane"
-                  className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-400 ${addressErrors.street ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                  className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-700 ${addressErrors.street ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                 />
                 {addressErrors.street && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.street}</p>}
               </div>
@@ -571,7 +571,7 @@ export default function CheckoutPage() {
                     value={newAddressForm.city}
                     onChange={(e) => { setNewAddressForm({ ...newAddressForm, city: e.target.value }); setAddressErrors(prev => ({ ...prev, city: '' })); }}
                     placeholder="Mumbai"
-                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-400 ${addressErrors.city ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-700 ${addressErrors.city ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
                   {addressErrors.city && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.city}</p>}
                 </div>
@@ -582,7 +582,7 @@ export default function CheckoutPage() {
                     value={newAddressForm.state}
                     onChange={(e) => { setNewAddressForm({ ...newAddressForm, state: e.target.value }); setAddressErrors(prev => ({ ...prev, state: '' })); }}
                     placeholder="Maharashtra"
-                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-400 ${addressErrors.state ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-700 ${addressErrors.state ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
                   {addressErrors.state && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.state}</p>}
                 </div>
@@ -596,7 +596,7 @@ export default function CheckoutPage() {
                     value={newAddressForm.zip}
                     onChange={(e) => { setNewAddressForm({ ...newAddressForm, zip: e.target.value }); setAddressErrors(prev => ({ ...prev, zip: '' })); }}
                     placeholder="123456"
-                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-400 ${addressErrors.zip ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-700 ${addressErrors.zip ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
                   {addressErrors.zip && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.zip}</p>}
                 </div>
@@ -607,7 +607,7 @@ export default function CheckoutPage() {
                     value={newAddressForm.country}
                     onChange={(e) => setNewAddressForm({ ...newAddressForm, country: e.target.value })}
                     placeholder="India"
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-400"
+                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-700"
                   />
                 </div>
               </div>
