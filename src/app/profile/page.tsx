@@ -280,7 +280,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center pt-20">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-slate-900"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-white"></div>
       </div>
     );
   }
@@ -293,7 +293,7 @@ export default function ProfilePage() {
     : "U";
 
   return (
-    <div className="min-h-screen bg-[#F8F9FB] pt-20 flex justify-center">
+    <div className="min-h-screen bg-black pt-20 flex justify-center">
       <div className="max-w-[1200px] w-full flex flex-col md:flex-row bg-black min-h-[calc(100vh-5rem)]">
 
         {/* ── Sidebar ── */}
@@ -306,7 +306,7 @@ export default function ProfilePage() {
             <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">
               VIP
             </div>
-            <h2 className="text-lg font-bold text-slate-900 text-center mb-1 line-clamp-1">
+            <h2 className="text-lg font-bold text-white text-center mb-1 line-clamp-1">
               {user.name}
             </h2>
             <p className={`text-xs text-slate-500 text-center truncate w-full ${!user.phone ? 'mb-4' : 'mb-1'}`}>
@@ -372,17 +372,17 @@ export default function ProfilePage() {
         </aside>
 
         {/* ── Main Content ── */}
-        <main className="flex-1 p-8 md:p-12 lg:p-16 bg-[#F8F9FB]">
+        <main className="flex-1 p-8 md:p-12 lg:p-16 bg-black">
           <div className="max-w-3xl">
             {activeTab === "overview" && (
               <>
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-12">
-                  <h1 className="font-serif text-4xl md:text-5xl text-slate-900 leading-tight">
+                  <h1 className="font-serif text-4xl md:text-5xl text-white leading-tight">
                     Account <br />
                     Overview
                   </h1>
-                  <p className="text-base text-slate-500 max-w-sm md:text-right pt-2 leading-relaxed">
+                  <p className="text-base text-slate-300 max-w-sm md:text-right pt-2 leading-relaxed">
                     Welcome back, {user.name.split(' ')[0]}. Here&apos;s what&apos;s happening with your account.
                   </p>
                 </div>
@@ -405,8 +405,8 @@ export default function ProfilePage() {
 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 gap-6 mb-12">
-                  <div className="bg-black rounded-3xl p-8 border border-slate-100 shadow-sm">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
+                  <div className="bg-[#aea3cf]/95 rounded-3xl p-8 border border-slate-100 shadow-sm">
+                    <p className="text-xs font-bold text-slate-600 uppercase tracking-widest mb-4">
                       TOTAL ORDERS
                     </p>
                     <p className="font-sans font-bold text-4xl text-slate-900">{orders.length}</p>
@@ -415,11 +415,11 @@ export default function ProfilePage() {
 
                 {/* Recent Activity */}
                 <div>
-                  <p className="text-sm font-medium text-slate-700 mb-6">Recent Activity</p>
+                  <p className="text-sm font-medium text-slate-300 mb-6">Recent Activity</p>
                   {orders.length > 0 ? (
                     <div className="flex flex-col gap-4">
                       {orders.slice(0, 3).map((order) => (
-                        <div key={order._id} className="flex items-center justify-between p-4 bg-black border border-slate-100 rounded-xl shadow-sm">
+                        <div key={order._id} className="flex items-center justify-between p-4 bg-[#aea3cf]/95 border border-slate-100 rounded-xl shadow-sm">
                           <div>
                             <p className="font-bold text-sm text-slate-900">Order #{order._id.substring(0, 8)}</p>
                             <p className="text-xs text-slate-500 mt-1">{`${String(new Date(order.createdAt).getDate()).padStart(2, '0')}/${String(new Date(order.createdAt).getMonth() + 1).padStart(2, '0')}/${new Date(order.createdAt).getFullYear()}`}</p>
@@ -438,7 +438,7 @@ export default function ProfilePage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-sm text-slate-600">No recent orders found.</div>
+                    <div className="text-sm text-slate-400">No recent orders found.</div>
                   )}
                 </div>
               </>
@@ -446,7 +446,7 @@ export default function ProfilePage() {
 
             {activeTab === "orders" && (
               <div>
-                <h1 className="font-serif text-4xl text-slate-900 leading-tight mb-8">My Orders</h1>
+                <h1 className="font-serif text-4xl text-white leading-tight mb-8">My Orders</h1>
 
                 {orders.length > 0 ? (
                   <div className="flex flex-col gap-6">
@@ -457,7 +457,7 @@ export default function ProfilePage() {
                       if (!aIsDone && bIsDone) return -1;
                       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                     }).map((order) => (
-                      <div key={order._id} className={`bg-black rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden ${(order.orderStatus === 'delivered' || order.orderStatus === 'cancelled') ? 'opacity-80' : ''}`}>
+                      <div key={order._id} className={`bg-[#aea3cf]/95 rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden ${(order.orderStatus === 'delivered' || order.orderStatus === 'cancelled') ? 'opacity-80' : ''}`}>
                         <div className="bg-slate-50 border-b border-slate-100 p-6 sm:px-8 flex flex-wrap items-center justify-between gap-4">
                           <div>
                             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Order Placed</p>
@@ -504,7 +504,7 @@ export default function ProfilePage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-slate-500">You have no orders yet.</p>
+                  <p className="text-slate-300">You have no orders yet.</p>
                 )}
               </div>
             )}
@@ -512,17 +512,17 @@ export default function ProfilePage() {
             {activeTab === "addresses" && (
               <div className="flex flex-col">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                  <h1 className="font-serif text-4xl text-slate-900 leading-tight">
+                  <h1 className="font-serif text-4xl text-white leading-tight">
                     Shipping<br />Addresses
                   </h1>
-                  <p className="text-slate-500 text-sm max-w-xs text-left md:text-right pt-2">
+                  <p className="text-slate-300 text-sm max-w-xs text-left md:text-right pt-2">
                     Manage your delivery locations for a faster checkout.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6">
                   {addresses.map((addr, idx) => (
-                    <div key={addr._id || idx} className="bg-black rounded-[2rem] p-8 border border-slate-100 shadow-sm relative">
+                    <div key={addr._id || idx} className="bg-[#aea3cf]/95 rounded-[2rem] p-8 border border-slate-100 shadow-sm relative">
                       <h3 className="font-bold text-lg text-slate-900 mb-4">Address {idx + 1}</h3>
                       <div className="text-slate-500 text-base leading-relaxed mb-6">
                         {addr.street && <p>{addr.street}</p>}
@@ -584,7 +584,7 @@ export default function ProfilePage() {
             className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
             onClick={() => setIsAddressModalOpen(false)}
           />
-          <div className="relative bg-black rounded-[2rem] w-full max-w-lg shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative bg-[#aea3cf]/95 rounded-[2rem] w-full max-w-lg shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-6 sm:p-8 border-b border-slate-100">
               <h2 className="font-sans font-black text-2xl text-slate-900 tracking-tight">
                 {editingAddressId ? "Edit Shipping Address" : "New Shipping Address"}
@@ -605,7 +605,7 @@ export default function ProfilePage() {
                   value={newAddressForm.street}
                   onChange={(e) => { setNewAddressForm({ ...newAddressForm, street: e.target.value }); setAddressErrors(prev => ({ ...prev, street: '' })); }}
                   placeholder="e.g. 123 Luxury Lane"
-                  className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400 ${addressErrors.street ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                  className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700 ${addressErrors.street ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                 />
                 {addressErrors.street && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.street}</p>}
               </div>
@@ -618,7 +618,7 @@ export default function ProfilePage() {
                     value={newAddressForm.apartment}
                     onChange={(e) => setNewAddressForm({ ...newAddressForm, apartment: e.target.value })}
                     placeholder="e.g. Apt 4B"
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700"
                   />
                 </div>
                 <div>
@@ -628,7 +628,7 @@ export default function ProfilePage() {
                     value={newAddressForm.landmark}
                     onChange={(e) => setNewAddressForm({ ...newAddressForm, landmark: e.target.value })}
                     placeholder="e.g. Near City Mall"
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700"
                   />
                 </div>
               </div>
@@ -641,7 +641,7 @@ export default function ProfilePage() {
                     value={newAddressForm.city}
                     onChange={(e) => { setNewAddressForm({ ...newAddressForm, city: e.target.value }); setAddressErrors(prev => ({ ...prev, city: '' })); }}
                     placeholder="Mumbai"
-                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400 ${addressErrors.city ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700 ${addressErrors.city ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
                   {addressErrors.city && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.city}</p>}
                 </div>
@@ -652,7 +652,7 @@ export default function ProfilePage() {
                     value={newAddressForm.state}
                     onChange={(e) => { setNewAddressForm({ ...newAddressForm, state: e.target.value }); setAddressErrors(prev => ({ ...prev, state: '' })); }}
                     placeholder="Maharashtra"
-                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400 ${addressErrors.state ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700 ${addressErrors.state ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
                   {addressErrors.state && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.state}</p>}
                 </div>
@@ -666,7 +666,7 @@ export default function ProfilePage() {
                     value={newAddressForm.zip}
                     onChange={(e) => { setNewAddressForm({ ...newAddressForm, zip: e.target.value }); setAddressErrors(prev => ({ ...prev, zip: '' })); }}
                     placeholder="123456"
-                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400 ${addressErrors.zip ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700 ${addressErrors.zip ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
                   {addressErrors.zip && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.zip}</p>}
                 </div>
@@ -677,7 +677,7 @@ export default function ProfilePage() {
                     value={newAddressForm.country}
                     onChange={(e) => setNewAddressForm({ ...newAddressForm, country: e.target.value })}
                     placeholder="India"
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700"
                   />
                 </div>
               </div>
@@ -701,7 +701,7 @@ export default function ProfilePage() {
             className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
             onClick={() => setDeleteConfirmId(null)}
           />
-          <div className="relative bg-black rounded-[2rem] w-full max-w-sm shadow-xl p-8 text-center">
+          <div className="relative bg-[#aea3cf]/95 rounded-[2rem] w-full max-w-sm shadow-xl p-8 text-center">
             <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-5">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
             </div>
@@ -735,7 +735,7 @@ export default function ProfilePage() {
             className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
             onClick={() => setIsEditProfileOpen(false)}
           />
-          <div className="relative bg-black rounded-[2rem] w-full max-w-md shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative bg-[#aea3cf]/95 rounded-[2rem] w-full max-w-md shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-6 sm:p-8 border-b border-slate-100">
               <h2 className="font-sans font-black text-2xl text-slate-900 tracking-tight">
                 Edit Profile
@@ -756,7 +756,7 @@ export default function ProfilePage() {
                   value={editProfileForm.name}
                   onChange={(e) => setEditProfileForm({ ...editProfileForm, name: e.target.value })}
                   placeholder="Your Name"
-                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700"
                 />
               </div>
 
@@ -767,7 +767,7 @@ export default function ProfilePage() {
                   value={editProfileForm.phone}
                   onChange={(e) => setEditProfileForm({ ...editProfileForm, phone: e.target.value })}
                   placeholder="e.g. +91 9876543210"
-                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700"
                 />
                 <p className="text-[12px] text-slate-500 mt-2">Required for delivery and order updates.</p>
               </div>

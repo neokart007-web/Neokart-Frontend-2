@@ -1,14 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ShieldCheck, Zap, LogIn, UserPlus } from "lucide-react";
+import { ShieldCheck, UserPlus } from "lucide-react";
 import GoogleAuthButton from "../../components/auth/GoogleAuthButton";
-
-const benefits = [
-  { icon: LogIn, label: "Continue with Google" },
-  { icon: Zap, label: "Quick account creation" },
-  { icon: ShieldCheck, label: "Secure login" },
-];
 
 export default function SignInPage() {
   return (
@@ -48,18 +42,6 @@ export default function SignInPage() {
           <p className="font-sans text-slate-400 text-base mb-10">
             Continue with your Google account.
           </p>
-
-          {/* Benefits */}
-          <ul className="space-y-4 mb-10">
-            {benefits.map(({ icon: Icon, label }) => (
-              <li key={label} className="flex items-center gap-3 text-slate-200">
-                <span className="flex items-center justify-center w-9 h-9 rounded-full bg-[#aea3cf]/95 text-slate-900 flex-shrink-0">
-                  <Icon size={18} />
-                </span>
-                <span className="font-sans text-base">{label}</span>
-              </li>
-            ))}
-          </ul>
 
           {/* Google SSO */}
           <div className="mb-10">
