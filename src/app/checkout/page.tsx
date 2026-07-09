@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
-import { Check, CreditCard, ShieldCheck, MapPin, X } from "lucide-react";
+import { Check, CreditCard, ShieldCheck, MapPin, X, Banknote, ArrowLeft } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import { useToast } from "../../context/ToastContext";
 
@@ -30,6 +30,11 @@ export default function CheckoutPage() {
 
   const [isSavingAddress, setIsSavingAddress] = useState(false);
   const [isVerifyingPayment, setIsVerifyingPayment] = useState(false);
+
+  // Checkout flow step: "shipping" (address + promo) → "payment" (choose how to pay).
+  const [step, setStep] = useState<"shipping" | "payment">("shipping");
+  const [paymentMethod, setPaymentMethod] = useState<"online" | "cod">("online");
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -173,7 +178,97 @@ export default function CheckoutPage() {
     });
   };
 
-  const handleCheckout = async () => {
+  // Validates the shipping step, then reveals the payment-method selection.
+  const goToPayment = () => {
+    if (!selectedAddressId) {
+      showToast("Please select a shipping address.", "warning");
+      return;
+    }
+    if (cartItems.length === 0) {
+      showToast("Your cart is empty.", "warning");
+      return;
+    }
+    setStep("payment");
+  };
+
+  // Shared helpers for building the order payload sent to the backend.
+  const getAuthToken = (): string | null => {
+    const userStr = localStorage.getItem("heedy_user");
+    if (!userStr) {
+      showToast("Please login to proceed.", "warning");
+      return null;
+    }
+    return JSON.parse(userStr).token;
+  };
+
+  const buildOrderPayload = () => {
+    const selectedAddress = addresses.find(a => a.id === selectedAddressId);
+    const orderItems = cartItems.map(item => ({
+      product: item.id,
+      quantity: item.quantity,
+      price: item.price,
+      size: item.size,
+    }));
+    const orderShippingAddress = {
+      street: selectedAddress?.line1.split(", ")[0] || '',
+      city: selectedAddress?.name || '',
+      state: selectedAddress?.line1.split(", ")[1] || '',
+      zipCode: selectedAddress?.line2 || '',
+      country: "India",
+    };
+    return { orderItems, orderShippingAddress };
+  };
+
+  // Routes "Place Order" to the chosen payment method.
+  const handlePlaceOrder = () => {
+    if (paymentMethod === "cod") {
+      handleCOD();
+    } else {
+      handleOnlinePayment();
+    }
+  };
+
+  // Cash on Delivery — save the order directly, no payment gateway.
+  const handleCOD = async () => {
+    if (cartItems.length === 0) {
+      showToast("Your cart is empty.", "warning");
+      return;
+    }
+    const token = getAuthToken();
+    if (!token) return;
+
+    setIsPlacingOrder(true);
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
+      const API_URL = `${baseUrl}/api`;
+      const { orderItems, orderShippingAddress } = buildOrderPayload();
+
+      const res = await axios.post(`${API_URL}/v1/payments/cod-order`, {
+        items: orderItems,
+        shippingAddress: orderShippingAddress,
+        subtotal,
+        discount: discountAmount,
+        shippingFee: shipping,
+        total,
+      }, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (res.data.success) {
+        clearCart();
+        window.location.href = "/order-success";
+      } else {
+        showToast(res.data.message || "Failed to place order.", "error");
+      }
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.response?.data?.message || "An error occurred while placing your order.", "error");
+    } finally {
+      setIsPlacingOrder(false);
+    }
+  };
+
+  const handleOnlinePayment = async () => {
     if (!selectedAddressId) {
       showToast("Please select a shipping address.", "warning");
       return;
@@ -185,33 +280,13 @@ export default function CheckoutPage() {
     }
 
     try {
-      const userStr = localStorage.getItem("heedy_user");
-      if (!userStr) {
-        showToast("Please login to proceed.", "warning");
-        return;
-      }
-      const { token } = JSON.parse(userStr);
+      const token = getAuthToken();
+      if (!token) return;
 
       const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
       const API_URL = `${baseUrl}/api`;
 
-      const selectedAddress = addresses.find(a => a.id === selectedAddressId);
-
-      // Format items for backend
-      const orderItems = cartItems.map(item => ({
-        product: item.id,
-        quantity: item.quantity,
-        price: item.price,
-        size: item.size,
-      }));
-
-      const orderShippingAddress = {
-        street: selectedAddress?.line1.split(", ")[0] || '',
-        city: selectedAddress?.name || '',
-        state: selectedAddress?.line1.split(", ")[1] || '',
-        zipCode: selectedAddress?.line2 || '',
-        country: "India"
-      };
+      const { orderItems, orderShippingAddress } = buildOrderPayload();
 
       // Call backend to create Razorpay order only (no DB save yet)
       const createOrderRes = await axios.post(`${API_URL}/v1/payments/create-order`, {
@@ -346,6 +421,8 @@ export default function CheckoutPage() {
           {/* ── Left Column (Steps) ── */}
           <div className="lg:col-span-8 flex flex-col gap-12">
 
+            {step === "shipping" && (
+            <>
             {/* Step 1: SHIPPING DESTINATION */}
             <div className="flex flex-col gap-6">
               <div className="flex items-start gap-4">
@@ -434,10 +511,74 @@ export default function CheckoutPage() {
                 )}
               </div>
             </div>
+            </>
+            )}
 
-            {/* <div className="h-px bg-slate-200 w-full ml-0 sm:ml-2" /> */}
+            {step === "payment" && (
+            <div className="flex flex-col gap-8">
+              {/* Back to shipping */}
+              <button
+                onClick={() => setStep("shipping")}
+                className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors self-start text-sm font-semibold"
+              >
+                <ArrowLeft size={16} />
+                Back to shipping
+              </button>
 
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 rounded-full bg-white text-[#0a0a0a] flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">
+                  3
+                </div>
+                <h2 className="font-sans font-black text-4xl lg:text-5xl text-white uppercase tracking-tight text-left w-full leading-[1.1]">
+                  Payment<br />Method
+                </h2>
+              </div>
 
+              <div className="flex flex-col gap-5 ml-0 sm:ml-12 mt-2">
+                {/* Online Payment (Razorpay) */}
+                <button
+                  onClick={() => setPaymentMethod("online")}
+                  className={`relative border rounded-2xl sm:rounded-[2rem] p-6 sm:p-7 w-full max-w-md bg-[#aea3cf]/95 text-left transition-colors ${paymentMethod === "online" ? "border-slate-300 ring-2 ring-[#0a0a0a]" : "border-slate-200 hover:border-slate-300"}`}
+                >
+                  {paymentMethod === "online" && (
+                    <div className="absolute -top-3 right-8 w-6 h-6 bg-[#0a0a0a] text-white rounded-full flex items-center justify-center border-4 border-white box-content">
+                      <Check size={12} strokeWidth={4} />
+                    </div>
+                  )}
+                  <div className="flex items-start gap-4">
+                    <CreditCard size={24} className="text-slate-700 flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-sans font-bold text-slate-900 mb-1">Online Payment</p>
+                      <p className="font-sans text-slate-600 text-sm leading-relaxed">
+                        Pay securely via card, UPI, or netbanking with Razorpay.
+                      </p>
+                    </div>
+                  </div>
+                </button>
+
+                {/* Cash on Delivery */}
+                <button
+                  onClick={() => setPaymentMethod("cod")}
+                  className={`relative border rounded-2xl sm:rounded-[2rem] p-6 sm:p-7 w-full max-w-md bg-[#aea3cf]/95 text-left transition-colors ${paymentMethod === "cod" ? "border-slate-300 ring-2 ring-[#0a0a0a]" : "border-slate-200 hover:border-slate-300"}`}
+                >
+                  {paymentMethod === "cod" && (
+                    <div className="absolute -top-3 right-8 w-6 h-6 bg-[#0a0a0a] text-white rounded-full flex items-center justify-center border-4 border-white box-content">
+                      <Check size={12} strokeWidth={4} />
+                    </div>
+                  )}
+                  <div className="flex items-start gap-4">
+                    <Banknote size={24} className="text-slate-700 flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-sans font-bold text-slate-900 mb-1">Cash on Delivery</p>
+                      <p className="font-sans text-slate-600 text-sm leading-relaxed">
+                        Pay with cash when your order is delivered to your door.
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+            )}
 
           </div>
 
@@ -511,10 +652,17 @@ export default function CheckoutPage() {
             </div>
 
             <button
-              onClick={handleCheckout}
-              className="w-full bg-[#111] text-white font-bold text-base py-4 sm:py-5 rounded-xl hover:bg-black transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 mb-4"
+              onClick={step === "shipping" ? goToPayment : handlePlaceOrder}
+              disabled={isPlacingOrder}
+              className="w-full bg-[#111] text-white font-bold text-base py-4 sm:py-5 rounded-xl hover:bg-black transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 mb-4 disabled:opacity-50"
             >
-              Secure Checkout
+              {step === "shipping"
+                ? "Secure Checkout"
+                : isPlacingOrder
+                ? "Placing Order..."
+                : paymentMethod === "cod"
+                ? "Place Order"
+                : "Pay Now"}
             </button>
 
             <div className="flex items-center justify-center gap-2 text-slate-400">
