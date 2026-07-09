@@ -45,19 +45,22 @@ function GoogleAuthButtonConfigured({ mode = "signin" }: GoogleAuthButtonProps) 
 
         const { sub: googleId, email, name, picture } = userInfo.data;
 
-        // Send to our backend
+        // Send to our backend. `mode` tells it whether this is a sign in or a sign up
+        // so it can reject signing in when not registered, or signing up when already registered.
         const res = await axios.post(`${baseUrl}/api/v1/auth/google`, {
           credential: tokenResponse.access_token,
           googleId,
           email,
           name,
           picture,
+          mode,
         });
 
         if (res.data.data) {
           localStorage.setItem("heedy_user", JSON.stringify(res.data.data));
           // Merge any guest cart into the account cart and restore saved items.
           await syncCartAfterLogin();
+
           showToast(
             mode === "signin"
               ? "Signed in with Google successfully!"
