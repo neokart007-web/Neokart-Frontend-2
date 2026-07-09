@@ -140,6 +140,11 @@ export default function CheckoutPage() {
   const shipping = 0;
   const total = Math.max(0, subtotal - discountAmount);
 
+  // Cash on Delivery requires a 10% advance paid online; the balance is collected on delivery.
+  const ADVANCE_RATE = 0.1;
+  const advanceAmount = Math.round(total * ADVANCE_RATE * 100) / 100;
+  const balanceAmount = Math.round((total - advanceAmount) * 100) / 100;
+
   const handleApplyPromo = async () => {
     if (!promoCode.trim()) {
       setPromoMessage({ text: "Please enter a promo code", type: "error" });
@@ -220,77 +225,67 @@ export default function CheckoutPage() {
   };
 
   // Routes "Place Order" to the chosen payment method.
+  // Online payment charges the full total; COD charges only the 10% advance online
+  // and records the balance to be collected on delivery.
   const handlePlaceOrder = () => {
     if (paymentMethod === "cod") {
-      handleCOD();
+      processRazorpayPayment({ amountToCharge: advanceAmount, method: "cod" });
     } else {
-      handleOnlinePayment();
+      processRazorpayPayment({ amountToCharge: total, method: "razorpay" });
     }
   };
 
-  // Cash on Delivery — save the order directly, no payment gateway.
-  const handleCOD = async () => {
+  // Shared Razorpay flow. `amountToCharge` is what gets collected online now
+  // (full total for online orders, the 10% advance for COD). The order is saved
+  // in the DB only after this payment is verified.
+  const processRazorpayPayment = async ({
+    amountToCharge,
+    method,
+  }: {
+    amountToCharge: number;
+    method: "razorpay" | "cod";
+  }) => {
+    if (!selectedAddressId) {
+      showToast("Please select a shipping address.", "warning");
+      return;
+    }
     if (cartItems.length === 0) {
       showToast("Your cart is empty.", "warning");
       return;
     }
+
     const token = getAuthToken();
     if (!token) return;
+
+    const isCod = method === "cod";
 
     setIsPlacingOrder(true);
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
       const API_URL = `${baseUrl}/api`;
+
       const { orderItems, orderShippingAddress } = buildOrderPayload();
 
-      const res = await axios.post(`${API_URL}/v1/payments/cod-order`, {
+      // Full order details sent to /verify so the backend saves it once payment clears.
+      const buildVerifyBody = (rzp: { order_id: string; payment_id: string; signature: string }) => ({
+        razorpay_order_id: rzp.order_id,
+        razorpay_payment_id: rzp.payment_id,
+        razorpay_signature: rzp.signature,
         items: orderItems,
         shippingAddress: orderShippingAddress,
         subtotal,
         discount: discountAmount,
         shippingFee: shipping,
         total,
-      }, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        paymentMethod: method,
+        // For COD, record how much was paid now and how much is due on delivery.
+        advanceAmount: isCod ? advanceAmount : 0,
+        balanceAmount: isCod ? balanceAmount : 0,
       });
 
-      if (res.data.success) {
-        clearCart();
-        window.location.href = "/order-success";
-      } else {
-        showToast(res.data.message || "Failed to place order.", "error");
-      }
-    } catch (err: any) {
-      console.error(err);
-      showToast(err.response?.data?.message || "An error occurred while placing your order.", "error");
-    } finally {
-      setIsPlacingOrder(false);
-    }
-  };
-
-  const handleOnlinePayment = async () => {
-    if (!selectedAddressId) {
-      showToast("Please select a shipping address.", "warning");
-      return;
-    }
-
-    if (cartItems.length === 0) {
-      showToast("Your cart is empty.", "warning");
-      return;
-    }
-
-    try {
-      const token = getAuthToken();
-      if (!token) return;
-
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
-      const API_URL = `${baseUrl}/api`;
-
-      const { orderItems, orderShippingAddress } = buildOrderPayload();
-
-      // Call backend to create Razorpay order only (no DB save yet)
+      // Create a Razorpay order for the amount collected now (no DB save yet).
       const createOrderRes = await axios.post(`${API_URL}/v1/payments/create-order`, {
-        total
+        total: amountToCharge
       }, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -304,20 +299,11 @@ export default function CheckoutPage() {
 
       if (isMock) {
         setIsVerifyingPayment(true);
-        const verifyRes = await axios.post(`${API_URL}/v1/payments/verify`, {
-          razorpay_order_id: razorpayOrder.id,
-          razorpay_payment_id: "mock_payment",
-          razorpay_signature: "mock_signature",
-          // Pass order details so backend saves to DB
-          items: orderItems,
-          shippingAddress: orderShippingAddress,
-          subtotal,
-          discount: discountAmount,
-          shippingFee: shipping,
-          total,
-        }, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const verifyRes = await axios.post(
+          `${API_URL}/v1/payments/verify`,
+          buildVerifyBody({ order_id: razorpayOrder.id, payment_id: "mock_payment", signature: "mock_signature" }),
+          { headers: { 'Authorization': `Bearer ${token}` } }
+        );
 
         if (verifyRes.data.success) {
           clearCart();
@@ -340,26 +326,20 @@ export default function CheckoutPage() {
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         name: "Neokart",
-        description: "Order Payment",
+        description: isCod ? "Advance Payment (10%)" : "Order Payment",
         order_id: razorpayOrder.id,
         handler: async function (response: any) {
           setIsVerifyingPayment(true);
           try {
-            // Verify payment
-            const verifyRes = await axios.post(`${API_URL}/v1/payments/verify`, {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              // Pass order details so backend saves to DB
-              items: orderItems,
-              shippingAddress: orderShippingAddress,
-              subtotal,
-              discount: discountAmount,
-              shippingFee: shipping,
-              total,
-            }, {
-              headers: { 'Authorization': `Bearer ${token}` }
-            });
+            const verifyRes = await axios.post(
+              `${API_URL}/v1/payments/verify`,
+              buildVerifyBody({
+                order_id: response.razorpay_order_id,
+                payment_id: response.razorpay_payment_id,
+                signature: response.razorpay_signature,
+              }),
+              { headers: { 'Authorization': `Bearer ${token}` } }
+            );
 
             if (verifyRes.data.success) {
               clearCart();
@@ -394,6 +374,8 @@ export default function CheckoutPage() {
       console.error(err);
       setIsVerifyingPayment(false);
       showToast(err.response?.data?.message || "An error occurred during checkout.", "error");
+    } finally {
+      setIsPlacingOrder(false);
     }
   };
 
@@ -568,11 +550,24 @@ export default function CheckoutPage() {
                   )}
                   <div className="flex items-start gap-4">
                     <Banknote size={24} className="text-slate-700 flex-shrink-0 mt-1" />
-                    <div>
+                    <div className="flex-1">
                       <p className="font-sans font-bold text-slate-900 mb-1">Cash on Delivery</p>
                       <p className="font-sans text-slate-600 text-sm leading-relaxed">
-                        Pay with cash when your order is delivered to your door.
+                        Pay a 10% advance online now; pay the balance in cash on delivery.
                       </p>
+
+                      {paymentMethod === "cod" && (
+                        <div className="mt-4 border-t border-slate-300/60 pt-4 flex flex-col gap-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-slate-600">Advance now (10%)</span>
+                            <span className="font-bold text-slate-900">₹{advanceAmount.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-slate-600">Balance on delivery</span>
+                            <span className="font-bold text-slate-900">₹{balanceAmount.toFixed(2)}</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </button>
@@ -659,9 +654,9 @@ export default function CheckoutPage() {
               {step === "shipping"
                 ? "Secure Checkout"
                 : isPlacingOrder
-                ? "Placing Order..."
+                ? "Processing..."
                 : paymentMethod === "cod"
-                ? "Place Order"
+                ? `Pay ₹${advanceAmount.toFixed(2)} Advance`
                 : "Pay Now"}
             </button>
 
