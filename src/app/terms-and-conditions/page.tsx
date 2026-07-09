@@ -87,7 +87,7 @@ export default function TermsAndConditionsPage() {
               <section>
                 <h2 className="text-2xl font-bold text-slate-900 mb-4">1. General</h2>
                 <p>
-                  NEOKART operates this website to provide beauty/cosmetic products. By using this site, you confirm that you are at least 18 years old or using it under supervision.
+                  NEOKART operates this website to provide electronic and smart gadget products. By using this site, you confirm that you are at least 18 years old or using it under supervision.
                 </p>
               </section>
 

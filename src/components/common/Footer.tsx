@@ -122,7 +122,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="font-sans font-normal text-base text-white/70 leading-relaxed mb-8 max-w-sm">
-              Redefining high-end beauty. Our carefully curated collections are designed to elevate your everyday routines to extraordinary premium experiences.
+              Redefining high-end gadgets. Our carefully curated collections are designed to bring you the cutting edge of futuristic technology and smart lifestyle devices.
             </p>
             <div className="flex gap-3 flex-wrap">
               {socials.map(({ icon: Icon, label, href }) => (

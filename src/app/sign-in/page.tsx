@@ -15,15 +15,15 @@ export default function SignInPage() {
 
         <div className="max-w-lg mx-auto relative z-10 w-full">
           <p className="font-sans font-bold text-xs uppercase tracking-[0.25em] text-slate-800 mb-6 md:mb-8">
-            NEOKART LUXURY COMMERCE
+            NEOKART TECH & GADGETS
           </p>
 
           <h1 className="font-serif font-normal text-4xl md:text-5xl lg:text-6xl text-[#0a0a0a] leading-tight mb-6">
-            Welcome back to your premium beauty experience.
+            Welcome back to the future of smart living.
           </h1>
 
           <p className="font-sans text-slate-600 text-base leading-relaxed mb-12 max-w-sm">
-            Sign in to access your curated collection, track orders, and enjoy a seamless luxury shopping journey.
+            Sign in to access your curated gear collection, track shipments, and explore customized smart gadget deals.
           </p>
 
           <div className="flex items-center gap-3 text-slate-700">
