@@ -299,23 +299,23 @@ export default function ProfilePage() {
       <div className="max-w-[1200px] w-full flex flex-col md:flex-row bg-black min-h-[calc(100vh-5rem)]">
 
         {/* ── Sidebar ── */}
-        <aside className="w-full md:w-72 border-r border-slate-100 flex flex-col shrink-0">
+        <aside className="w-full md:w-72 border-r border-white/10 flex flex-col shrink-0">
           {/* User Profile Info */}
-          <div className="p-8 flex flex-col items-center border-b border-slate-100">
+          <div className="p-8 flex flex-col items-center border-b border-white/10">
             <div className="w-24 h-24 rounded-[32px] bg-blue-600 text-white flex items-center justify-center text-4xl font-bold mb-4 shadow-lg shadow-blue-600/20">
               {initials}
             </div>
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">
+            <div className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-1">
               VIP
             </div>
             <h2 className="text-lg font-bold text-white text-center mb-1 line-clamp-1">
               {user.name}
             </h2>
-            <p className={`text-xs text-slate-500 text-center truncate w-full ${!user.phone ? 'mb-4' : 'mb-1'}`}>
+            <p className={`text-xs text-slate-400 text-center truncate w-full ${!user.phone ? 'mb-4' : 'mb-1'}`}>
               {user.email}
             </p>
             {user.phone && (
-              <p className="text-xs text-slate-500 text-center truncate w-full mb-4">
+              <p className="text-xs text-slate-400 text-center truncate w-full mb-4">
                 {user.phone}
               </p>
             )}
@@ -333,7 +333,7 @@ export default function ProfilePage() {
               onClick={() => setActiveTab("overview")}
               className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-sm transition-all ${activeTab === "overview"
                 ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-                : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                : "text-slate-300 hover:bg-white/5 hover:text-white"
                 }`}
             >
               <User size={18} />
@@ -343,7 +343,7 @@ export default function ProfilePage() {
               onClick={() => setActiveTab("orders")}
               className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-sm transition-all ${activeTab === "orders"
                 ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-                : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                : "text-slate-300 hover:bg-white/5 hover:text-white"
                 }`}
             >
               <Package size={18} />
@@ -353,7 +353,7 @@ export default function ProfilePage() {
               onClick={() => setActiveTab("addresses")}
               className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-sm transition-all ${activeTab === "addresses"
                 ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-                : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                : "text-slate-300 hover:bg-white/5 hover:text-white"
                 }`}
             >
               <MapPin size={18} />
@@ -362,10 +362,10 @@ export default function ProfilePage() {
           </nav>
 
           {/* Sign Out Button */}
-          <div className="p-6 border-t border-slate-100">
+          <div className="p-6 border-t border-white/10">
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-4 px-6 py-4 w-full rounded-2xl text-red-500 font-bold text-sm hover:bg-red-50 transition-colors"
+              className="flex items-center gap-4 px-6 py-4 w-full rounded-2xl text-red-400 font-bold text-sm hover:bg-red-500/10 hover:text-red-300 transition-colors"
             >
               <LogOut size={18} />
               Sign Out
