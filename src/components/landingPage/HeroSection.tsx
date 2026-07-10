@@ -25,19 +25,8 @@ interface ISlide {
   subheadline: string;
 }
 
-const DEFAULT_SLIDES: ISlide[] = [
-  {
-    id: "default-1",
-    image: "/hero-bg.png",
-    mobileImage: "/hero-bg.png",
-    alt: "Premium skincare dynamic hydration",
-    headline: "DYNAMIC HYDRATION",
-    subheadline: "Sweat-resistant, feather-light, invisible finish.",
-  },
-];
-
 export default function HeroSection() {
-  const [allSlides, setAllSlides] = useState<ISlide[]>(DEFAULT_SLIDES);
+  const [allSlides, setAllSlides] = useState<ISlide[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -102,12 +91,9 @@ export default function HeroSection() {
   }, []);
 
   // Filter slides dynamically based on screen size
-  const displaySlides = allSlides.filter(slide => {
-    if (slide.id.startsWith("default-")) return true;
+  const finalSlides = allSlides.filter(slide => {
     return isMobile ? !!slide.mobileImage : true;
   });
-
-  const finalSlides = displaySlides.length > 0 ? displaySlides : DEFAULT_SLIDES;
 
   useEffect(() => {
     if (currentSlide >= finalSlides.length) {
@@ -157,6 +143,11 @@ export default function HeroSection() {
       prevSlide();
     }
   };
+
+  // Once banners have finished loading, don't render an empty hero if there are none
+  if (!isLoading && finalSlides.length === 0) {
+    return null;
+  }
 
   return (
     <section
