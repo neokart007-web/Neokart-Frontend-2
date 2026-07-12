@@ -7,6 +7,7 @@ import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCart } from "../../context/CartContext";
 import { ShoppingBag, SlidersHorizontal, X } from "lucide-react";
+import { cldOptimize } from "../../lib/image";
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -79,10 +80,11 @@ function ProductCard({ product }: { product: Product }) {
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-[#1a1a1a]">
           <Image
-            src={product.images[0]}
+            src={cldOptimize(product.images[0], 800)}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            unoptimized
             className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
           />
           {product.dealBadge && (

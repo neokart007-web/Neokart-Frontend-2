@@ -10,6 +10,7 @@ import {
   Shield, Truck, RotateCcw, Plus, Minus, Check,
 } from "lucide-react";
 import { useCart } from "../../../context/CartContext";
+import { cldOptimize } from "../../../lib/image";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -193,11 +194,12 @@ export default function ProductDetailPage() {
               {product.images.map((src, i) => (
                 <Image
                   key={i}
-                  src={src}
+                  src={cldOptimize(src, 1000)}
                   alt={`${product.name} view ${i + 1}`}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   priority={i === 0}
+                  unoptimized
                   className={`object-cover transition-opacity duration-500 ${i === activeImage ? "opacity-100" : "opacity-0"
                     }`}
                 />
@@ -231,7 +233,7 @@ export default function ProductDetailPage() {
                       className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-shrink-0 ${i === activeImage ? "border-slate-900 shadow-md" : "border-slate-200 hover:border-slate-400"
                         } ${!showAllThumbs && isExtra && hasMore ? "hidden md:block" : ""}`}
                     >
-                      <Image src={src} alt={`Thumbnail ${i + 1}`} fill sizes="80px" className="object-cover" />
+                      <Image src={cldOptimize(src, 200)} alt={`Thumbnail ${i + 1}`} fill sizes="80px" unoptimized className="object-cover" />
                       {!showAllThumbs && isFourth && hasMore && (
                         <div className="absolute inset-0 bg-black/40 flex md:hidden items-center justify-center text-white backdrop-blur-[1px]">
                           <Plus size={28} strokeWidth={2.5} />

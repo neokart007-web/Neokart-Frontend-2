@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import { cldOptimize } from "../../lib/image";
 
 interface IBanner {
   _id: string;
@@ -203,26 +204,26 @@ export default function HeroSection() {
               >
                 <div className="hidden md:block absolute inset-0">
                   <Image
-                    src={slide.image}
+                    src={cldOptimize(slide.image, 1920)}
                     alt={slide.alt}
                     fill
                     priority={index === 0 || index === 1}
                     sizes="100vw"
                     loading={index === 0 || index === 1 ? undefined : "lazy"}
                     className="object-cover"
-                    unoptimized={slide.image.startsWith("http://localhost")}
+                    unoptimized
                   />
                 </div>
                 <div className="block md:hidden absolute inset-0">
                   <Image
-                    src={slide.mobileImage || slide.image}
+                    src={cldOptimize(slide.mobileImage || slide.image, 1290)}
                     alt={slide.alt}
                     fill
                     priority={index === 0 || index === 1}
                     sizes="100vw"
                     loading={index === 0 || index === 1 ? undefined : "lazy"}
                     className="object-cover object-center"
-                    unoptimized={(slide.mobileImage || slide.image).startsWith("http://localhost")}
+                    unoptimized
                   />
                 </div>
               </motion.div>

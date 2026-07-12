@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "../../context/CartContext";
+import { cldOptimize } from "../../lib/image";
 
 interface Product {
   id: string;
@@ -61,11 +62,12 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
             return (
               <Image
                 key={i}
-                src={img}
+                src={cldOptimize(img, 600)}
                 alt={`${product.name} product image ${i + 1}`}
                 fill
                 loading={index > 2 ? "lazy" : "eager"}
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                unoptimized
                 className={`object-cover transition-all duration-500 ease-in-out group-hover:scale-105 ${hasMultipleImages
                   ? i === 0
                     ? "opacity-100 group-hover:opacity-0"
