@@ -66,7 +66,7 @@ export default function CartPage() {
                   <button
                     onClick={() => removeItem(item.id, item.size)}
                     aria-label="Remove item"
-                    className="absolute top-2 right-4 sm:top-6 sm:right-6 text-slate-400 hover:text-red-500 transition-colors focus:outline-none"
+                    className="absolute top-2 right-4 sm:top-6 sm:right-6 text-red-600 hover:text-red-700 transition-colors focus:outline-none"
                   >
                     <Trash2 size={20} />
                   </button>
