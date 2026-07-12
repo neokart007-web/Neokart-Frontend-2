@@ -78,11 +78,11 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-16 lg:h-[72px] px-4 lg:px-8 flex items-center gap-3 lg:gap-6 border-b border-black/10 bg-[#aea3cf]/95 backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 lg:h-[72px] px-3 sm:px-4 lg:px-8 flex items-center gap-2 sm:gap-3 lg:gap-6 border-b border-black/10 bg-[#aea3cf]/95 backdrop-blur-md">
       {/* Mobile menu toggle */}
       <button
         onClick={() => setIsMobileMenuOpen((v) => !v)}
-        className="lg:hidden p-2 -ml-2 text-slate-900 hover:text-[#4a3391] transition-colors"
+        className="lg:hidden p-1.5 sm:p-2 -ml-1 sm:-ml-2 text-slate-900 hover:text-[#4a3391] transition-colors"
         aria-label="Toggle menu"
       >
         {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -90,7 +90,7 @@ export default function Navbar() {
 
       {/* Logo */}
       <Link href="/" className="flex-shrink-0" aria-label="NEOKART home">
-        <div className="relative w-40 sm:w-44 md:w-52 lg:w-56 h-10 lg:h-12">
+        <div className="relative w-32 sm:w-44 md:w-52 lg:w-56 h-9 sm:h-10 lg:h-12">
           <Image
             src="/logo.png"
             alt="Neokart Logo"
@@ -154,7 +154,7 @@ export default function Navbar() {
             setIsMobileSearchOpen((v) => !v);
             setIsMobileMenuOpen(false);
           }}
-          className="md:hidden p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
+          className="md:hidden p-1.5 sm:p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
           aria-label="Search"
           aria-expanded={isMobileSearchOpen}
         >
@@ -166,7 +166,7 @@ export default function Navbar() {
           href={`https://wa.me/${WHATSAPP_NUMBER}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="p-2 text-slate-900 hover:text-green-600 transition-colors"
+          className="p-1.5 sm:p-2 text-slate-900 hover:text-green-600 transition-colors"
           aria-label="Contact us on WhatsApp"
         >
           <WhatsAppIcon size={20} />
@@ -175,7 +175,7 @@ export default function Navbar() {
         {/* Account */}
         <Link
           href={isLoggedIn ? "/profile" : "/sign-in"}
-          className="p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
+          className="p-1.5 sm:p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
           aria-label="Account"
         >
           <User size={20} />
@@ -184,7 +184,7 @@ export default function Navbar() {
         {/* Cart */}
         <Link
           href="/cart"
-          className="relative p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
+          className="relative p-1.5 sm:p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
           aria-label="Cart"
         >
           <ShoppingBag size={20} />
