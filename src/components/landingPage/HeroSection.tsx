@@ -73,21 +73,26 @@ export default function HeroSection() {
               subheadline: b.description,
             }));
             setAllSlides(mapped);
+            // Splash stays until the first banner image's onLoad fires (see below).
+            return;
           }
         }
+        // No banners to show — reveal immediately instead of waiting.
+        setIsLoading(false);
       } catch (err) {
         console.error("Failed to fetch banners", err);
-        // Keep default slides on error
+        // Nothing to show on error — don't keep the user on the splash.
+        setIsLoading(false);
       }
     };
     fetchBanners();
   }, []);
 
-  // Preloader timer
+  // Safety fallback: if the banner image is slow or fails to fire onLoad,
+  // don't trap the user behind the splash forever. The primary reveal is
+  // driven by the image's onLoad handler below (reveals as soon as it's ready).
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    const timer = setTimeout(() => setIsLoading(false), 6000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -212,6 +217,7 @@ export default function HeroSection() {
                     loading={index === 0 || index === 1 ? undefined : "lazy"}
                     className="object-cover"
                     unoptimized
+                    onLoad={index === 0 ? () => setIsLoading(false) : undefined}
                   />
                 </div>
                 <div className="block md:hidden absolute inset-0">
@@ -224,6 +230,7 @@ export default function HeroSection() {
                     loading={index === 0 || index === 1 ? undefined : "lazy"}
                     className="object-cover object-center"
                     unoptimized
+                    onLoad={index === 0 ? () => setIsLoading(false) : undefined}
                   />
                 </div>
               </motion.div>
