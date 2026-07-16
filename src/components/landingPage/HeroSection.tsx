@@ -157,7 +157,7 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative w-full h-[80vh] md:h-screen overflow-hidden bg-black touch-pan-y"
+      className="relative w-full h-auto aspect-[16/9] md:h-screen md:aspect-auto overflow-hidden bg-black touch-pan-y"
       aria-label="Hero section"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
@@ -283,8 +283,8 @@ export default function HeroSection() {
                 aria-label={`Go to slide ${index + 1}`}
                 onClick={() => goToSlide(index)}
                 className={`transition-colors duration-300 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${currentSlide === index
-                    ? "w-2.5 h-2.5 rounded-full bg-blue-500"
-                    : "w-2.5 h-2.5 rounded-full bg-white/50"
+                  ? "w-2.5 h-2.5 rounded-full bg-blue-500"
+                  : "w-2.5 h-2.5 rounded-full bg-white/50"
                   }`}
               />
             ))}

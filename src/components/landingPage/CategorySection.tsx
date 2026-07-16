@@ -93,61 +93,35 @@ export default function CategorySection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-[#0a0a0a] py-12 md:py-20 lg:py-24 w-full">
+    <section ref={sectionRef} className="bg-[#0a0a0a] pt-20 md:pt-28 pb-6 md:pb-8 w-full">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        {/* Header row */}
-        <div className="flex items-end justify-between gap-4 mb-8 md:mb-12">
-          <div
-            className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-              }`}
-          >
-            <h2 className="font-sans font-black text-2xl md:text-3xl lg:text-4xl text-white tracking-tight">
-              Shop by Category
-            </h2>
-            <p className="font-sans font-normal text-base md:text-lg text-slate-400 mt-2">
-              Browse our diverse collection
-            </p>
-          </div>
-
-          <Link
-            href="/products"
-            className="group inline-flex items-center gap-2 font-sans font-bold text-sm md:text-base text-white hover:text-[#593dab] transition-colors duration-200 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-[#593dab] focus:ring-offset-2 focus:ring-offset-[#0a0a0a] rounded-md px-1"
-          >
-            View All
-            <ArrowRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
-          </Link>
-        </div>
-
-        {/* Category cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5">
+        {/* Category circles list */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6 md:gap-8 justify-items-center">
           {categories.map((category, index) => (
             <Link
               key={category.id}
               href={`/products?category=${category.id}`}
               aria-label={`Browse ${category.label}`}
-              className={`group rounded-2xl overflow-hidden bg-[#121212] border border-white/5 hover:border-[#593dab]/60 hover:-translate-y-1 transition-all duration-500 ease-out focus:outline-none focus:ring-2 focus:ring-[#593dab] focus:ring-offset-2 focus:ring-offset-[#0a0a0a] motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              className={`group flex flex-col items-center text-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#593dab] focus:ring-offset-2 focus:ring-offset-[#0a0a0a] rounded-xl p-1 motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
               style={{ transitionDelay: `${index * 80}ms` }}
             >
-              <div className="relative aspect-square overflow-hidden">
+              {/* Circular image container - thin blue/sky border with light background */}
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-[1.5px] border-sky-400 bg-sky-50 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:border-sky-500 shadow-sm">
                 <Image
                   src={category.image}
                   alt={category.alt}
                   fill
                   priority={index < 3}
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  sizes="(max-width: 640px) 80px, (max-width: 768px) 96px, (max-width: 1024px) 112px, 128px"
+                  className="object-cover rounded-full p-0.5"
                 />
               </div>
 
-              <div className="p-4 text-center">
-                <h3 className="font-sans font-bold text-base text-white leading-tight mb-1 truncate">
-                  {category.label}
-                </h3>
-                <p className="font-sans font-normal text-sm text-[#a78bda]">
-                  {category.count} items
-                </p>
-              </div>
+              {/* Category Name */}
+              <span className="mt-3 font-sans font-bold text-xs sm:text-sm md:text-base text-white/90 group-hover:text-sky-400 transition-colors leading-tight line-clamp-2">
+                {category.label}
+              </span>
             </Link>
           ))}
         </div>
