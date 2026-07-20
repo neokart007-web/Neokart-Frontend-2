@@ -145,7 +145,7 @@ export default function NewArrivalSection() {
               </ul>
             )}
 
-            {/* Price + CTA */}
+            {/* CTA */}
             <div className="flex flex-wrap items-center gap-5">
               <Link
                 href={`/products/${item.id}`}
@@ -154,19 +154,6 @@ export default function NewArrivalSection() {
                 Shop Now
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
-
-              {item.currentPrice > 0 && (
-                <div className="flex items-baseline gap-2">
-                  <span className="font-sans font-black text-2xl md:text-3xl text-white">
-                    {item.currency}{item.currentPrice}
-                  </span>
-                  {item.originalPrice > item.currentPrice && (
-                    <span className="font-sans text-sm text-white/40 line-through">
-                      {item.currency}{item.originalPrice}
-                    </span>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         </div>

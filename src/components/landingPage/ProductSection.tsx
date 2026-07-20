@@ -98,18 +98,8 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
         </div>
       </Link>
 
-      {/* Price + Cart Row */}
-      <div className="px-3 md:px-4 pb-4 pt-2 mt-auto flex items-center justify-between gap-2">
-        <div className="flex items-baseline gap-1.5 min-w-0">
-          <span className="font-sans font-bold text-base md:text-xl text-white truncate">
-            {product.currency}{product.currentPrice}
-          </span>
-          {product.originalPrice > product.currentPrice && (
-            <span className="font-sans text-[11px] md:text-xs text-white/40 line-through">
-              {product.currency}{product.originalPrice}
-            </span>
-          )}
-        </div>
+      {/* Cart Row */}
+      <div className="px-3 md:px-4 pb-4 pt-2 mt-auto flex items-center justify-end gap-2">
         <button
           onClick={handleAddToCart}
           aria-label={`Add ${product.name} to cart`}
