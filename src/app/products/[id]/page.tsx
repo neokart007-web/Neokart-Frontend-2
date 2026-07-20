@@ -48,7 +48,6 @@ export default function ProductDetailPage() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [fromFlashSale, setFromFlashSale] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const [activeImage, setActiveImage] = useState(0);
@@ -58,14 +57,6 @@ export default function ProductDetailPage() {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showAllThumbs, setShowAllThumbs] = useState(false);
   const { addToCart } = useCart();
-
-  // Detect whether the visitor arrived by clicking a Flash Sale card
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      setFromFlashSale(urlParams.get("from") === "flash-sale");
-    }
-  }, [id]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -181,15 +172,10 @@ export default function ProductDetailPage() {
   const dealBadgeMatch = product.dealBadge.match(/(\d+)\s*%/);
   const badgeDiscount = dealBadgeMatch ? Number(dealBadgeMatch[1]) : discount;
 
-  // Related products: when the visitor arrived from a Flash Sale card, show ONLY
-  // other flash-sale products. Otherwise, show items from the same category.
+  // Related products: always show other items from the same category.
   const relatedProducts = allProducts
     .filter((p) => p.id !== product.id)
-    .filter((p) =>
-      fromFlashSale
-        ? p.showInFlashSale
-        : p.category.toLowerCase() === product.category.toLowerCase()
-    )
+    .filter((p) => p.category.toLowerCase() === product.category.toLowerCase())
     .slice(0, 5);
 
   return (
@@ -408,16 +394,8 @@ export default function ProductDetailPage() {
         <section className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pb-16 md:pb-24">
           <div className="flex items-center justify-between mb-6 md:mb-8">
             <h2 className="font-sans font-bold text-xl md:text-2xl text-white">
-              {fromFlashSale ? "More Flash Deals" : "Related Products"}
+              Related Products
             </h2>
-            {fromFlashSale && (
-              <Link
-                href="/"
-                className="font-sans font-semibold text-xs md:text-sm text-amber-400 hover:text-amber-300 transition-colors"
-              >
-                View all offers
-              </Link>
-            )}
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6">
@@ -429,7 +407,7 @@ export default function ProductDetailPage() {
               return (
                 <Link
                   key={rp.id}
-                  href={`/products/${rp.id}${fromFlashSale ? "?from=flash-sale" : ""}`}
+                  href={`/products/${rp.id}`}
                   className="group bg-[#121212] rounded-2xl overflow-hidden border border-white/10 hover:border-white/20 transition-all duration-300 flex flex-col outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                 >
                   <div className="relative aspect-square bg-[#1a1a1a] overflow-hidden">
