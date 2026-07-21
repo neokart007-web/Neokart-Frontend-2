@@ -603,20 +603,20 @@ export default function ProfilePage() {
             className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
             onClick={() => setIsAddressModalOpen(false)}
           />
-          <div className="relative bg-[#aea3cf]/95 rounded-[2rem] w-full max-w-lg shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between p-6 sm:p-8 border-b border-slate-100">
-              <h2 className="font-sans font-black text-2xl text-slate-900 tracking-tight">
+          <div className="relative bg-[#aea3cf]/95 rounded-[2rem] w-full max-w-lg max-h-[90dvh] shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between p-5 sm:p-8 border-b border-slate-100 shrink-0">
+              <h2 className="font-sans font-black text-xl sm:text-2xl text-slate-900 tracking-tight">
                 {editingAddressId ? "Edit Shipping Address" : "New Shipping Address"}
               </h2>
               <button
                 onClick={() => setIsAddressModalOpen(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors focus:outline-none"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors focus:outline-none shrink-0"
               >
                 <X size={16} />
               </button>
             </div>
 
-            <div className="p-6 sm:p-8 flex flex-col gap-5">
+            <div className="p-5 sm:p-8 flex flex-col gap-5 overflow-y-auto">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Full Name <span className="text-red-500">*</span></label>
