@@ -56,6 +56,9 @@ export default function ProductDetailPage() {
   const [added, setAdded] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showAllThumbs, setShowAllThumbs] = useState(false);
+  // Whether the user arrived here by clicking a product in the Flash Sale strip.
+  // Related Products only show for that entry point (not New Arrivals, Our Products, etc.).
+  const [fromFlashSale, setFromFlashSale] = useState(false);
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -113,6 +116,14 @@ export default function ProductDetailPage() {
       }
     };
     if (id) fetchProducts();
+  }, [id]);
+
+  // Re-read the entry point on every product navigation. Flash-sale links carry
+  // ?from=flash-sale; links from other sections don't, so Related Products hides.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const from = new URLSearchParams(window.location.search).get("from");
+    setFromFlashSale(from === "flash-sale");
   }, [id]);
 
   const handleAddToCart = () => {
@@ -389,8 +400,8 @@ export default function ProductDetailPage() {
         </div>
       </section>
 
-      {/* ── Related Products (only on flash-sale products) ── */}
-      {product.showInFlashSale && relatedProducts.length > 0 && (
+      {/* ── Related Products (only when the user came from the Flash Sale section) ── */}
+      {fromFlashSale && relatedProducts.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pb-16 md:pb-24">
           <div className="flex items-center justify-between mb-6 md:mb-8">
             <h2 className="font-sans font-bold text-xl md:text-2xl text-white">
