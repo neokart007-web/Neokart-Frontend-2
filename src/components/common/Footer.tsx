@@ -4,9 +4,27 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { MapPin, Phone, Mail, Heart } from "lucide-react";
+import { Phone, Mail, Heart } from "lucide-react";
 
 // Lucide removed brand icons from their core package, so we define them here:
+
+// Multi-colour Google Maps pin (matches the Google Maps app icon).
+const GoogleMapsIcon = ({ size = 24, ...props }: any) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={size} height={size} {...props}>
+    <defs>
+      <clipPath id="gmap-pin">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+      </clipPath>
+    </defs>
+    <g clipPath="url(#gmap-pin)">
+      <rect x="0" y="0" width="12" height="9" fill="#EA4335" />
+      <rect x="12" y="0" width="12" height="9" fill="#4285F4" />
+      <rect x="0" y="9" width="12" height="13" fill="#FBBC05" />
+      <rect x="12" y="9" width="12" height="13" fill="#34A853" />
+    </g>
+    <circle cx="12" cy="9" r="2.6" fill="#ffffff" />
+  </svg>
+);
 const Facebook = (props: any) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
@@ -30,41 +48,44 @@ const Youtube = (props: any) => (
 
 const contacts = [
   {
-    icon: MapPin,
+    icon: GoogleMapsIcon,
     label: "VISIT US",
     value: "NEOKART\nA.M. Motors Building, Near Check Post\nChungam, Thamarassery\nCalicut, Kerala – 673573",
     href: "https://www.google.com/maps/search/?api=1&query=NEOKART+A.M.+Motors+Building+Near+Check+Post+Chungam+Thamarassery+Calicut+Kerala+673573",
+    // Google Maps icon carries its own colours.
   },
   {
     icon: Phone,
     label: "CALL US",
     value: "+91 62352 51520\n+91 62352 51523\n+91 62352 51544",
     href: "tel:+916235251520",
+    iconColor: "#16A34A", // traditional call green
   },
   {
     icon: Mail,
     label: "EMAIL DIRECTLY",
     value: "neokart007@gmail.com",
     href: "mailto:neokart007@gmail.com",
+    iconColor: "#1A73E8", // email blue
   },
 ];
 
 const socials = [
-  { 
-    icon: Facebook, 
-    label: "Visit our Facebook", 
+  {
+    icon: Facebook,
+    label: "Visit our Facebook",
     href: "https://www.facebook.com/share/19FPZKro1U/?mibextid=wwXIfr",
     className: "bg-[#1877F2] text-white border-transparent hover:scale-105 hover:brightness-110"
   },
-  { 
-    icon: Instagram, 
-    label: "Visit our Instagram", 
+  {
+    icon: Instagram,
+    label: "Visit our Instagram",
     href: "https://www.instagram.com/neokart.online?igsh=MXVydmQwa2c3bWEzag%3D%3D&utm_source=qr",
     className: "bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white border-transparent hover:scale-105 hover:brightness-110"
   },
-  { 
-    icon: Youtube, 
-    label: "Visit our YouTube", 
+  {
+    icon: Youtube,
+    label: "Visit our YouTube",
     href: "https://youtube.com/@neokart.online?si=XJU3zW_3k-EYs-_l",
     className: "bg-[#FF0000] text-white border-transparent hover:scale-105 hover:brightness-110"
   },
@@ -174,7 +195,7 @@ export default function Footer() {
           <div className="lg:col-span-4">
             <ColumnTitle>GET IN TOUCH</ColumnTitle>
             <ul className="space-y-6">
-              {contacts.map(({ icon: Icon, label, value, href }) => (
+              {contacts.map(({ icon: Icon, label, value, href, iconColor }) => (
                 <li key={label}>
                   <a
                     href={href}
@@ -182,8 +203,8 @@ export default function Footer() {
                     aria-label={`${label}: ${value}`}
                     className="flex items-start gap-4 group"
                   >
-                    <div className="w-11 h-11 rounded-xl bg-white/15 group-hover:bg-white/25 flex items-center justify-center flex-shrink-0 transition-colors duration-200">
-                      <Icon size={18} className="text-white" aria-hidden="true" />
+                    <div className="w-11 h-11 rounded-xl bg-white group-hover:bg-white shadow-sm flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-105">
+                      <Icon size={20} aria-hidden="true" {...(iconColor ? { style: { color: iconColor } } : {})} />
                     </div>
                     <div>
                       <p className="font-sans font-semibold text-xs tracking-[0.15em] uppercase text-white/60 mb-1">
