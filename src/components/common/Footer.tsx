@@ -50,9 +50,24 @@ const contacts = [
 ];
 
 const socials = [
-  { icon: Facebook, label: "Visit our Facebook", href: "https://www.facebook.com/share/19FPZKro1U/?mibextid=wwXIfr" },
-  { icon: Instagram, label: "Visit our Instagram", href: "https://www.instagram.com/neokart.online?igsh=MXVydmQwa2c3bWEzag%3D%3D&utm_source=qr" },
-  { icon: Youtube, label: "Visit our YouTube", href: "https://youtube.com/@neokart.online?si=XJU3zW_3k-EYs-_l" },
+  { 
+    icon: Facebook, 
+    label: "Visit our Facebook", 
+    href: "https://www.facebook.com/share/19FPZKro1U/?mibextid=wwXIfr",
+    className: "bg-[#1877F2] text-white border-transparent hover:scale-105 hover:brightness-110"
+  },
+  { 
+    icon: Instagram, 
+    label: "Visit our Instagram", 
+    href: "https://www.instagram.com/neokart.online?igsh=MXVydmQwa2c3bWEzag%3D%3D&utm_source=qr",
+    className: "bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white border-transparent hover:scale-105 hover:brightness-110"
+  },
+  { 
+    icon: Youtube, 
+    label: "Visit our YouTube", 
+    href: "https://youtube.com/@neokart.online?si=XJU3zW_3k-EYs-_l",
+    className: "bg-[#FF0000] text-white border-transparent hover:scale-105 hover:brightness-110"
+  },
 ];
 
 function ColumnTitle({ children }: { children: React.ReactNode }) {
@@ -102,7 +117,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:gap-12">
 
           {/* Column 1 — Brand */}
-          <div className="lg:col-span-4"> 
+          <div className="lg:col-span-4">
             <Link href="/" className="inline-flex items-center mb-6" aria-label="NEOKART brand logo">
               <div className="relative w-40 h-12">
                 <Image
@@ -118,13 +133,13 @@ export default function Footer() {
               Redefining high-end gadgets. Our carefully curated collections are designed to bring you the cutting edge of futuristic technology and smart lifestyle devices.
             </p>
             <div className="flex gap-3 flex-wrap">
-              {socials.map(({ icon: Icon, label, href }) => (
+              {socials.map(({ icon: Icon, label, href, className }) => (
                 <a
                   key={label}
                   href={href}
                   aria-label={label}
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white/80 hover:border-white hover:text-white hover:bg-white/10 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#0a0a0a] ${className}`}
                 >
                   <Icon size={16} strokeWidth={2} />
                 </a>
